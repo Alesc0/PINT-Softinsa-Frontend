@@ -1,17 +1,16 @@
-import * as React from "react";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import CssBaseline from "@mui/material/CssBaseline";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import login_banner from "../../imgs/banner-login.jpg";
 import logo from "../../imgs/logo-softinsa.png";
 
@@ -32,7 +31,17 @@ function Copyright(props) {
   );
 }
 
-const theme = createTheme();
+const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 710,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
+});
 
 const LoginForm = () => {
   const handleSubmit = (event) => {
@@ -49,23 +58,28 @@ const LoginForm = () => {
     <ThemeProvider theme={theme}>
       <Grid
         container
-        spacing={0}
         direction="column"
         alignItems="center"
         justifyContent="center"
         style={{ minHeight: "100vh" }}
-        sx={{ backgroundImage: `url(${login_banner})` }}
+        sx={{
+          backgroundImage: `url(${login_banner})`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       >
-        <Grid container component="main" sx={{ width: "60%" }}>
+        <Grid container component="main" width={{ md: "100%", lg: "60%" }}>
           <CssBaseline />
           <Grid
             item
             xs={false}
-            sm={4}
+            sm={6}
             md={6}
             sx={{
               background: "#3498DB",
             }}
+            display={{ xs: "none", md: "block" }}
           >
             <div>
               <img
@@ -115,7 +129,7 @@ const LoginForm = () => {
           <Grid
             item
             xs={12}
-            sm={8}
+            sm={12}
             md={6}
             component={Paper}
             elevation={6}

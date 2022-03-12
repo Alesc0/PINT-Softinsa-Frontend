@@ -12,7 +12,6 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import navBar_logo from "../../imgs/logo-softinsa.png";
-import "./navBar.css";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];

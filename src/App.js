@@ -1,27 +1,10 @@
 import "./App.css";
-import LoginForm from "./components/loginForm/loginForm";
+//import MiniDrawer from "./components/sideBar/sideBar"
+import NavBar from "./components/navBar/navBar"
 
 function App() {
-  /* const [state, setState] = useState(false);
-
-  const toggleDrawer = () => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-
-    setState((e) => !e);
-  }; */
-
-  return (
-    <div className="App">
-      {
-        <LoginForm/>
-      }
-    </div>
-  );
+  return <div className="App">{<NavBar />}</div>;
+  //return <div className="App">{<MiniDrawer/> }</div>
 }
 
 export default App;

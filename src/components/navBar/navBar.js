@@ -12,14 +12,14 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import navBar_logo from "../../imgs/logo-softinsa.png";
+import { Link } from "react-router-dom";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-const ResponsiveAppBar = (props) => {
+const NavBar = (props) => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -39,18 +39,7 @@ const ResponsiveAppBar = (props) => {
     <AppBar style={{ background: "#3498DB" }} position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
-          >
-            <img
-              src={navBar_logo}
-              alt={"logo"}
-              style={{ width: 200 }}
-            ></img>
-          </Typography>
+          <img src={navBar_logo} alt={"logo"} style={{ width: 200 }}></img>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -135,6 +124,11 @@ const ResponsiveAppBar = (props) => {
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
+              <MenuItem onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">
+                  <Link to="/login">Login</Link>
+                </Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
@@ -142,4 +136,4 @@ const ResponsiveAppBar = (props) => {
     </AppBar>
   );
 };
-export default ResponsiveAppBar;
+export default NavBar;

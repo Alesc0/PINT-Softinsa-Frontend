@@ -39,8 +39,14 @@ const NavBar = (props) => {
     <AppBar style={{ background: "#3498DB" }} position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <img src={navBar_logo} alt={"logo"} style={{ width: 200 }}></img>
-
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ display: { xs: "none", md: "flex" } }}
+          >
+            <img src={navBar_logo} alt={"logo"} style={{ width: 200 }}></img>
+          </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"

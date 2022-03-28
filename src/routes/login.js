@@ -229,7 +229,7 @@ const LoginForm = () => {
                     </Link>
                   </Grid>
                 </Grid>
-                <Copyright sx={{ mt: 5 }} />
+                <Copyright sx={{ mt: 3 }} />
               </Box>
             </Box>
           </Grid>

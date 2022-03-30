@@ -10,7 +10,7 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import NavBar from "../components/navBar/navBar";
 import { Paper } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
-import { useEffect } from "react";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 
 const info = [
   {
@@ -34,140 +34,172 @@ const info = [
 const feedbacks = [
   {
     val: "João Trolha",
-    assunto: "Bonjour?",
+    assunto: "Sala: 3",
     com: "Sala acolhedora, boa iluminação natural e modernos equipamentos eletrônicos.",
+    time: "20.30",
   },
   {
     val: "André Joelho",
-    assunto: "Adios?",
+    assunto: "Geral",
     com: "Bom acolhimento por parte da empresa, sala limpa e organizada. Obrigado pelo serviço prestado.",
+    time: "15.30",
   },
   {
     val: "Tozé Tabasco",
-    assunto: "What is this?",
+    assunto: "Sala: 15",
     com: "Senti bastante frio na sala onde participei de uma reunião. De resto, tudo de boa qualidade.",
+    time: "12.30",
+  },
+];
+const Notificacoes = [
+  {
+    val: "Luis Matos",
+    assunto: "Feedback",
+    com: "Um novo feedback foi adicionado por um participante!",
+  },
+  {
+    val: "Joaquim Souza",
+    assunto: "Atualização",
+    com: "O pedido urgente de manutenção da sala 12 passou a resolvido.",
+  },
+  {
+    val: "André Tabasco",
+    assunto: "Reunião",
+    com: "Todos os requisitos para a próxima reunião de João Carvalho encontram-se prontos.",
   },
 ];
 export default function Dashboard(props) {
   return (
     <ThemeProvider theme={props.th}>
       <NavBar />
-
-      <Box
-        display="grid"
-        gridTemplateColumns={{ sm: "repeat(2, 1fr)", md: "repeat(4, 2fr)" }}
-        gap={5}
-        sx={{ p: 5, bgcolor: "background.default", color: "text.primary" }}
-      >
-        {info.map((row) => (
+      <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+        <Box
+          display="grid"
+          gridTemplateColumns={{ sm: "repeat(2, 1fr)", md: "repeat(4, 2fr)" }}
+          gap={5}
+          sx={{ p: 5, color: "text.primary" }}
+        >
+          {info.map((row) => (
+            <Box
+              component={Paper}
+              sx={{
+                color: "text.primary",
+                border: "solid thin",
+                borderRadius: 3,
+                borderColor: "primary.main",
+                textAlign: "center",
+                p: 1,
+              }}
+            >
+              <Typography
+                variant="h5"
+                component="h5"
+                sx={{ color: "primary.main" }}
+              >
+                {row.val}
+              </Typography>
+              <Typography variant="h6" component="h6">
+                {row.desc}
+              </Typography>
+            </Box>
+          ))}
           <Box
             component={Paper}
+            gridColumn="span 2"
             sx={{
-              color: "text.primary",
               border: "solid thin",
               borderRadius: 3,
               borderColor: "primary.main",
-              textAlign: "center",
-              p: 1,
+              p: 2,
             }}
           >
-            <Typography
-              variant="h5"
-              component="h5"
-              sx={{ color: "primary.main" }}
-            >
-              {row.val}
+            <Typography variant="h5" component="h5">
+              Feedbacks
             </Typography>
-            <Typography variant="h6" component="h6">
-              {row.desc}
-            </Typography>
+            <List sx={{ width: "100%" }}>
+              {feedbacks.map((row) => (
+                <>
+                  <ListItem alignItems="flex-start" button>
+                    <ListItemAvatar>
+                      <Avatar alt="Remy Sharp" src={ava} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={row.val}
+                      sx={{ color: "primary.main" }}
+                      secondary={
+                        <>
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                            variant="body2"
+                            color="warning.dark"
+                          >
+                            {row.assunto}
+                          </Typography>
+                          {" — " + row.com}
+                          <span
+                            style={{
+                              margin: 0,
+                              padding: 0,
+                              width: "fit-content",
+                              float: "right",
+                            }}
+                          >
+                            {row.time}
+                          </span>
+                        </>
+                      }
+                    />
+                  </ListItem>
+
+                  <Divider />
+                </>
+              ))}
+            </List>
           </Box>
-        ))}
-        <Box
-          component={Paper}
-          gridColumn="span 2"
-          sx={{
-            border: "solid thin",
-            borderRadius: 3,
-            borderColor: "primary.main",
-            p: 2,
-          }}
-        >
-          <Typography variant="h5" component="h5">
-            Feedbacks
-          </Typography>
-          <List sx={{ width: "100%" }}>
-            {feedbacks.map((row) => (
-              <>
-                <ListItem alignItems="flex-start" button>
-                  <ListItemAvatar>
-                    <Avatar alt="Remy Sharp" src={ava} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={row.assunto}
-                    secondary={
-                      <>
-                        <Typography
-                          sx={{ display: "inline" }}
-                          component="span"
-                          variant="body2"
-                          color="primary.main"
-                        >
-                          {row.val}
-                        </Typography>
-                        {" — " + row.com}
-                      </>
-                    }
-                  />
-                </ListItem>
+          <Box
+            component={Paper}
+            gridColumn="span 2"
+            sx={{
+              border: "solid thin",
+              borderRadius: 3,
+              borderColor: "primary.main",
+              p: 2,
+            }}
+          >
+            <Typography variant="h5" component="h5">
+              Notificações
+            </Typography>
+            <List sx={{ width: "100%", bgcolor: "background" }}>
+              {Notificacoes.map((row) => (
+                <>
+                  <ListItem alignItems="flex-start" button>
+                    <ListItemAvatar>
+                      <Avatar alt="Remy Sharp" src={ava} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={row.val}
+                      secondary={
+                        <>
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                            variant="body2"
+                            color="secondary.main"
+                          >
+                            {row.assunto}
+                          </Typography>
+                          {" — " + row.com}
+                        </>
+                      }
+                    />
+                  </ListItem>
 
-                <Divider />
-              </>
-            ))}
-          </List>
-        </Box>
-        <Box
-          component={Paper}
-          gridColumn="span 2"
-          sx={{
-            border: "solid thin",
-            borderRadius: 3,
-            borderColor: "primary.main",
-            p: 2,
-          }}
-        >
-          <Typography variant="h5" component="h5">
-            Notificações
-          </Typography>
-          <List sx={{ width: "100%", bgcolor: "background" }}>
-            {feedbacks.map((row) => (
-              <>
-                <ListItem alignItems="flex-start" button>
-                  <ListItemAvatar>
-                    <Avatar alt="Remy Sharp" src={ava} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={row.assunto}
-                    secondary={
-                      <>
-                        <Typography
-                          sx={{ display: "inline" }}
-                          component="span"
-                          variant="body2"
-                          color="secondary.main"
-                        >
-                          {row.val}
-                        </Typography>
-                        {" — " + row.com}
-                      </>
-                    }
-                  />
-                </ListItem>
-
-                <Divider />
-              </>
-            ))}
-          </List>
+                  <Divider />
+                </>
+              ))}
+            </List>
+          </Box>
         </Box>
       </Box>
     </ThemeProvider>

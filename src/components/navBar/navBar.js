@@ -13,8 +13,9 @@ import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import navBar_logo from "../../imgs/logo-softinsa.png";
 import { Link } from "react-router-dom";
+import ava from "../../imgs/avatar.jpg";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = [{ name: "Estatisticas", link: "/stats" }];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const NavBar = (props) => {
@@ -45,7 +46,9 @@ const NavBar = (props) => {
             component="div"
             sx={{ display: { xs: "none", md: "flex" } }}
           >
-            <img src={navBar_logo} alt={"logo"} style={{ width: 200 }}></img>
+            <Link style={{ height: 44 }} to="/">
+              <img src={navBar_logo} alt={"logo"} style={{ width: 200 }}></img>
+            </Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -77,8 +80,15 @@ const NavBar = (props) => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                  <Link style={{ textDecoration: "none" }} to={page.link}>
+                    <Typography
+                      sx={{ color: "text.primary" }}
+                      textAlign="center"
+                    >
+                      {page.name}
+                    </Typography>
+                  </Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -89,24 +99,28 @@ const NavBar = (props) => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
-            <img src={navBar_logo} alt={"logo"} style={{ width: 200 }}></img>
+            <Link style={{ height: 44 }} to="/">
+              <img src={navBar_logo} alt={"logo"} style={{ width: 200 }}></img>
+            </Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
+              <Link style={{ textDecoration: "none" }} to={page.link}>
+                <Button
+                  key={page.name}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  {page.name}
+                </Button>
+              </Link>
             ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" src={ava} />
               </IconButton>
             </Tooltip>
             <Menu
@@ -131,9 +145,11 @@ const NavBar = (props) => {
                 </MenuItem>
               ))}
               <MenuItem onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">
-                  <Link to="/login">Login</Link>
-                </Typography>
+                <Link style={{ textDecoration: "none" }} to="/login">
+                  <Typography sx={{ color: "text.primary" }} textAlign="center">
+                    Login
+                  </Typography>
+                </Link>
               </MenuItem>
             </Menu>
           </Box>

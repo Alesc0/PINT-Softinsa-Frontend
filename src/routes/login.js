@@ -32,19 +32,7 @@ function Copyright(props) {
   );
 }
 
-const theme = createTheme({
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 710,
-      lg: 1200,
-      xl: 1536,
-    },
-  },
-});
-
-const LoginForm = () => {
+const Login = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -56,7 +44,7 @@ const LoginForm = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={props.th}>
       <Grid
         container
         direction="column"
@@ -250,4 +238,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default Login;

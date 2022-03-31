@@ -1,8 +1,10 @@
-import { ResponsivePie } from "@nivo/pie";
 import { Box } from "@mui/system";
+import { Paper } from "@mui/material";
+import PieChart from "../components/nivoCharts/pie";
+import CalendarChart from "../components/nivoCharts/calendar";
 import { ThemeProvider } from "@mui/material/styles";
 import NavBar from "../components/navBar/navBar";
-import { Paper } from "@mui/material";
+import BarsChart from "../components/nivoCharts/bars";
 const data = [
   {
     id: "python",
@@ -35,17 +37,123 @@ const data = [
     color: "hsl(275, 70%, 50%)",
   },
 ];
-
-const MyResponsivePie = (props) => (
+const dataBars = [
+  {
+    country: "AD",
+    "hot dog": 152,
+    "hot dogColor": "hsl(215, 70%, 50%)",
+    burger: 72,
+    burgerColor: "hsl(271, 70%, 50%)",
+    sandwich: 177,
+    sandwichColor: "hsl(270, 70%, 50%)",
+    kebab: 114,
+    kebabColor: "hsl(248, 70%, 50%)",
+    fries: 47,
+    friesColor: "hsl(290, 70%, 50%)",
+    donut: 16,
+    donutColor: "hsl(96, 70%, 50%)",
+  },
+  {
+    country: "AE",
+    "hot dog": 103,
+    "hot dogColor": "hsl(113, 70%, 50%)",
+    burger: 107,
+    burgerColor: "hsl(253, 70%, 50%)",
+    sandwich: 9,
+    sandwichColor: "hsl(354, 70%, 50%)",
+    kebab: 166,
+    kebabColor: "hsl(65, 70%, 50%)",
+    fries: 95,
+    friesColor: "hsl(172, 70%, 50%)",
+    donut: 81,
+    donutColor: "hsl(291, 70%, 50%)",
+  },
+  {
+    country: "AF",
+    "hot dog": 69,
+    "hot dogColor": "hsl(289, 70%, 50%)",
+    burger: 129,
+    burgerColor: "hsl(201, 70%, 50%)",
+    sandwich: 85,
+    sandwichColor: "hsl(343, 70%, 50%)",
+    kebab: 181,
+    kebabColor: "hsl(225, 70%, 50%)",
+    fries: 80,
+    friesColor: "hsl(178, 70%, 50%)",
+    donut: 187,
+    donutColor: "hsl(211, 70%, 50%)",
+  },
+  {
+    country: "AG",
+    "hot dog": 94,
+    "hot dogColor": "hsl(31, 70%, 50%)",
+    burger: 175,
+    burgerColor: "hsl(304, 70%, 50%)",
+    sandwich: 38,
+    sandwichColor: "hsl(279, 70%, 50%)",
+    kebab: 108,
+    kebabColor: "hsl(98, 70%, 50%)",
+    fries: 110,
+    friesColor: "hsl(44, 70%, 50%)",
+    donut: 177,
+    donutColor: "hsl(275, 70%, 50%)",
+  },
+  {
+    country: "AI",
+    "hot dog": 23,
+    "hot dogColor": "hsl(222, 70%, 50%)",
+    burger: 162,
+    burgerColor: "hsl(317, 70%, 50%)",
+    sandwich: 107,
+    sandwichColor: "hsl(118, 70%, 50%)",
+    kebab: 187,
+    kebabColor: "hsl(101, 70%, 50%)",
+    fries: 84,
+    friesColor: "hsl(266, 70%, 50%)",
+    donut: 171,
+    donutColor: "hsl(206, 70%, 50%)",
+  },
+  {
+    country: "AL",
+    "hot dog": 85,
+    "hot dogColor": "hsl(209, 70%, 50%)",
+    burger: 136,
+    burgerColor: "hsl(340, 70%, 50%)",
+    sandwich: 116,
+    sandwichColor: "hsl(114, 70%, 50%)",
+    kebab: 118,
+    kebabColor: "hsl(83, 70%, 50%)",
+    fries: 74,
+    friesColor: "hsl(339, 70%, 50%)",
+    donut: 40,
+    donutColor: "hsl(124, 70%, 50%)",
+  },
+  {
+    country: "AM",
+    "hot dog": 62,
+    "hot dogColor": "hsl(146, 70%, 50%)",
+    burger: 47,
+    burgerColor: "hsl(267, 70%, 50%)",
+    sandwich: 55,
+    sandwichColor: "hsl(333, 70%, 50%)",
+    kebab: 151,
+    kebabColor: "hsl(302, 70%, 50%)",
+    fries: 188,
+    friesColor: "hsl(97, 70%, 50%)",
+    donut: 6,
+    donutColor: "hsl(156, 70%, 50%)",
+  },
+];
+const Stats = (props) => (
   <ThemeProvider theme={props.th}>
     <NavBar />
     <Box
       display="grid"
       gap={5}
       gridTemplateColumns={{
-        md: "repeat(2, 1fr)",
-        sm: "repeat(1, 1fr)",
-        lg: "repeat(3, 1fr)",
+        lg: "1fr 3fr",
+        md: "1fr 3fr",
+        sm: "1fr",
       }}
       sx={{
         p: 5,
@@ -53,64 +161,46 @@ const MyResponsivePie = (props) => (
         color: "text.primary",
       }}
     >
-      {data.map((row) => (
-        <Box
-          key={row.id}
-          component={Paper}
-          sx={{
-            width: "25em",
-            height: "20em",
-            border: "solid thin",
-            borderRadius: 3,
-            borderColor: "primary.main",
-            p: 1,
-          }}
-        >
-          <ResponsivePie
-            data={data}
-            margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
-            innerRadius={0.5}
-            padAngle={0.7}
-            cornerRadius={3}
-            activeOuterRadiusOffset={8}
-            arcLinkLabelsSkipAngle={10}
-            arcLinkLabelsThickness={2}
-            arcLinkLabelsColor={{ from: "color" }}
-            arcLinkLabelsTextColor={() =>
-              props.th["palette"]["mode"] === "light" ? "black" : "white"
-            }
-            arcLabelsSkipAngle={10}
-            arcLabelsTextColor={() =>
-              props.th["palette"]["mode"] === "light" ? "black" : "white"
-            }
-            legends={[
-              {
-                anchor: "bottom",
-                direction: "row",
-                justify: false,
-                translateX: 0,
-                translateY: 56,
-                itemsSpacing: 0,
-                itemWidth: 70,
-                itemHeight: 18,
-                itemTextColor:
-                  props.th["palette"]["mode"] === "light" ? "black" : "white",
-                symbolSize: 18,
-                symbolShape: "circle",
-                effects: [
-                  {
-                    on: "hover",
-                    style: {
-                      itemTextColor: "text.primary",
-                    },
-                  },
-                ],
-              },
-            ]}
-          />
-        </Box>
-      ))}
+      <Box
+        component={Paper}
+        sx={{
+          height: "17em",
+          border: "solid thin",
+          borderRadius: 3,
+          borderColor: "primary.main",
+          p: 1,
+        }}
+      >
+        <PieChart data={data} th={props.th} />
+      </Box>
+
+      <Box
+        component={Paper}
+        sx={{
+          height: "17em",
+          border: "solid thin",
+          borderRadius: 3,
+          borderColor: "primary.main",
+          p: 1,
+        }}
+      >
+        <BarsChart data={dataBars} th={props.th} />
+      </Box>
+      <Box
+        component={Paper}
+        sx={{
+          gridColumnStart:1,
+          gridColumnEnd:3,
+          height: "17em",
+          border: "solid thin",
+          borderRadius: 3,
+          borderColor: "primary.main",
+          p: 1,
+        }}
+      >
+        <CalendarChart data={data} th={props.th} />
+      </Box>
     </Box>
   </ThemeProvider>
 );
-export default MyResponsivePie;
+export default Stats;

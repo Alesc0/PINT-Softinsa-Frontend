@@ -5,6 +5,7 @@ import NotFound from "./routes/notFound";
 import Dashboard from "./routes/dashboard";
 import { createTheme } from "@mui/material/styles";
 import Stats from "./routes/statistics"
+import SideBar from "./components/sideBar/sideBar"
 
 const theme = createTheme({
   palette: {

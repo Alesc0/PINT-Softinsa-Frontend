@@ -1,12 +1,12 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./routes/login";
-import NotFound from "./routes/notFound";
-import Dashboard from "./routes/dashboard";
+import Login from "./views/loginView";
+import NotFound from "./views/notFoundView";
+import Dashboard from "./views/dashboardView";
 import { createTheme } from "@mui/material/styles";
-import Stats from "./routes/statistics";
+import Stats from "./views/statsView";
 import SideBar from "./components/sideBar/sideBar";
-import Centros from "./routes/centros";
+import Centros from "./views/centrosView";
 
 const theme = createTheme({
   palette: {

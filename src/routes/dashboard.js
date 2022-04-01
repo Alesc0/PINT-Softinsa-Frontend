@@ -74,10 +74,11 @@ export default function Dashboard(props) {
       <NavBar />
       <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
         <Box
+          maxWidth="xl"
           display="grid"
           gridTemplateColumns={{ sm: "repeat(2, 1fr)", md: "repeat(4, 2fr)" }}
           gap={5}
-          sx={{ p: 5, color: "text.primary" }}
+          sx={{ m: "0 auto", p: 5, color: "text.primary" }}
         >
           {info.map((row) => (
             <Box

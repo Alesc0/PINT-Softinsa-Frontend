@@ -15,7 +15,10 @@ import navBar_logo from "../../imgs/logo-softinsa.png";
 import { Link } from "react-router-dom";
 import ava from "../../imgs/avatar.jpg";
 
-const pages = [{ name: "Estatisticas", link: "/stats" }];
+const pages = [
+  { name: "Estatisticas", link: "/stats" },
+  { name: "Centros", link: "/centros" },
+];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const NavBar = (props) => {
@@ -38,7 +41,7 @@ const NavBar = (props) => {
 
   return (
     <AppBar style={{ background: "#3498DB" }} position="static">
-      <Container maxWidth="xl">
+      <Container maxWidth="100%">
         <Toolbar disableGutters>
           <Typography
             variant="h6"

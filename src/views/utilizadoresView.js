@@ -7,10 +7,11 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import EnhancedTable from "../components/enhancedTable/enhancedTable";
 import NavBar from "../components/navBar/navBar";
 import SideBar from "../components/sideBar/sideBar";
+import axios from "axios";
 
 const sideBar = () => (
   <Box
@@ -65,7 +66,20 @@ const sideBar = () => (
 );
 
 function UtilizadoresView(props) {
-  const [state, setState] = useState(false);
+  const [state, setState] = useState({ sidebar: false, users: [] });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get("utilizador/list");
+        setState({ users: response });
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -75,7 +89,7 @@ function UtilizadoresView(props) {
       return;
     }
 
-    setState(open);
+    setState({ sidebar: open });
   };
   return (
     <ThemeProvider theme={props.th}>
@@ -93,10 +107,10 @@ function UtilizadoresView(props) {
           <SideBar
             anchor="right"
             toggleDrawer={toggleDrawer}
-            state={state}
+            state={state.sidebar}
             inner={sideBar}
           />
-          <EnhancedTable toggleDrawer={toggleDrawer} />
+          <EnhancedTable data={state.users} toggleDrawer={toggleDrawer} />
         </Box>
       </Box>
     </ThemeProvider>

@@ -16,15 +16,6 @@ const theme = createTheme({
       dark: "#2980B9",
     },
   },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 710,
-      lg: 1200,
-      xl: 1536,
-    },
-  },
 });
 
 function App() {

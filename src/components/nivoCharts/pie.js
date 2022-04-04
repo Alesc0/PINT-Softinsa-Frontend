@@ -5,7 +5,8 @@ const MyResponsivePie = (props) => (
   <ThemeProvider theme={props.th}>
     <ResponsivePie
       data={props.data}
-      margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+      height={300}
+      margin={{ top: 40, right: 40, bottom: 110, left: 40 }}
       innerRadius={0.5}
       padAngle={0.7}
       cornerRadius={3}

@@ -18,10 +18,11 @@ import ava from "../../imgs/avatar.jpg";
 const pages = [
   { name: "Estatisticas", link: "/stats" },
   { name: "Centros", link: "/centros" },
+  { name: "Utilizadores", link: "/utilizadores" },
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-const NavBar = (props) => {
+function NavBar(props) {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const handleOpenNavMenu = (event) => {
@@ -163,5 +164,5 @@ const NavBar = (props) => {
       </Container>
     </AppBar>
   );
-};
+}
 export default NavBar;

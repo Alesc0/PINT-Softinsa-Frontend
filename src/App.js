@@ -5,8 +5,8 @@ import NotFound from "./views/notFoundView";
 import Dashboard from "./views/dashboardView";
 import { createTheme } from "@mui/material/styles";
 import Stats from "./views/statsView";
-import SideBar from "./components/sideBar/sideBar";
 import Centros from "./views/centrosView";
+import Utilizadores from "./views/utilizadoresView";
 
 const theme = createTheme({
   palette: {
@@ -35,6 +35,7 @@ function App() {
         <Route path="login" element={<Login th={theme} />} />
         <Route path="stats" element={<Stats th={theme} />} />
         <Route path="centros" element={<Centros th={theme} />} />
+        <Route path="utilizadores" element={<Utilizadores th={theme} />} />
         <Route path="*" element={<NotFound th={theme} />} />
       </Routes>
     </BrowserRouter>

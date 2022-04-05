@@ -16,6 +16,9 @@ const theme = createTheme({
       dark: "#2980B9",
     },
   },
+  typography: {
+    fontFamily: "Roboto"
+  },
 });
 
 function App() {

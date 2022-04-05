@@ -10,7 +10,6 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import NavBar from "../components/navBar/navBar";
 import { Paper } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 
 const info = [
   {
@@ -65,7 +64,7 @@ const Notificacoes = [
   {
     val: "André Tabasco",
     assunto: "Reunião",
-    com: "Todos os requisitos para a próxima reunião de João Carvalho encontram-se prontos.",
+    com: "Todos os requisitos para a próxima reunião de André Tabasco encontram-se prontos.",
   },
 ];
 export default function Dashboard(props) {

@@ -7,7 +7,7 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material";
-import { useState,useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import EnhancedTable from "../components/enhancedTable/enhancedTable";
 import NavBar from "../components/navBar/navBar";
 import SideBar from "../components/sideBar/sideBar";
@@ -66,20 +66,26 @@ const sideBar = () => (
 );
 
 function UtilizadoresView(props) {
-  const [state, setState] = useState({ sidebar: false, users: [] });
+  const [users, setUsers] = useState([]);
+  const [sidebar, setSidebar] = useState(false);
+  const [value, toggle] = useState(false);
+
+  const refetch = useCallback(() => {
+    toggle((prev) => !prev);
+  }, [toggle]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const { data: response } = await axios.get("utilizador/list");
-        setState({ users: response });
+        setUsers(response);
       } catch (error) {
         console.error(error.message);
       }
     };
 
     fetchData();
-  }, []);
+  }, [setUsers, value]);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -89,7 +95,7 @@ function UtilizadoresView(props) {
       return;
     }
 
-    setState({ sidebar: open });
+    setSidebar(open);
   };
   return (
     <ThemeProvider theme={props.th}>
@@ -107,10 +113,15 @@ function UtilizadoresView(props) {
           <SideBar
             anchor="right"
             toggleDrawer={toggleDrawer}
-            state={state.sidebar}
+            state={sidebar}
             inner={sideBar}
           />
-          <EnhancedTable data={state.users} toggleDrawer={toggleDrawer} />
+          <EnhancedTable
+            refetch={refetch}
+            setUsers={setUsers}
+            data={users}
+            toggleDrawer={toggleDrawer}
+          />
         </Box>
       </Box>
     </ThemeProvider>

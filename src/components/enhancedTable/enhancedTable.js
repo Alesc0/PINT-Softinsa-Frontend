@@ -21,8 +21,10 @@ import {
   Typography,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
+import axios from "axios";
 import PropTypes from "prop-types";
-import * as React from "react";
+import { useCallback, useState } from "react";
+import NewModal from "../modal/modal";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -70,6 +72,13 @@ const headCells = [
     numeric: false,
     disablePadding: false,
     label: "Verificado",
+  },
+
+  {
+    id: "estado",
+    numeric: false,
+    disablePadding: false,
+    label: "Estado",
   },
 ];
 
@@ -136,71 +145,108 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
+  const { selected, refetch } = props;
+  const [open, setOpen] = useState(false);
 
+  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true);
+  const handleClick = useCallback(async () => {
+    handleClose();
+
+    const promises = [];
+
+    if (!selected) return;
+    for (let id in selected) {
+      promises.push(sendDelete(id));
+    }
+    if (promises.length > 0) {
+      try {
+        await Promise.all(promises);
+        refetch();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        props.setSelected([]);
+        props.setUsers([]);
+      }
+    }
+  }, [selected,props,refetch]);
+
+  const sendDelete = async (id) => {
+    try {
+      const { data: response } = await axios.delete("utilizador/" + id);
+      console.log(response);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
   return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Utilizadores
-        </Typography>
-      )}
+    <>
+      <Toolbar
+        sx={{
+          pl: { sm: 2 },
+          pr: { xs: 1, sm: 1 },
+          ...(selected.length > 0 && {
+            bgcolor: (theme) =>
+              alpha(
+                theme.palette.primary.main,
+                theme.palette.action.activatedOpacity
+              ),
+          }),
+        }}
+      >
+        {selected.length > 0 ? (
+          <Typography
+            sx={{ flex: "1 1 100%" }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {selected.length} selected
+          </Typography>
+        ) : (
+          <Typography
+            sx={{ flex: "1 1 100%" }}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            Utilizadores
+          </Typography>
+        )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton onClick={props.toggle(true)}>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
+        {selected.length > 0 ? (
+          <Tooltip title="Delete">
+            <IconButton onClick={handleOpen}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Filter list">
+            <IconButton onClick={props.toggleDrawer(true)}>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Toolbar>
+      <NewModal
+        info={selected}
+        handleClick={handleClick}
+        open={open}
+        handleClose={handleClose}
+      />
+    </>
   );
 };
 
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
-
 export default function EnhancedTable(props) {
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("calories");
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const rows = props.data;
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("calories");
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -210,19 +256,19 @@ export default function EnhancedTable(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = rows.map((n) => n.idutilizador);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -260,8 +306,11 @@ export default function EnhancedTable(props) {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar
-          toggle={props.toggleDrawer}
-          numSelected={selected.length}
+          refetch={props.refetch}
+          setSelected={setSelected}
+          setUsers={props.setUsers}
+          toggleDrawer={props.toggleDrawer}
+          selected={selected}
         />
         <TableContainer>
           <Table
@@ -282,17 +331,17 @@ export default function EnhancedTable(props) {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .sort(getComparator(order, orderBy))
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.idutilizador);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.idutilizador)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.idutilizador}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -315,6 +364,9 @@ export default function EnhancedTable(props) {
                       <TableCell align="left">{row.datanascimento}</TableCell>
                       <TableCell align="left">{row.telemovel}</TableCell>
                       <TableCell align="left">{row.email}</TableCell>
+                      <TableCell align="left">
+                        <Checkbox checked={row.verificado}></Checkbox>
+                      </TableCell>
                       <TableCell align="left">
                         <Checkbox checked={row.estado}></Checkbox>
                       </TableCell>

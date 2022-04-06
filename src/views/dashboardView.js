@@ -68,9 +68,10 @@ const Notificacoes = [
   },
 ];
 export default function Dashboard(props) {
+  const { th } = props;
   return (
-    <ThemeProvider theme={props.th}>
-      <NavBar />
+    <ThemeProvider theme={th}>
+      <NavBar th={th} />
       <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
         <Box
           maxWidth="xl"

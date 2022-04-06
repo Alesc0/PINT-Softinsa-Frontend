@@ -156,8 +156,9 @@ const EnhancedTableToolbar = (props) => {
     const promises = [];
 
     if (!selected) return;
-    for (let id in selected) {
-      promises.push(sendDelete(id));
+    console.log(selected);
+    for (let row of selected) {
+      promises.push(sendDelete(row));
     }
     if (promises.length > 0) {
       try {
@@ -167,15 +168,13 @@ const EnhancedTableToolbar = (props) => {
         console.log(error);
       } finally {
         props.setSelected([]);
-        props.setUsers([]);
       }
     }
-  }, [selected,props,refetch]);
+  }, [selected, props, refetch]);
 
   const sendDelete = async (id) => {
     try {
       const { data: response } = await axios.delete("utilizador/" + id);
-      console.log(response);
     } catch (error) {
       console.error(error.message);
     }
@@ -230,6 +229,7 @@ const EnhancedTableToolbar = (props) => {
         )}
       </Toolbar>
       <NewModal
+        th={props.th}
         info={selected}
         handleClick={handleClick}
         open={open}
@@ -306,6 +306,7 @@ export default function EnhancedTable(props) {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar
+          th={props.th}
           refetch={props.refetch}
           setSelected={setSelected}
           setUsers={props.setUsers}

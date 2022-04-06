@@ -1,7 +1,9 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import ShieldIcon from "@mui/icons-material/Shield";
 import {
   alpha,
+  Avatar,
   Box,
   Checkbox,
   FormControlLabel,
@@ -25,6 +27,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { useCallback, useState } from "react";
 import NewModal from "../modal/modal";
+import sampleAvaImg from "../../imgs/avatar.jpg";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -44,9 +47,9 @@ function getComparator(order, orderBy) {
 
 const headCells = [
   {
-    id: "Nome",
+    id: "nome",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "Nome",
   },
   {
@@ -79,6 +82,12 @@ const headCells = [
     numeric: false,
     disablePadding: false,
     label: "Estado",
+  },
+  {
+    id: "actions",
+    numeric: false,
+    disablePadding: false,
+    label: "Ações",
   },
 ];
 
@@ -175,6 +184,7 @@ const EnhancedTableToolbar = (props) => {
   const sendDelete = async (id) => {
     try {
       const { data: response } = await axios.delete("utilizador/" + id);
+      console.log(response);
     } catch (error) {
       console.error(error.message);
     }
@@ -229,7 +239,6 @@ const EnhancedTableToolbar = (props) => {
         )}
       </Toolbar>
       <NewModal
-        th={props.th}
         info={selected}
         handleClick={handleClick}
         open={open}
@@ -241,10 +250,10 @@ const EnhancedTableToolbar = (props) => {
 
 export default function EnhancedTable(props) {
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("calories");
+  const [orderBy, setOrderBy] = useState("nome");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
+  const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const rows = props.data;
 
@@ -360,16 +369,36 @@ export default function EnhancedTable(props) {
                         scope="row"
                         padding="none"
                       >
-                        {row.nome}
+                        <Box
+                          display="flex"
+                          sx={{
+                            alignItems: "center",
+                            gap: 2,
+                          }}
+                        >
+                          <Avatar alt="Remy Sharp" src={sampleAvaImg} />
+                          <Typography>{row.nome}</Typography>
+                        </Box>
                       </TableCell>
-                      <TableCell align="left">{row.datanascimento}</TableCell>
-                      <TableCell align="left">{row.telemovel}</TableCell>
-                      <TableCell align="left">{row.email}</TableCell>
+                      <TableCell align="left">
+                        <Typography>{row.datanascimento}</Typography>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Typography>{row.telemovel}</Typography>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Typography>{row.email}</Typography>
+                      </TableCell>
                       <TableCell align="left">
                         <Checkbox checked={row.verificado}></Checkbox>
                       </TableCell>
                       <TableCell align="left">
                         <Checkbox checked={row.estado}></Checkbox>
+                      </TableCell>
+                      <TableCell align="left">
+                        <IconButton>
+                          <ShieldIcon color="primary" />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   );

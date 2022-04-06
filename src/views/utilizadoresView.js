@@ -1,7 +1,10 @@
 import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
+  Divider,
+  IconButton,
   InputAdornment,
   TextField,
   ThemeProvider,
@@ -13,62 +16,69 @@ import NavBar from "../components/navBar/navBar";
 import SideBar from "../components/sideBar/sideBar";
 import axios from "axios";
 
-const sideBar = () => (
-  <Box
-    sx={{
-      display: "flex",
-      flexDirection: "column",
-      gap: 4,
-      textAlign: "center",
-      width: 300,
-      p: 3,
-    }}
-    role="presentation"
-  >
-    <Typography variant="h4" component="div" sx={{ mb: 2 }}>
-      Filtros
-    </Typography>
-    <TextField
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
-        ),
-      }}
-      variant="outlined"
-      placeholder="ID"
-    />
-    <TextField
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
-        ),
-      }}
-      variant="outlined"
-      placeholder="Nome"
-    />
-    <TextField
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
-        ),
-      }}
-      variant="outlined"
-      placeholder="Email"
-    />
-    <Button variant="contained"> Pesquisar </Button>
-  </Box>
-);
+
 
 function UtilizadoresView(props) {
   const [users, setUsers] = useState([]);
   const [sidebar, setSidebar] = useState(false);
   const [value, toggle] = useState(false);
+
+  const sideBar = () => (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        width: 300,
+        p: 3,
+      }}
+      role="presentation"
+    >
+      <Box sx={{ display: "flex", flexDirection: "row" }}>
+        <Typography variant="h4" component="div">
+          Filtros
+        </Typography>
+        <IconButton sx={{marginLeft:"auto"}} onClick={toggleDrawer(false)}>
+          <CloseIcon />
+        </IconButton>
+      </Box>
+      <Divider />
+      <TextField
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        variant="outlined"
+        placeholder="ID"
+      />
+      <TextField
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        variant="outlined"
+        placeholder="Nome"
+      />
+      <TextField
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        variant="outlined"
+        placeholder="Email"
+      />
+      <Button variant="contained"> Pesquisar </Button>
+    </Box>
+  );
 
   const refetch = useCallback(() => {
     toggle((prev) => !prev);

@@ -22,12 +22,16 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+import CircularProgress from "@mui/material/CircularProgress";
 import { visuallyHidden } from "@mui/utils";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { useCallback, useState } from "react";
-import NewModal from "../modal/modal";
 import sampleAvaImg from "../../imgs/avatar.jpg";
+import NewModal from "../modal/modal";
+import InfoSnackbar from "../snackBar/snackBar";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -154,41 +158,60 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { selected, refetch } = props;
+  const { setLoading, selected, refetch, setSelected } = props;
   const [open, setOpen] = useState(false);
+  const [snackbarProps, setSnackBarProps] = useState({
+    Open: false,
+    Text: "",
+    Severity: "",
+  });
 
+  const setSnackBarOpen = (open) => setSnackBarProps({ Open: open });
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
+
+  const handleError = (error) =>
+    setSnackBarProps({
+      Open: true,
+      Text: "Erro!" + error,
+      Severity: "error",
+    });
+
   const handleClick = useCallback(async () => {
     handleClose();
+
+    const sendDelete = async (id) => {
+      try {
+        await axios.delete("utilizador/" + id);
+      } catch (error) {
+        handleError(error);
+      }
+    };
 
     const promises = [];
 
     if (!selected) return;
-    console.log(selected);
     for (let row of selected) {
       promises.push(sendDelete(row));
     }
+
     if (promises.length > 0) {
       try {
+        setLoading(true);
         await Promise.all(promises);
         refetch();
       } catch (error) {
-        console.log(error);
+        handleError(error);
       } finally {
-        props.setSelected([]);
+        setSelected([]);
+        setLoading(false);
+        toast.success("hello world!", {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
       }
     }
-  }, [selected, props, refetch]);
+  }, [selected, refetch, setSelected, setLoading]);
 
-  const sendDelete = async (id) => {
-    try {
-      const { data: response } = await axios.delete("utilizador/" + id);
-      console.log(response);
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
   return (
     <>
       <Toolbar
@@ -244,6 +267,7 @@ const EnhancedTableToolbar = (props) => {
         open={open}
         handleClose={handleClose}
       />
+      <ToastContainer />
     </>
   );
 };
@@ -255,6 +279,7 @@ export default function EnhancedTable(props) {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [isLoading, setLoading] = useState(false);
   const rows = props.data;
 
   const handleRequestSort = (event, property) => {
@@ -315,6 +340,7 @@ export default function EnhancedTable(props) {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar
+          setLoading={setLoading}
           th={props.th}
           refetch={props.refetch}
           setSelected={setSelected}
@@ -337,72 +363,85 @@ export default function EnhancedTable(props) {
               rowCount={rows.length}
             />
             <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .sort(getComparator(order, orderBy))
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.idutilizador);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={99} sx={{ textAlign: "center" }}>
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .sort(getComparator(order, orderBy))
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.idutilizador);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.idutilizador)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.idutilizador}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) =>
+                          handleClick(event, row.idutilizador)
+                        }
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.idutilizador}
+                        selected={isItemSelected}
                       >
-                        <Box
-                          display="flex"
-                          sx={{
-                            alignItems: "center",
-                            gap: 2,
-                          }}
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              "aria-labelledby": labelId,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
                         >
-                          <Avatar alt="Remy Sharp" src={sampleAvaImg} />
-                          <Typography>{row.nome}</Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Typography>{row.datanascimento}</Typography>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Typography>{row.telemovel}</Typography>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Typography>{row.email}</Typography>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Checkbox checked={row.verificado}></Checkbox>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Checkbox checked={row.estado}></Checkbox>
-                      </TableCell>
-                      <TableCell align="left">
-                        <IconButton>
-                          <ShieldIcon color="primary" />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                          <Box
+                            display="flex"
+                            sx={{
+                              alignItems: "center",
+                              gap: 2,
+                            }}
+                          >
+                            <Avatar alt="Remy Sharp" src={sampleAvaImg} />
+                            <Typography>{row.nome}</Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Typography>{row.datanascimento}</Typography>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Typography>{row.telemovel}</Typography>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Typography>{row.email}</Typography>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Checkbox checked={row.verificado}></Checkbox>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Checkbox checked={row.estado}></Checkbox>
+                        </TableCell>
+                        <TableCell align="left">
+                          <IconButton sx={{ p: 0.5 }}>
+                            <ShieldIcon color="primary" />
+                          </IconButton>
+                          <IconButton sx={{ p: 0.5 }}>
+                            <DeleteIcon color="error" />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+              )}
               {emptyRows > 0 && (
                 <TableRow
                   style={{

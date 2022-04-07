@@ -16,8 +16,6 @@ import NavBar from "../components/navBar/navBar";
 import SideBar from "../components/sideBar/sideBar";
 import axios from "axios";
 
-
-
 function UtilizadoresView(props) {
   const [users, setUsers] = useState([]);
   const [sidebar, setSidebar] = useState(false);
@@ -38,7 +36,7 @@ function UtilizadoresView(props) {
         <Typography variant="h4" component="div">
           Filtros
         </Typography>
-        <IconButton sx={{marginLeft:"auto"}} onClick={toggleDrawer(false)}>
+        <IconButton sx={{ marginLeft: "auto" }} onClick={toggleDrawer(false)}>
           <CloseIcon />
         </IconButton>
       </Box>
@@ -134,6 +132,7 @@ function UtilizadoresView(props) {
           />
         </Box>
       </Box>
+      
     </ThemeProvider>
   );
 }

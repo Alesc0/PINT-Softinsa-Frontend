@@ -7,9 +7,9 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",
-  border: "2px solid",
   boxShadow: 24,
   p: 4,
+  borderRadius: 5,
 };
 
 export default function NewModal(props) {
@@ -38,7 +38,7 @@ export default function NewModal(props) {
         <Button
           onClick={props.handleClick}
           color="error"
-          sx={{ float: "right" }}
+          sx={{ float: "right",mt:2 }}
           variant="contained"
         >
           Eliminar

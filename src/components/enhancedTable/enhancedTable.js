@@ -45,12 +45,10 @@ export default function EnhancedTable(props) {
   const [orderBy, setOrderBy] = useState("nome");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [isLoading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const { data, refetch, setUsers, th } = props;
+  const { data, refetch, setUsers, th, isLoading, setLoading } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -67,7 +65,7 @@ export default function EnhancedTable(props) {
     setSelected([]);
   };
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = (ids) => setOpen(true);
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -95,10 +93,6 @@ export default function EnhancedTable(props) {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
   };
 
   const handleClose = () => setOpen(false);
@@ -159,16 +153,14 @@ export default function EnhancedTable(props) {
             setSelected={setSelected}
             setUsers={setUsers}
             selected={selected}
-            dense={dense}
             setOpen={setOpen}
             handleOpen={handleOpen}
-            handleChangeDense={handleChangeDense}
           />
           <TableContainer>
             <Table
               sx={{ minWidth: 750 }}
               aria-labelledby="tableTitle"
-              size={dense ? "small" : "medium"}
+              size={"small"}
             >
               <EnhancedTableHead
                 numSelected={selected.length}
@@ -196,9 +188,6 @@ export default function EnhancedTable(props) {
                       return (
                         <TableRow
                           hover
-                          onClick={(event) =>
-                            handleClick(event, row.idutilizador)
-                          }
                           role="checkbox"
                           aria-checked={isItemSelected}
                           tabIndex={-1}
@@ -207,6 +196,9 @@ export default function EnhancedTable(props) {
                         >
                           <TableCell padding="checkbox">
                             <Checkbox
+                              onClick={(event) =>
+                                handleClick(event, row.idutilizador)
+                              }
                               color="primary"
                               checked={isItemSelected}
                               inputProps={{
@@ -261,7 +253,7 @@ export default function EnhancedTable(props) {
                 {emptyRows > 0 && (
                   <TableRow
                     style={{
-                      height: (dense ? 33 : 53) * emptyRows,
+                      height: 33 * emptyRows,
                     }}
                   >
                     <TableCell colSpan={6} />

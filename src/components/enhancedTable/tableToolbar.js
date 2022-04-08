@@ -25,15 +25,7 @@ import SideBar from "../sideBar/sideBar";
 import NewModal from "../modal/modal";
 
 const EnhancedTableToolbar = (props) => {
-  const {
-    setLoading,
-    selected,
-    refetch,
-    setSelected,
-    dense,
-    handleChangeDense,
-    setOpen
-  } = props;
+  const { setLoading, selected, refetch, setSelected, setOpen } = props;
   const [sidebar, setSidebar] = useState(false);
 
   const sideBar = () => (
@@ -137,12 +129,9 @@ const EnhancedTableToolbar = (props) => {
             Utilizadores
           </Typography>
         )}
-        <FormControlLabel
-          control={<Switch checked={dense} onChange={handleChangeDense} />}
-        />
         {selected.length > 0 ? (
           <Tooltip title="Delete">
-            <IconButton >
+            <IconButton>
               <DeleteIcon />
             </IconButton>
           </Tooltip>

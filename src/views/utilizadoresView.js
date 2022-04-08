@@ -7,6 +7,7 @@ import axios from "axios";
 function UtilizadoresView(props) {
   const [users, setUsers] = useState([]);
   const [value, toggle] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const refetch = useCallback(() => {
     toggle((prev) => !prev);
@@ -15,8 +16,10 @@ function UtilizadoresView(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const { data: response } = await axios.get("utilizador/list");
         setUsers(response);
+        setIsLoading(false);
       } catch (error) {
         console.error(error.message);
       }
@@ -41,6 +44,8 @@ function UtilizadoresView(props) {
           <EnhancedTable
             refetch={refetch}
             setUsers={setUsers}
+            isLoading={isLoading}
+            setLoading={setIsLoading}
             data={users}
             th={props.th}
           />

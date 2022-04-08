@@ -5,7 +5,7 @@ export default function SideBar(props) {
     <Drawer
       anchor={props.anchor}
       open={props.state}
-      onClose={props.toggleDrawer(false)}
+      onClose={props.toggleFiltro(false)}
     >
       {props.inner()}
     </Drawer>

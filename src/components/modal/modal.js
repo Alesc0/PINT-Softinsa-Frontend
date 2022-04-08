@@ -38,7 +38,7 @@ export default function NewModal(props) {
         <Button
           onClick={props.handleClick}
           color="error"
-          sx={{ float: "right",mt:2 }}
+          sx={{ float: "right", mt: 2 }}
           variant="contained"
         >
           Eliminar

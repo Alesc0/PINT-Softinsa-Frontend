@@ -18,7 +18,8 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "Roboto",
-  },
+    color:"text.primary"
+  }
 });
 
 function App() {

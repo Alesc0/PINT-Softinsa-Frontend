@@ -3,8 +3,8 @@ import { Paper, Typography } from "@mui/material";
 import PieChart from "../components/nivoCharts/pie";
 import CalendarChart from "../components/nivoCharts/calendar";
 import { ThemeProvider } from "@mui/material/styles";
-import NavBar from "../components/navBar/navBar";
 import BarsChart from "../components/nivoCharts/bars";
+import ResponsiveDrawer from "../components/drawer/drawer";
 const data = [
   {
     id: "python",
@@ -144,73 +144,77 @@ const dataBars = [
     donutColor: "hsl(156, 70%, 50%)",
   },
 ];
-const Stats = (props) => (
-  <ThemeProvider theme={props.th}>
-    <NavBar />
-    <Box
-      display="grid"
-      gridTemplateColumns={{
-        lg: "repeat(2,1fr)",
-        md: "repeat(2,1fr)",
-        sm: "repeat(1,1fr)",
-      }}
-      gap={5}
-      sx={{
-        p: 5,
-        bgcolor: "background.default",
-        color: "text.primary",
-      }}
-    >
-      <Box
-        component={Paper}
-        sx={{
-          height: "20em",
-          border: "solid thin",
-          borderRadius: 3,
-          borderColor: "primary.main",
-          p: 1,
-        }}
-      >
-        <Typography variant="h4" component="div" textAlign="center">
-          Horas mais Requisitadas
-        </Typography>
-        <PieChart data={data} th={props.th} />
-      </Box>
+function Stats(props) {
+  const { th } = props;
+  return (
+    <ThemeProvider theme={th}>
+      <ResponsiveDrawer theme={th}>
+        <Box
+          display="grid"
+          gridTemplateColumns={{
+            lg: "repeat(2,1fr)",
+            md: "repeat(2,1fr)",
+            sm: "repeat(1,1fr)",
+          }}
+          gap={5}
+          sx={{
+            p: 5,
+            bgcolor: "background.default",
+            color: "text.primary",
+          }}
+        >
+          <Box
+            component={Paper}
+            sx={{
+              height: "20em",
+              border: "solid thin",
+              borderRadius: 3,
+              borderColor: "primary.main",
+              p: 1,
+            }}
+          >
+            <Typography variant="h4" component="div" textAlign="center">
+              Horas mais Requisitadas
+            </Typography>
+            <PieChart data={data} th={props.th} />
+          </Box>
 
-      <Box
-        component={Paper}
-        sx={{
-          height: "20em",
-          border: "solid thin",
-          borderRadius: 3,
-          borderColor: "primary.main",
-          p: 1
-        }}
-      >
-        <Typography variant="h4" component="div" textAlign="center">
-          Salas mais Usadas
-        </Typography>
-        <BarsChart data={dataBars} th={props.th} />
-      </Box>
-      <Box
-        component={Paper}
-        sx={{
-          gridColumnStart: 1,
-          gridColumnEnd: { md: 3, sm: 1 },
-          display: { xs:"none",md: "block" },
-          height: "17em",
-          border: "solid thin",
-          borderRadius: 3,
-          borderColor: "primary.main",
-          p: 2,
-        }}
-      >
-        <Typography variant="h4" component="div" textAlign="center">
-          Reservas
-        </Typography>
-        <CalendarChart data={data} th={props.th} />
-      </Box>
-    </Box>
-  </ThemeProvider>
-);
+          <Box
+            component={Paper}
+            sx={{
+              height: "20em",
+              border: "solid thin",
+              borderRadius: 3,
+              borderColor: "primary.main",
+              p: 1,
+            }}
+          >
+            <Typography variant="h4" component="div" textAlign="center">
+              Salas mais Usadas
+            </Typography>
+            <BarsChart data={dataBars} th={props.th} />
+          </Box>
+          <Box
+            component={Paper}
+            sx={{
+              gridColumnStart: 1,
+              gridColumnEnd: { md: 3, sm: 1 },
+              display: { xs: "none", md: "block" },
+              height: "18em",
+              border: "solid thin",
+              borderRadius: 3,
+              borderColor: "primary.main",
+              p: 2,
+            }}
+          >
+            <Typography variant="h4" component="div" textAlign="center">
+              Reservas
+            </Typography>
+            <CalendarChart data={data} th={props.th} />
+          </Box>
+        </Box>
+      </ResponsiveDrawer>
+    </ThemeProvider>
+  );
+}
 export default Stats;

@@ -3,12 +3,13 @@ import { useState, useEffect, useCallback } from "react";
 import EnhancedTable from "../components/enhancedTable/enhancedTable";
 import NavBar from "../components/navBar/navBar";
 import axios from "axios";
+import ResponsiveDrawer from "../components/drawer/drawer";
 
 function UtilizadoresView(props) {
   const [users, setUsers] = useState([]);
   const [value, toggle] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const { th } = props;
   const refetch = useCallback(() => {
     toggle((prev) => !prev);
   }, [toggle]);
@@ -29,28 +30,29 @@ function UtilizadoresView(props) {
   }, [setUsers, value]);
 
   return (
-    <ThemeProvider theme={props.th}>
-      <NavBar />
-      <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
-        <Box
-          maxWidth="lg"
-          sx={{
-            m: "0 auto",
-            p: 5,
-            bgcolor: "background.default",
-            color: "text.primary",
-          }}
-        >
-          <EnhancedTable
-            refetch={refetch}
-            setUsers={setUsers}
-            isLoading={isLoading}
-            setLoading={setIsLoading}
-            data={users}
-            th={props.th}
-          />
+    <ThemeProvider theme={th}>
+      <ResponsiveDrawer theme={th}>
+        <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+          <Box
+            maxWidth="lg"
+            sx={{
+              m: "0 auto",
+              p: 5,
+              bgcolor: "background.default",
+              color: "text.primary",
+            }}
+          >
+            <EnhancedTable
+              refetch={refetch}
+              setUsers={setUsers}
+              isLoading={isLoading}
+              setLoading={setIsLoading}
+              data={users}
+              th={th}
+            />
+          </Box>
         </Box>
-      </Box>
+      </ResponsiveDrawer>
     </ThemeProvider>
   );
 }

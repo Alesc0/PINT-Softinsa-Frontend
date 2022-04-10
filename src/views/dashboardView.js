@@ -4,12 +4,11 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ava from "../imgs/avatar.jpg";
-import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import NavBar from "../components/navBar/navBar";
 import { Paper } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
+import ResponsiveDrawer from "../components/drawer/drawer";
 
 const info = [
   {
@@ -81,12 +80,11 @@ export default function Dashboard(props) {
   const { th } = props;
   return (
     <ThemeProvider theme={th}>
-      <NavBar th={th} />
-      <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+      <ResponsiveDrawer theme={th}>
         <Box
           maxWidth="xl"
           display="grid"
-          gridTemplateColumns={{ sm: "repeat(2, 1fr)", md: "repeat(4, 2fr)" }}
+          gridTemplateColumns={{ md: "repeat(2, 1fr)", lg: "repeat(4, 2fr)" }}
           gap={5}
           sx={{ m: "0 auto", p: 5, color: "text.primary" }}
         >
@@ -205,7 +203,7 @@ export default function Dashboard(props) {
             </List>
           </Box>
         </Box>
-      </Box>
+      </ResponsiveDrawer>
     </ThemeProvider>
   );
 }

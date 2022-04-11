@@ -145,10 +145,10 @@ const dataBars = [
   },
 ];
 function Stats(props) {
-  const { th } = props;
+  const { theme } = props;
   return (
-    <ThemeProvider theme={th}>
-      <ResponsiveDrawer theme={th}>
+    <ThemeProvider theme={theme}>
+      <ResponsiveDrawer>
         <Box
           display="grid"
           gridTemplateColumns={{
@@ -176,7 +176,7 @@ function Stats(props) {
             <Typography variant="h4" component="div" textAlign="center">
               Horas mais Requisitadas
             </Typography>
-            <PieChart data={data} th={props.th} />
+            <PieChart data={data} theme={props.theme} />
           </Box>
 
           <Box
@@ -192,7 +192,7 @@ function Stats(props) {
             <Typography variant="h4" component="div" textAlign="center">
               Salas mais Usadas
             </Typography>
-            <BarsChart data={dataBars} th={props.th} />
+            <BarsChart data={dataBars} theme={props.theme} />
           </Box>
           <Box
             component={Paper}
@@ -210,7 +210,7 @@ function Stats(props) {
             <Typography variant="h4" component="div" textAlign="center">
               Reservas
             </Typography>
-            <CalendarChart data={data} th={props.th} />
+            <CalendarChart data={data} theme={props.theme} />
           </Box>
         </Box>
       </ResponsiveDrawer>

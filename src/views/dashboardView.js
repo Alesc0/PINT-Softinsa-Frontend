@@ -77,10 +77,10 @@ const Notificacoes = [
   },
 ];
 export default function Dashboard(props) {
-  const { th } = props;
+  const { theme } = props;
   return (
-    <ThemeProvider theme={th}>
-      <ResponsiveDrawer theme={th}>
+    <ThemeProvider theme={theme}>
+      <ResponsiveDrawer theme={theme}>
         <Box
           maxWidth="xl"
           display="grid"

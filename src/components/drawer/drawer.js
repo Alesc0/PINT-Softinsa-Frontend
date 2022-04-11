@@ -1,27 +1,29 @@
-import * as React from "react";
-import PropTypes from "prop-types";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import CircleIcon from "@mui/icons-material/Circle";
 import MenuIcon from "@mui/icons-material/Menu";
-import navBar_logo from "../../imgs/logo-softinsa.png";
 import {
   AppBar,
   Avatar,
-  Toolbar,
-  ListItemText,
-  ListItemIcon,
-  ListItem,
-  List,
-  IconButton,
-  Drawer,
-  Divider,
-  CssBaseline,
   Box,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   ThemeProvider,
+  Toolbar,
 } from "@mui/material";
+import PropTypes from "prop-types";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import navBar_logo from "../../imgs/logo-softinsa.png";
+import { ColorModeContext } from "../../App";
 
-const drawerWidth = 300;
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+
+const drawerWidth = 250;
 const pages = [
   { name: "Estatisticas", link: "/stats" },
   { name: "Centros", link: "/centros" },
@@ -29,28 +31,28 @@ const pages = [
 ];
 function ResponsiveDrawer(props) {
   const { window, theme } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { switchMode } = useContext(ColorModeContext);
 
   const handleDrawerToggle = () => {
     setMobileOpen((mobileOpen) => !mobileOpen);
   };
-
   const drawer = (
     <>
-      <Toolbar sx={{ bgcolor: "primary.dark" }}>
-        <Link style={{ height: 40 }} to="/">
-          <img src={navBar_logo} alt={"logo"} style={{ width: 200 }} />
+      <Toolbar disableGutters sx={{ bgcolor: "primary.dark" }}>
+        <Link style={{ height: 50 }} to="/">
+          <img src={navBar_logo} alt={"logo"} style={{ width: 245 }} />
         </Link>
       </Toolbar>
       <Divider />
       <List>
         {pages.map((row) => (
-          <Link className="link" to={row.link}>
-            <ListItem button key={row.name}>
+          <Link className="link" key={row.name} to={row.link}>
+            <ListItem sx={{ p: 2, py: 1 }} button>
               <ListItemIcon>
-                <InboxIcon />
+                <CircleIcon sx={{ color: "white" }} />
               </ListItemIcon>
-              <ListItemText primary={row.name} />
+              <ListItemText sx={{ color: "white" }} primary={row.name} />
             </ListItem>
           </Link>
         ))}
@@ -64,7 +66,6 @@ function ResponsiveDrawer(props) {
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: "flex" }}>
-        <CssBaseline />
         <AppBar
           position="fixed"
           sx={{
@@ -83,7 +84,14 @@ function ResponsiveDrawer(props) {
               <MenuIcon />
             </IconButton>
 
-            <Box sx={{ marginLeft: "auto" }}>
+            <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
+              <IconButton sx={{ color: "text.primary" }} onClick={switchMode}>
+                {theme.palette.mode === "dark" ? (
+                  <Brightness7Icon />
+                ) : (
+                  <Brightness4Icon />
+                )}
+              </IconButton>
               <IconButton /* onClick={handleOpenUserMenu} */ sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" />
               </IconButton>
@@ -108,6 +116,7 @@ function ResponsiveDrawer(props) {
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
                 width: drawerWidth,
+                bgcolor: "primary.darker",
               },
             }}
           >
@@ -120,6 +129,7 @@ function ResponsiveDrawer(props) {
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
                 width: drawerWidth,
+                bgcolor: "primary.darker",
               },
             }}
             open

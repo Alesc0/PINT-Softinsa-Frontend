@@ -12,10 +12,10 @@ import centroViseu from "../imgs/centroViseu.png";
 import ResponsiveDrawer from "../components/drawer/drawer";
 
 function Centros(props) {
-  const { th } = props;
+  const { theme } = props;
   return (
-    <ThemeProvider theme={th}>
-      <ResponsiveDrawer theme={th}>
+    <ThemeProvider theme={theme}>
+      <ResponsiveDrawer theme={theme}>
         <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
           <Box
             maxWidth="xl"

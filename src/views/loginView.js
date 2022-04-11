@@ -8,7 +8,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import {ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import login_banner from "../imgs/banner-login.jpg";
@@ -33,6 +33,8 @@ function Copyright(props) {
 }
 
 const Login = (props) => {
+  const { theme } = props;
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -44,7 +46,7 @@ const Login = (props) => {
   };
 
   return (
-    <ThemeProvider theme={props.th}>
+    <ThemeProvider theme={theme}>
       <Grid
         container
         direction="column"

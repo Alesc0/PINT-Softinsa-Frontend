@@ -14,6 +14,7 @@ import {
   TableRow,
   ThemeProvider,
   Typography,
+  useTheme,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
@@ -47,8 +48,9 @@ export default function EnhancedTable(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
+  const theme = useTheme();
 
-  const { data, refetch, setUsers, th, isLoading, setLoading } = props;
+  const { data, refetch, setUsers, isLoading, setLoading } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -143,12 +145,11 @@ export default function EnhancedTable(props) {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
   return (
-    <ThemeProvider theme={th}>
+    <ThemeProvider theme={theme}>
       <Box sx={{ width: "100%" }}>
         <Paper sx={{ width: "100%", mb: 2 }}>
           <EnhancedTableToolbar
             setLoading={setLoading}
-            th={th}
             refetch={refetch}
             setSelected={setSelected}
             setUsers={setUsers}
@@ -207,7 +208,7 @@ export default function EnhancedTable(props) {
                             />
                           </TableCell>
                           <TableCell
-                            component="th"
+                            component="theme"
                             id={labelId}
                             scope="row"
                             padding="none"

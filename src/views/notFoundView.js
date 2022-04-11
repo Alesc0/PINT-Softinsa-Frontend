@@ -4,8 +4,9 @@ import img from "../imgs/pagenotfound.png";
 import { Button } from "@mui/material";
 import { ThemeProvider } from "@mui/material";
 const PageNotFound = (props) => {
+  const { theme } = props;
   return (
-    <ThemeProvider theme={props.th}>
+    <ThemeProvider theme={theme}>
       <div style={{ textAlign: "center" }}>
         <img src={img} alt={"not found?"} />
         <p style={{ textAlign: "center" }}>

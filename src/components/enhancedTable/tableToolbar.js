@@ -7,26 +7,24 @@ import {
   Box,
   Button,
   Divider,
-  FormControlLabel,
   IconButton,
   InputAdornment,
-  Switch,
   TextField,
   ThemeProvider,
   Toolbar,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
-import axios from "axios";
-import { useCallback, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { useState } from "react";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SideBar from "../sideBar/sideBar";
-import NewModal from "../modal/modal";
 
 const EnhancedTableToolbar = (props) => {
-  const { setLoading, selected, refetch, setSelected, setOpen } = props;
+  const {selected} = props;
   const [sidebar, setSidebar] = useState(false);
+  const theme = useTheme();
 
   const sideBar = () => (
     <Box
@@ -96,7 +94,7 @@ const EnhancedTableToolbar = (props) => {
   };
 
   return (
-    <ThemeProvider theme={props.th}>
+    <ThemeProvider theme={theme}>
       <Toolbar
         sx={{
           pl: { sm: 2 },

@@ -1,7 +1,6 @@
 import { Box, ThemeProvider } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
 import EnhancedTable from "../components/enhancedTable/enhancedTable";
-import NavBar from "../components/navBar/navBar";
 import axios from "axios";
 import ResponsiveDrawer from "../components/drawer/drawer";
 
@@ -9,7 +8,7 @@ function UtilizadoresView(props) {
   const [users, setUsers] = useState([]);
   const [value, toggle] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { th } = props;
+  const { theme } = props;
   const refetch = useCallback(() => {
     toggle((prev) => !prev);
   }, [toggle]);
@@ -30,8 +29,8 @@ function UtilizadoresView(props) {
   }, [setUsers, value]);
 
   return (
-    <ThemeProvider theme={th}>
-      <ResponsiveDrawer theme={th}>
+    <ThemeProvider theme={theme}>
+      <ResponsiveDrawer>
         <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
           <Box
             maxWidth="lg"
@@ -48,7 +47,7 @@ function UtilizadoresView(props) {
               isLoading={isLoading}
               setLoading={setIsLoading}
               data={users}
-              th={th}
+              theme={theme}
             />
           </Box>
         </Box>

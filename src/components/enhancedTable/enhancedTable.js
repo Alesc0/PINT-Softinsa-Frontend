@@ -4,6 +4,7 @@ import {
   Avatar,
   Box,
   Checkbox,
+  Chip,
   IconButton,
   Paper,
   Table,
@@ -14,7 +15,6 @@ import {
   TableRow,
   ThemeProvider,
   Typography,
-  useTheme,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
@@ -48,9 +48,8 @@ export default function EnhancedTable(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
-  const theme = useTheme();
 
-  const { data, refetch, setUsers, isLoading, setLoading } = props;
+  const { data, refetch, setUsers, isLoading, setLoading, theme } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -67,7 +66,12 @@ export default function EnhancedTable(props) {
     setSelected([]);
   };
 
-  const handleOpen = (ids) => setOpen(true);
+  const handleOpen = (event, ids) => {
+    let i = [];
+    i = i.concat(ids);
+    setSelected(i);
+    setOpen(true);
+  };
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -149,6 +153,7 @@ export default function EnhancedTable(props) {
       <Box sx={{ width: "100%" }}>
         <Paper sx={{ width: "100%", mb: 2 }}>
           <EnhancedTableToolbar
+            theme={theme}
             setLoading={setLoading}
             refetch={refetch}
             setSelected={setSelected}
@@ -161,9 +166,10 @@ export default function EnhancedTable(props) {
             <Table
               sx={{ minWidth: 750 }}
               aria-labelledby="tableTitle"
-              size={"small"}
+              size="medium"
             >
               <EnhancedTableHead
+                theme={theme}
                 numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
@@ -208,7 +214,7 @@ export default function EnhancedTable(props) {
                             />
                           </TableCell>
                           <TableCell
-                            component="theme"
+                            component="th"
                             id={labelId}
                             scope="row"
                             padding="none"
@@ -234,16 +240,34 @@ export default function EnhancedTable(props) {
                             <Typography>{row.email}</Typography>
                           </TableCell>
                           <TableCell align="left">
-                            <Checkbox checked={row.verificado}></Checkbox>
+                            <Chip
+                              label={row.verificado ? "Sim" : "Não"}
+                              color={
+                                (row.verificado === false && "error") ||
+                                "success"
+                              }
+                              size="small"
+                            />
                           </TableCell>
                           <TableCell align="left">
-                            <Checkbox checked={row.estado}></Checkbox>
+                            <Chip
+                              size="small"
+                              label={row.estado ? "Ativo" : "Inativo"}
+                              color={
+                                (row.estado === false && "error") || "success"
+                              }
+                            />
                           </TableCell>
                           <TableCell align="left">
                             <IconButton sx={{ p: 0.5 }}>
                               <ShieldIcon color="primary" />
                             </IconButton>
-                            <IconButton onClick={handleOpen} sx={{ p: 0.5 }}>
+                            <IconButton
+                              onClick={(event) =>
+                                handleOpen(event, row.idutilizador)
+                              }
+                              sx={{ p: 0.5 }}
+                            >
                               <DeleteIcon color="error" />
                             </IconButton>
                           </TableCell>
@@ -251,13 +275,18 @@ export default function EnhancedTable(props) {
                       );
                     })
                 )}
-                {emptyRows > 0 && (
+
+                {data.length === 0 && !isLoading && (
                   <TableRow
                     style={{
                       height: 33 * emptyRows,
                     }}
                   >
-                    <TableCell colSpan={6} />
+                    <TableCell align="center" colSpan={99} sx={{ py: 3 }}>
+                      <Typography variant="h6">
+                        {"Não foi encontrado nenhum utilizador!"}
+                      </Typography>
+                    </TableCell>
                   </TableRow>
                 )}
               </TableBody>

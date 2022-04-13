@@ -6,7 +6,6 @@ import {
   TableRow,
   TableSortLabel,
   ThemeProvider,
-  useTheme,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
 import PropTypes from "prop-types";
@@ -74,11 +73,11 @@ function EnhancedTableHead(props) {
     numSelected,
     rowCount,
     onRequestSort,
+    theme,
   } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
-  const theme = useTheme();
 
   return (
     <ThemeProvider theme={theme}>
@@ -93,8 +92,8 @@ function EnhancedTableHead(props) {
               inputProps={{
                 "aria-label": "select all desserts",
               }}
-            />{" "}
-          </TableCell>{" "}
+            />
+          </TableCell>
           {headCells.map((headCell) => (
             <TableCell
               key={headCell.id}
@@ -107,20 +106,19 @@ function EnhancedTableHead(props) {
                 direction={orderBy === headCell.id ? order : "asc"}
                 onClick={createSortHandler(headCell.id)}
               >
-                {headCell.label}{" "}
+                {headCell.label}
                 {orderBy === headCell.id ? (
                   <Box component="span" sx={visuallyHidden}>
-                    {" "}
                     {order === "desc"
                       ? "sorted descending"
-                      : "sorted ascending"}{" "}
+                      : "sorted ascending"}
                   </Box>
-                ) : null}{" "}
-              </TableSortLabel>{" "}
+                ) : null}
+              </TableSortLabel>
             </TableCell>
-          ))}{" "}
-        </TableRow>{" "}
-      </TableHead>{" "}
+          ))}
+        </TableRow>
+      </TableHead>
     </ThemeProvider>
   );
 }

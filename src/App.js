@@ -6,8 +6,9 @@ import Dashboard from "./views/dashboardView";
 import { createTheme } from "@mui/material/styles";
 import Stats from "./views/statsView";
 import Centros from "./views/centrosView";
-import Utilizadores from "./views/utilizadoresView";
+import Utilizadores from "./views/utilizadores/utilizadoresView";
 import { createContext, useState } from "react";
+import AddUtilizadores from "./views/utilizadores/addUtilizadoresView";
 
 export const ColorModeContext = createContext(null);
 
@@ -38,6 +39,10 @@ function App() {
           <Route path="stats" element={<Stats theme={theme} />} />
           <Route path="centros" element={<Centros theme={theme} />} />
           <Route path="utilizadores" element={<Utilizadores theme={theme} />} />
+          <Route
+            path="add/utilizadores"
+            element={<AddUtilizadores theme={theme} />}
+          />
           <Route path="*" element={<NotFound theme={theme} />} />
         </Routes>
       </BrowserRouter>

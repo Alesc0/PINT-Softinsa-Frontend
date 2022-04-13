@@ -1,5 +1,3 @@
-import CircleIcon from "@mui/icons-material/Circle";
-import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
   Avatar,
@@ -20,16 +18,21 @@ import { Link } from "react-router-dom";
 import navBar_logo from "../../imgs/logo-softinsa.png";
 import { ColorModeContext } from "../../App";
 
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
+import {
+  Brightness4,
+  Brightness7,
+  Menu,
+  KeyboardArrowRight,
+} from "@mui/icons-material/";
 
 const drawerWidth = 250;
 const pages = [
+  { name: "Dashboard", link: "/" },
   { name: "Estatisticas", link: "/stats" },
   { name: "Centros", link: "/centros" },
   { name: "Utilizadores", link: "/utilizadores" },
 ];
-function ResponsiveDrawer(props) {
+function MenuDrawer(props) {
   const { window, theme } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const { switchMode } = useContext(ColorModeContext);
@@ -49,10 +52,14 @@ function ResponsiveDrawer(props) {
         {pages.map((row) => (
           <Link className="link" key={row.name} to={row.link}>
             <ListItem sx={{ p: 2, py: 1 }} button>
-              <ListItemIcon>
-                <CircleIcon sx={{ color: "white" }} />
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                <KeyboardArrowRight sx={{ color: "white" }} />
               </ListItemIcon>
-              <ListItemText sx={{ color: "white" }} primary={row.name} />
+              <ListItemText
+                sx={{ color: "white" }}
+                primary={row.name}
+                primaryTypographyProps={{ fontSize: "18px" }}
+              />
             </ListItem>
           </Link>
         ))}
@@ -81,15 +88,15 @@ function ResponsiveDrawer(props) {
               onClick={handleDrawerToggle}
               sx={{ mr: 2, display: { md: "none" } }}
             >
-              <MenuIcon />
+              <Menu />
             </IconButton>
 
             <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
               <IconButton sx={{ color: "text.primary" }} onClick={switchMode}>
                 {theme.palette.mode === "dark" ? (
-                  <Brightness7Icon />
+                  <Brightness7 />
                 ) : (
-                  <Brightness4Icon />
+                  <Brightness4 />
                 )}
               </IconButton>
               <IconButton /* onClick={handleOpenUserMenu} */ sx={{ p: 0 }}>
@@ -141,7 +148,7 @@ function ResponsiveDrawer(props) {
           component="main"
           sx={{
             flexGrow: 1,
-            pt: 6,
+            pt: 8,
             width: { sm: `calc(100% - ${drawerWidth}px)` },
           }}
         >
@@ -152,8 +159,8 @@ function ResponsiveDrawer(props) {
   );
 }
 
-ResponsiveDrawer.propTypes = {
+MenuDrawer.propTypes = {
   window: PropTypes.func,
 };
 
-export default ResponsiveDrawer;
+export default MenuDrawer;

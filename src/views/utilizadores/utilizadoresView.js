@@ -1,8 +1,10 @@
-import { Box, ThemeProvider } from "@mui/material";
+import { Box, Button, ThemeProvider, Typography } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
-import EnhancedTable from "../components/enhancedTable/enhancedTable";
+import EnhancedTable from "../../components/enhancedTable/enhancedTable";
 import axios from "axios";
-import ResponsiveDrawer from "../components/drawer/drawer";
+import MenuDrawer from "../../components/menuDrawer/menuDrawer";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function UtilizadoresView(props) {
   const [users, setUsers] = useState([]);
@@ -21,26 +23,36 @@ function UtilizadoresView(props) {
         setUsers(response);
         setIsLoading(false);
       } catch (error) {
-        console.error(error.message);
+        toast.error(error);
       }
     };
-
     fetchData();
   }, [setUsers, value]);
 
   return (
     <ThemeProvider theme={theme}>
-      <ResponsiveDrawer>
+      <MenuDrawer theme={theme}>
         <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
           <Box
             maxWidth="lg"
             sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
               m: "0 auto",
               p: 5,
               bgcolor: "background.default",
               color: "text.primary",
             }}
           >
+            <Box sx={{ display: "flex", flexDirection: "row" }}>
+              <Typography variant="h4">Utilizadores</Typography>
+              <Box sx={{ ml: "auto" }}>
+                <Link className="link" to="/add/utilizadores">
+                  <Button variant="contained">Adicionar Utilizador</Button>
+                </Link>
+              </Box>
+            </Box>
             <EnhancedTable
               refetch={refetch}
               setUsers={setUsers}
@@ -51,7 +63,7 @@ function UtilizadoresView(props) {
             />
           </Box>
         </Box>
-      </ResponsiveDrawer>
+      </MenuDrawer>
     </ThemeProvider>
   );
 }

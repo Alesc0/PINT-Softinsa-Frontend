@@ -9,13 +9,14 @@ import {
   Typography,
 } from "@mui/material";
 import centroViseu from "../imgs/centroViseu.png";
-import ResponsiveDrawer from "../components/drawer/drawer";
+import MenuDrawer from "../components/menuDrawer/menuDrawer";
 
 function Centros(props) {
   const { theme } = props;
   return (
     <ThemeProvider theme={theme}>
-      <ResponsiveDrawer theme={theme}>
+      <MenuDrawer theme={theme}>
+        
         <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
           <Box
             maxWidth="xl"
@@ -83,7 +84,7 @@ function Centros(props) {
             </Card>
           </Box>
         </Box>
-      </ResponsiveDrawer>
+      </MenuDrawer>
     </ThemeProvider>
   );
 }

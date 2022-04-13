@@ -14,7 +14,6 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  useTheme,
 } from "@mui/material";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
@@ -22,9 +21,8 @@ import "react-toastify/dist/ReactToastify.css";
 import SideBar from "../sideBar/sideBar";
 
 const EnhancedTableToolbar = (props) => {
-  const {selected} = props;
+  const { selected, handleOpen, theme } = props;
   const [sidebar, setSidebar] = useState(false);
-  const theme = useTheme();
 
   const sideBar = () => (
     <Box
@@ -97,6 +95,8 @@ const EnhancedTableToolbar = (props) => {
     <ThemeProvider theme={theme}>
       <Toolbar
         sx={{
+          display: "flex",
+          flexDirection: "row",
           pl: { sm: 2 },
           pr: { xs: 1, sm: 1 },
           ...(selected.length > 0 && {
@@ -109,32 +109,18 @@ const EnhancedTableToolbar = (props) => {
         }}
       >
         {selected.length > 0 ? (
-          <Typography
-            sx={{ flex: "1 1 100%" }}
-            color="inherit"
-            variant="subtitle1"
-            component="div"
-          >
+          <Typography color="inherit" variant="subtitle1" component="div">
             {selected.length} selected
           </Typography>
-        ) : (
-          <Typography
-            sx={{ flex: "1 1 100%" }}
-            variant="h6"
-            id="tableTitle"
-            component="div"
-          >
-            Utilizadores
-          </Typography>
-        )}
+        ) : null}
         {selected.length > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton>
+          <Tooltip title="Delete" sx={{ ml: "auto" }}>
+            <IconButton onClick={(event) => handleOpen(event, selected)}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Filter list">
+          <Tooltip title="Filter list" sx={{ ml: "auto" }}>
             <IconButton onClick={toggleFiltro(true)}>
               <FilterListIcon />
             </IconButton>

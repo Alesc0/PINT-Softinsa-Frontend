@@ -1,4 +1,9 @@
-import { Box, Button, ThemeProvider, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CssBaseline,
+  ThemeProvider,
+} from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
 import EnhancedTable from "../../components/enhancedTable/enhancedTable";
 import axios from "axios";
@@ -31,37 +36,33 @@ function UtilizadoresView(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      <MenuDrawer theme={theme}>
-        <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
-          <Box
-            maxWidth="lg"
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              m: "0 auto",
-              p: 5,
-              bgcolor: "background.default",
-              color: "text.primary",
-            }}
-          >
-            <Box sx={{ display: "flex", flexDirection: "row" }}>
-              <Typography variant="h4">Utilizadores</Typography>
-              <Box sx={{ ml: "auto" }}>
-                <Link className="link" to="/add/utilizadores">
-                  <Button variant="contained">Adicionar Utilizador</Button>
-                </Link>
-              </Box>
-            </Box>
-            <EnhancedTable
-              refetch={refetch}
-              setUsers={setUsers}
-              isLoading={isLoading}
-              setLoading={setIsLoading}
-              data={users}
-              theme={theme}
-            />
+      <CssBaseline />
+      <MenuDrawer theme={theme} pageName={"Gerir Utilizadores"}>
+        <Box
+          maxWidth="lg"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            m: "0 auto",
+            p: 5,
+            bgcolor: "background.default",
+            color: "text.primary",
+          }}
+        >
+          <Box sx={{ ml: "auto" }}>
+            <Link className="link" to="/add/utilizadores">
+              <Button variant="contained">Adicionar Utilizador</Button>
+            </Link>
           </Box>
+          <EnhancedTable
+            refetch={refetch}
+            setUsers={setUsers}
+            isLoading={isLoading}
+            setLoading={setIsLoading}
+            data={users}
+            theme={theme}
+          />
         </Box>
       </MenuDrawer>
     </ThemeProvider>

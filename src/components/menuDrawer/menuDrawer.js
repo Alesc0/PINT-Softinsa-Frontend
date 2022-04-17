@@ -11,6 +11,7 @@ import {
   ListItemText,
   ThemeProvider,
   Toolbar,
+  Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
@@ -90,7 +91,7 @@ function MenuDrawer(props) {
             >
               <Menu />
             </IconButton>
-
+            <Typography variant="h4">{props.pageName}</Typography>
             <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
               <IconButton sx={{ color: "text.primary" }} onClick={switchMode}>
                 {theme.palette.mode === "dark" ? (
@@ -150,6 +151,7 @@ function MenuDrawer(props) {
             flexGrow: 1,
             pt: 8,
             width: { sm: `calc(100% - ${drawerWidth}px)` },
+            bgcolor: "Background.default",
           }}
         >
           {props.children}
@@ -160,6 +162,7 @@ function MenuDrawer(props) {
 }
 
 MenuDrawer.propTypes = {
+  pageName: PropTypes.string,
   window: PropTypes.func,
 };
 

@@ -438,6 +438,7 @@ const MyResponsiveTimeRange = ({ theme }) => (
       to="2018-08-12"
       emptyColor="#eeeeee"
       colors={["#61cdbb", "#97e3d5", "#e8c1a0", "#f47560"]}
+      margin={{ top: 40 }}
       dayBorderColor="text.primary"
       daySpacing={2}
     />

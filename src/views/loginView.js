@@ -8,7 +8,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
-import {ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import login_banner from "../imgs/banner-login.jpg";
@@ -47,6 +47,7 @@ const Login = (props) => {
 
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Grid
         container
         direction="column"
@@ -224,7 +225,6 @@ const Login = (props) => {
             </Box>
           </Grid>
         </Grid>
-        
 
         <img
           src={logo_ibm}

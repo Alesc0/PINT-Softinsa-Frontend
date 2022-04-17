@@ -103,7 +103,7 @@ export default function EnhancedTable(props) {
 
   const handleClose = () => setOpen(false);
   const handleError = (error) =>
-    toast.success(error, {
+    toast.error(error, {
       position: toast.POSITION.BOTTOM_LEFT,
     });
 
@@ -242,10 +242,7 @@ export default function EnhancedTable(props) {
                           <TableCell align="left">
                             <Chip
                               label={row.verificado ? "Sim" : "Não"}
-                              color={
-                                (row.verificado === false && "error") ||
-                                "success"
-                              }
+                              color={row.verificado ? "success" : "error"}
                               size="small"
                             />
                           </TableCell>
@@ -253,9 +250,7 @@ export default function EnhancedTable(props) {
                             <Chip
                               size="small"
                               label={row.estado ? "Ativo" : "Inativo"}
-                              color={
-                                (row.estado === false && "error") || "success"
-                              }
+                              color={row.estado ? "success" : "error"}
                             />
                           </TableCell>
                           <TableCell align="left">

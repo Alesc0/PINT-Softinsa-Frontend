@@ -39,7 +39,7 @@ const EnhancedTableToolbar = (props) => {
         <Typography variant="h4" component="div">
           Filtros
         </Typography>
-        <IconButton sx={{ marginLeft: "auto" }} onClick={toggleFiltro(false)}>
+        <IconButton sx={{ marginLeft: "auto" }} onClick={handleSidebar(false)}>
           <CloseIcon />
         </IconButton>
       </Box>
@@ -80,7 +80,7 @@ const EnhancedTableToolbar = (props) => {
       <Button variant="contained"> Pesquisar </Button>
     </Box>
   );
-  const toggleFiltro = (open) => (event) => {
+  const handleSidebar = (open) => (event) => {
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
@@ -121,7 +121,7 @@ const EnhancedTableToolbar = (props) => {
           </Tooltip>
         ) : (
           <Tooltip title="Filter list" sx={{ ml: "auto" }}>
-            <IconButton onClick={toggleFiltro(true)}>
+            <IconButton onClick={handleSidebar(true)}>
               <FilterListIcon />
             </IconButton>
           </Tooltip>
@@ -130,7 +130,7 @@ const EnhancedTableToolbar = (props) => {
 
       <SideBar
         anchor="right"
-        toggleFiltro={toggleFiltro}
+        handleSidebar={handleSidebar}
         state={sidebar}
         inner={sideBar}
       />

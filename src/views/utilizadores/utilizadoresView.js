@@ -1,9 +1,4 @@
-import {
-  Box,
-  Button,
-  CssBaseline,
-  ThemeProvider,
-} from "@mui/material";
+import { Box, Button, CssBaseline, ThemeProvider } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
 import EnhancedTable from "../../components/enhancedTable/enhancedTable";
 import axios from "axios";
@@ -51,9 +46,9 @@ function UtilizadoresView(props) {
           }}
         >
           <Box sx={{ ml: "auto" }}>
-            <Link className="link" to="/add/utilizadores">
-              <Button variant="contained">Adicionar Utilizador</Button>
-            </Link>
+            <Button component={Link} to="/add/utilizadores" variant="contained">
+              Adicionar Utilizador
+            </Button>
           </Box>
           <EnhancedTable
             refetch={refetch}

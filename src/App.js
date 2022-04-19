@@ -42,7 +42,7 @@ function App() {
     },
     typography: {
       fontFamily: "Roboto",
-      fontSize: "14",
+      fontSize: 14  
     },
     components: {
       MuiCssBaseline: {
@@ -55,7 +55,7 @@ function App() {
             height: "0.6em",
           },
           "*::-webkit-scrollbar-track": {
-            "-webkit-box-shadow": "inset 0 0 10px #E0ECDE",
+            "-Webkit-Box-Shadow": "inset 0 0 10px #E0ECDE",
             "box-shadow": "inset 0 0 10px #E0ECDE",
             marginRight: "10px",
           },

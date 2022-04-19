@@ -25,6 +25,7 @@ import {
   Menu,
   KeyboardArrowRight,
 } from "@mui/icons-material/";
+import { bgcolor } from "@mui/system";
 
 const drawerWidth = 250;
 const pages = [
@@ -51,18 +52,16 @@ function MenuDrawer(props) {
       <Divider />
       <List>
         {pages.map((row) => (
-          <Link className="link" key={row.name} to={row.link}>
-            <ListItem sx={{ p: 2, py: 1 }} button>
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <KeyboardArrowRight sx={{ color: "white" }} />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ color: "white" }}
-                primary={row.name}
-                primaryTypographyProps={{ fontSize: "18px" }}
-              />
-            </ListItem>
-          </Link>
+          <ListItem component={Link} to={row.link} sx={{ p: 2, py: 1 }} button>
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <KeyboardArrowRight sx={{ color: "white" }} />
+            </ListItemIcon>
+            <ListItemText
+              sx={{ color: "white" }}
+              primary={row.name}
+              primaryTypographyProps={{ fontSize: "18px" }}
+            />
+          </ListItem>
         ))}
       </List>
     </>
@@ -92,7 +91,13 @@ function MenuDrawer(props) {
               <Menu />
             </IconButton>
             <Typography variant="h4">{props.pageName}</Typography>
-            <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
+            <Box
+              sx={{
+                ml: "auto",
+                display: "flex",
+                gap: 1,
+              }}
+            >
               <IconButton sx={{ color: "text.primary" }} onClick={switchMode}>
                 {theme.palette.mode === "dark" ? (
                   <Brightness7 />
@@ -109,7 +114,6 @@ function MenuDrawer(props) {
         <Box
           component="nav"
           sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
-          aria-label="mailbox folders"
         >
           <Drawer
             container={container}

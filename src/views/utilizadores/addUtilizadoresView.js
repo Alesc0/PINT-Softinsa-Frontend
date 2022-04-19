@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  CssBaseline,
   FormControl,
   InputLabel,
   MenuItem,
@@ -9,7 +8,6 @@ import {
   Select,
   Tab,
   TextField,
-  ThemeProvider,
   Tabs,
   Divider,
   Typography,
@@ -17,6 +15,7 @@ import {
   ListItem,
   List,
 } from "@mui/material";
+import ThemeProvider from "../../theme";
 import { useState } from "react";
 import MenuDrawer from "../../components/menuDrawer/menuDrawer";
 import { Build, CheckBox } from "@mui/icons-material";
@@ -87,7 +86,6 @@ const sideBar = () => (
 function AddUtilizadoresView(props) {
   const [sidebar, setSidebar] = useState(false);
   const [permissionTab, setPermissionTab] = useState(0);
-  const { theme } = props;
 
   const handleSidebar = (open) => (event) => {
     if (
@@ -102,9 +100,8 @@ function AddUtilizadoresView(props) {
 
   const handleChange = (event, newValue) => setPermissionTab(newValue);
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <MenuDrawer theme={theme} pageName="Adicionar Utilizador">
+    <ThemeProvider>
+      <MenuDrawer pageName="Adicionar Utilizador">
         <Box
           component={Paper}
           maxWidth="sm"

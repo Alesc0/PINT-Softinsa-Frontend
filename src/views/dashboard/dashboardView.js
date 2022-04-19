@@ -1,4 +1,4 @@
-import { CssBaseline, Typography } from "@mui/material";
+import {Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -7,7 +7,7 @@ import ava from "../../imgs/avatar.jpg";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import { Paper } from "@mui/material";
-import { ThemeProvider } from "@mui/material/styles";
+import ThemeProvider from "../../theme";
 import MenuDrawer from "../../components/menuDrawer/menuDrawer";
 import ListNotificacoes from "./listNotificacoes";
 
@@ -59,11 +59,9 @@ const feedbacks = [
 ];
 
 export default function Dashboard(props) {
-  const { theme } = props;
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <MenuDrawer theme={theme} pageName="Dashboard">
+    <ThemeProvider>
+      <MenuDrawer pageName="Dashboard">
         <Box
           maxWidth="xl"
           display="grid"
@@ -124,7 +122,7 @@ export default function Dashboard(props) {
                           sx={{ display: "inline" }}
                           component="span"
                           variant="body2"
-                          color="warning.dark"
+                          color="gradient.primary"
                         >
                           {row.assunto}
                         </Typography>
@@ -159,7 +157,7 @@ export default function Dashboard(props) {
             <Typography variant="h5" component="h5">
               Notificações
             </Typography>
-            <ListNotificacoes theme={theme} />
+            <ListNotificacoes/>
           </Box>
         </Box>
       </MenuDrawer>

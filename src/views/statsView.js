@@ -1,17 +1,15 @@
 import { Box } from "@mui/system";
-import { CssBaseline, Paper, Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 import PieChart from "../components/nivoCharts/pie";
 import TimeRange from "../components/nivoCharts/timeRange";
-import { ThemeProvider } from "@mui/material/styles";
+import ThemeProvider from "../theme";
 import BarsChart from "../components/nivoCharts/bars";
 import MenuDrawer from "../components/menuDrawer/menuDrawer";
 
 function Stats(props) {
-  const { theme } = props;
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <MenuDrawer theme={theme} pageName="Estatísticas / Graficos">
+    <ThemeProvider>
+      <MenuDrawer pageName="Estatísticas / Graficos">
         <Box
           display="grid"
           gridTemplateColumns={{
@@ -39,7 +37,7 @@ function Stats(props) {
             <Typography variant="h4" component="div" textAlign="center">
               Horas mais Requisitadas
             </Typography>
-            <PieChart theme={theme} />
+            <PieChart />
           </Box>
 
           <Box
@@ -55,7 +53,7 @@ function Stats(props) {
             <Typography variant="h4" component="div" textAlign="center">
               Salas mais Usadas
             </Typography>
-            <BarsChart theme={theme} />
+            <BarsChart />
           </Box>
           <Box
             component={Paper}
@@ -70,7 +68,7 @@ function Stats(props) {
             <Typography variant="h4" component="div" textAlign="center">
               Reservas
             </Typography>
-            <TimeRange theme={theme} />
+            <TimeRange />
           </Box>
         </Box>
       </MenuDrawer>

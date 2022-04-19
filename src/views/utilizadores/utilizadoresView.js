@@ -1,16 +1,16 @@
-import { Box, Button, CssBaseline, ThemeProvider } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
 import EnhancedTable from "../../components/enhancedTable/enhancedTable";
 import axios from "axios";
 import MenuDrawer from "../../components/menuDrawer/menuDrawer";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import ThemeProvider from "../../theme";
 
 function UtilizadoresView(props) {
   const [users, setUsers] = useState([]);
   const [value, toggle] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { theme } = props;
   const refetch = useCallback(() => {
     toggle((prev) => !prev);
   }, [toggle]);
@@ -30,9 +30,8 @@ function UtilizadoresView(props) {
   }, [setUsers, value]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <MenuDrawer theme={theme} pageName={"Gerir Utilizadores"}>
+    <ThemeProvider>
+      <MenuDrawer pageName={"Gerir Utilizadores"}>
         <Box
           maxWidth="lg"
           sx={{
@@ -56,7 +55,6 @@ function UtilizadoresView(props) {
             isLoading={isLoading}
             setLoading={setIsLoading}
             data={users}
-            theme={theme}
           />
         </Box>
       </MenuDrawer>

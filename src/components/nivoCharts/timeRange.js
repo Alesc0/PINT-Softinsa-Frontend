@@ -1,6 +1,4 @@
-// install (please make sure versions match peerDependencies)
-// yarn add @nivo/core @nivo/calendar
-import { ThemeProvider } from "@mui/material";
+import ThemeProvider from "../../theme";
 import { ResponsiveTimeRange } from "@nivo/calendar";
 
 const data = [
@@ -430,8 +428,8 @@ const data = [
   },
 ];
 
-const MyResponsiveTimeRange = ({ theme }) => (
-  <ThemeProvider theme={theme}>
+const MyResponsiveTimeRange = () => (
+  <ThemeProvider>
     <ResponsiveTimeRange
       data={data}
       from="2018-04-01"

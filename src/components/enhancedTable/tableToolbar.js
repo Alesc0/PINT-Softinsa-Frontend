@@ -10,18 +10,18 @@ import {
   IconButton,
   InputAdornment,
   TextField,
-  ThemeProvider,
   Toolbar,
   Tooltip,
   Typography,
 } from "@mui/material";
+import ThemeProvider from "../../theme";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SideBar from "../sideBar/sideBar";
 
 const EnhancedTableToolbar = (props) => {
-  const { selected, handleOpen, theme } = props;
+  const { selected, handleOpen } = props;
   const [sidebar, setSidebar] = useState(false);
 
   const sideBar = () => (
@@ -92,7 +92,7 @@ const EnhancedTableToolbar = (props) => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider>
       <Toolbar
         sx={{
           display: "flex",

@@ -5,8 +5,8 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-  ThemeProvider,
 } from "@mui/material";
+import ThemeProvider from "../../theme";
 import { visuallyHidden } from "@mui/utils";
 import PropTypes from "prop-types";
 
@@ -73,14 +73,13 @@ function EnhancedTableHead(props) {
     numSelected,
     rowCount,
     onRequestSort,
-    theme,
   } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider>
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">

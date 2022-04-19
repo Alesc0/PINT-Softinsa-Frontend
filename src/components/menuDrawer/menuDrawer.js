@@ -9,7 +9,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  ThemeProvider,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -17,7 +16,8 @@ import PropTypes from "prop-types";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import navBar_logo from "../../imgs/logo-softinsa.png";
-import { ColorModeContext } from "../../App";
+import { ColorModeContext } from "../../theme";
+import ThemeProvider from "../../theme";
 
 import {
   Brightness4,
@@ -25,7 +25,7 @@ import {
   Menu,
   KeyboardArrowRight,
 } from "@mui/icons-material/";
-import { bgcolor } from "@mui/system";
+import { useTheme } from "@mui/material/styles";
 
 const drawerWidth = 250;
 const pages = [
@@ -35,7 +35,8 @@ const pages = [
   { name: "Utilizadores", link: "/utilizadores" },
 ];
 function MenuDrawer(props) {
-  const { window, theme } = props;
+  const { window } = props;
+  const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { switchMode } = useContext(ColorModeContext);
 
@@ -52,7 +53,13 @@ function MenuDrawer(props) {
       <Divider />
       <List>
         {pages.map((row) => (
-          <ListItem component={Link} to={row.link} sx={{ p: 2, py: 1 }} button>
+          <ListItem
+            key={row.name}
+            component={Link}
+            to={row.link}
+            sx={{ p: 2, py: 1 }}
+            button
+          >
             <ListItemIcon sx={{ minWidth: 40 }}>
               <KeyboardArrowRight sx={{ color: "white" }} />
             </ListItemIcon>
@@ -71,7 +78,7 @@ function MenuDrawer(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider>
       <Box sx={{ display: "flex" }}>
         <AppBar
           position="fixed"

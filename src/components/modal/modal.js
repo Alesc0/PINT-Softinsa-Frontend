@@ -9,7 +9,7 @@ const style = {
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
-  borderRadius: 5,
+  borderRadius: 3,
 };
 
 export default function NewModal(props) {

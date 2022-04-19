@@ -1,13 +1,12 @@
 import {
   Avatar,
-  CssBaseline,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
-  ThemeProvider,
   Typography,
 } from "@mui/material";
+import ThemeProvider from "../../theme";
 import ava from "../../imgs/avatar.jpg";
 import React from "react";
 const Notificacoes = [
@@ -32,10 +31,8 @@ const Notificacoes = [
 ];
 
 function ListNotificacoes(props) {
-  const { theme } = props;
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <ThemeProvider>
       <List sx={{ width: "100%" }}>
         {Notificacoes.map((row) => (
           <ListItem key={row.id} alignItems="flex-start" button>

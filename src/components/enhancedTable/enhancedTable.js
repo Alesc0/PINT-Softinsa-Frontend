@@ -4,7 +4,6 @@ import {
   Avatar,
   Box,
   Checkbox,
-  Chip,
   IconButton,
   Paper,
   Table,
@@ -13,9 +12,10 @@ import {
   TableContainer,
   TablePagination,
   TableRow,
-  ThemeProvider,
   Typography,
 } from "@mui/material";
+import ThemeProvider from "../../theme";
+import Label from "../label/label";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import { useCallback, useState } from "react";
@@ -49,7 +49,7 @@ export default function EnhancedTable(props) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
 
-  const { data, refetch, setUsers, isLoading, setLoading, theme } = props;
+  const { data, refetch, setUsers, isLoading, setLoading } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -149,11 +149,10 @@ export default function EnhancedTable(props) {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider>
       <Box sx={{ width: "100%" }}>
         <Paper sx={{ width: "100%", mb: 2 }}>
           <EnhancedTableToolbar
-            theme={theme}
             setLoading={setLoading}
             refetch={refetch}
             setSelected={setSelected}
@@ -169,7 +168,6 @@ export default function EnhancedTable(props) {
               size="medium"
             >
               <EnhancedTableHead
-                theme={theme}
                 numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
@@ -240,18 +238,20 @@ export default function EnhancedTable(props) {
                             <Typography>{row.email}</Typography>
                           </TableCell>
                           <TableCell align="left">
-                            <Chip
-                              label={row.verificado ? "Sim" : "Não"}
+                            <Label
+                              variant="ghost"
                               color={row.verificado ? "success" : "error"}
-                              size="small"
-                            />
+                            >
+                              {row.verificado ? "Sim" : "Não"}
+                            </Label>
                           </TableCell>
                           <TableCell align="left">
-                            <Chip
-                              size="small"
-                              label={row.estado ? "Ativo" : "Inativo"}
+                            <Label
+                              variant="ghost"
                               color={row.estado ? "success" : "error"}
-                            />
+                            >
+                              {row.estado ? "Ativo" : "Inativo"}
+                            </Label>
                           </TableCell>
                           <TableCell align="left">
                             <IconButton sx={{ p: 0.5 }}>

@@ -5,19 +5,16 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
-  CssBaseline,
-  ThemeProvider,
   Typography,
 } from "@mui/material";
+import ThemeProvider from "../theme";
 import centroViseu from "../imgs/centroViseu.png";
 import MenuDrawer from "../components/menuDrawer/menuDrawer";
 
 function Centros(props) {
-  const { theme } = props;
   return (
-    <ThemeProvider theme={theme}>
-      <MenuDrawer theme={theme} pageName="Gerir Centros">
-        <CssBaseline />
+    <ThemeProvider>
+      <MenuDrawer pageName="Gerir Centros">
         <Box
           maxWidth="xl"
           display="grid"

@@ -19,7 +19,7 @@ function UtilizadoresView(props) {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const { data: response } = await axios.get("utilizador/list");
+        const { data: response } = await axios.get("/utilizador/list");
         setUsers(response);
         setIsLoading(false);
       } catch (error) {

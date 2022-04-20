@@ -229,7 +229,7 @@ export default function EnhancedTable(props) {
                             </Box>
                           </TableCell>
                           <TableCell align="left">
-                            <Typography>{row.datanascimento}</Typography>
+                            <Typography>{row.ncolaborador}</Typography>
                           </TableCell>
                           <TableCell align="left">
                             <Typography>{row.telemovel}</Typography>

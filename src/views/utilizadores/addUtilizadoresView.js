@@ -14,27 +14,19 @@ import {
   ListItemText,
   ListItem,
   List,
+  ListItemIcon,
+  Checkbox,
+  ListItemButton,
+  useTheme,
 } from "@mui/material";
 import ThemeProvider from "../../theme";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MenuDrawer from "../../components/menuDrawer/menuDrawer";
-import { Build, CheckBox } from "@mui/icons-material";
+import { Build } from "@mui/icons-material";
 import SideBar from "../../components/sideBar/sideBar";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const centros = [
-  {
-    id: 1,
-    centro: "Viseu",
-  },
-  {
-    id: 2,
-    centro: "Tomar",
-  },
-  {
-    id: 3,
-    centro: "Fundão",
-  },
-];
 const perms = [
   {
     id: 1,
@@ -57,35 +49,31 @@ const perms = [
     text: "Permission 4",
   },
 ];
-const sideBar = () => (
-  <Box
-    sx={{
-      display: "flex",
-      flexDirection: "column",
-      gap: 2,
-      width: 300,
-      p: 3,
-    }}
-    role="presentation"
-  >
-    <Typography variant="h4">Permissões</Typography>
-    <Divider />
-    <List sx={{ width: "100%" }}>
-      {perms.map((row) => (
-        <ListItem key={row.id} alignItems="flex-start" button>
-          <CheckBox checked={row.checked} />
-          <ListItemText primary={row.text} />
-        </ListItem>
-      ))}
-    </List>
-    <Box sx={{ display: "flex", flexDirection: "row" }}>
-      <Button variant="contained"> Pesquisar </Button>
-    </Box>
-  </Box>
-);
-function AddUtilizadoresView(props) {
+
+function AddUtilizadoresView() {
   const [sidebar, setSidebar] = useState(false);
   const [permissionTab, setPermissionTab] = useState(0);
+  const [centros, setCentros] = useState([]);
+  const [permissions, setPermissions] = useState(perms);
+
+  const handleToggle = (value) => () => {
+    let temp = [...permissions];
+    let temp_el = { ...temp[value] };
+    temp_el.checked = !temp_el.checked;
+    temp[value] = temp_el;
+    setPermissions(temp);
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get("/centro/list");
+        setCentros(response);
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    fetchData();
+  }, [setCentros]);
 
   const handleSidebar = (open) => (event) => {
     if (
@@ -123,30 +111,32 @@ function AddUtilizadoresView(props) {
           <FormControl>
             <TextField id="txtContacto" label="Contacto" variant="outlined" />
           </FormControl>
-          <FormControl>
-            <InputLabel id="demo">Centro</InputLabel>
-            <Select sx={{ minWidth: 100 }} label="Centros" labelId="demo">
-              {centros.map((row) => (
-                <MenuItem key={row.id} value={row.id}>
-                  {row.centro}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+
           <Box sx={{ display: "flex", flexDirection: "row" }}>
-            <Tabs value={permissionTab} onChange={handleChange}>
+            <FormControl>
+              <InputLabel id="label-select">Centro</InputLabel>
+              <Select
+                sx={{ minWidth: 125 }}
+                label="Centro"
+                labelId="label-select"
+              >
+                {centros.length > 0 ? (
+                  centros.map((row) => (
+                    <MenuItem key={row.idcentro} value={row.idcentro}>
+                      {row.cidade}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value={-1}>{"Sem centros disponíveis!"}</MenuItem>
+                )}
+              </Select>
+            </FormControl>
+            <Tabs sx={{ml:"auto"}} value={permissionTab} onChange={handleChange}>
               <Tab label="Regular" value={0} />
               <Tab label="Admin" value={1} />
               <Tab label="Limpeza" value={2} />
               <Tab label="Manutenção" value={3} />
             </Tabs>
-            <Button
-              sx={{ ml: "auto" }}
-              onClick={handleSidebar(true)}
-              variant="outlined"
-            >
-              <Build />
-            </Button>
           </Box>
           <Divider />
           <Button sx={{ width: "fit-content", ml: "auto" }} variant="contained">
@@ -154,12 +144,6 @@ function AddUtilizadoresView(props) {
           </Button>
         </Box>
       </MenuDrawer>
-      <SideBar
-        anchor="right"
-        handleSidebar={handleSidebar}
-        state={sidebar}
-        inner={sideBar}
-      />
     </ThemeProvider>
   );
 }

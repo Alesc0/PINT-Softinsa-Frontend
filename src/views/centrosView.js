@@ -10,8 +10,25 @@ import {
 import ThemeProvider from "../theme";
 import centroViseu from "../imgs/centroViseu.png";
 import MenuDrawer from "../components/menuDrawer/menuDrawer";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
 
-function Centros(props) {
+function Centros() {
+  const [centros, setCentros] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get("/centro/list");
+        setCentros(response);
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    fetchData();
+  }, [setCentros]);
+
   return (
     <ThemeProvider>
       <MenuDrawer pageName="Gerir Centros">
@@ -56,26 +73,28 @@ function Centros(props) {
               </CardContent>
             </CardActionArea>
           </Card>
-          <Card sx={{ maxWidth: 345 }}>
-            <CardActionArea sx={{ height: "100%" }}>
-              <CardMedia
-                component="img"
-                image={centroViseu}
-                alt="Centro de Viseu"
-              />
-              <CardContent>
-                <Typography
-                  marginTop={1}
-                  variant="h5"
-                  textAlign="center"
-                  component="div"
-                >
-                  Centro de Viseu
-                </Typography>
-                <Typography variant="body2" color="text.secondary"></Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
+          {centros.length > 0
+            ? centros.map((row) => (
+                <Card sx={{ maxWidth: 345 }}>
+                  <CardActionArea sx={{ height: "100%" }}>
+                    <CardMedia
+                      component="img"
+                      image={centroViseu}
+                      alt={row.cidade}
+                    />
+                    <CardContent>
+                      <Typography
+                        variant="h5"
+                        textAlign="center"
+                        component="div"
+                      >
+                        {row.nome}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              ))
+            : null}
         </Box>
       </MenuDrawer>
     </ThemeProvider>

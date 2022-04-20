@@ -1,4 +1,4 @@
-import {Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -10,6 +10,9 @@ import { Paper } from "@mui/material";
 import ThemeProvider from "../../theme";
 import MenuDrawer from "../../components/menuDrawer/menuDrawer";
 import ListNotificacoes from "./listNotificacoes";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const info = [
   {
@@ -34,7 +37,7 @@ const info = [
     desc: "Salas Disponiveis para reserva",
   },
 ];
-const feedbacks = [
+const feedbackList = [
   {
     id: 1,
     val: "João Trolha",
@@ -59,6 +62,21 @@ const feedbacks = [
 ];
 
 export default function Dashboard(props) {
+  const [feedbacks, setFeedbacks] = useState(feedbackList);
+  const [notificacoes, setNotificacoes] = useState([feedbacks]);
+
+  /*  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get("/feedback/list");
+        setFeedbacks(response);
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    fetchData();
+  }, [setFeedbacks]); */
+
   return (
     <ThemeProvider>
       <MenuDrawer pageName="Dashboard">
@@ -157,7 +175,7 @@ export default function Dashboard(props) {
             <Typography variant="h5" component="h5">
               Notificações
             </Typography>
-            <ListNotificacoes/>
+            <ListNotificacoes />
           </Box>
         </Box>
       </MenuDrawer>

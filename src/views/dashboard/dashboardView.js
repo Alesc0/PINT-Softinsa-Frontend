@@ -1,25 +1,23 @@
-import { Typography } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import ava from "../../imgs/avatar.jpg";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
+import {
+  ListItemAvatar,
+  ListItemText,
+  ListItem,
+  List,
+  Box,
+  Avatar,
+  Typography,
+  Divider,
+} from "@mui/material";
 import { Paper } from "@mui/material";
-import ThemeProvider from "../../theme";
-import MenuDrawer from "../../components/menuDrawer/menuDrawer";
-import ListNotificacoes from "./listNotificacoes";
+import ListNotificacoes from "../../components/dashboard/listNotificacoes";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import BoxNumbers from "../../components/dashboard/boxNumbers";
+import Banner from "../../components/banner/banner";
 
 const info = [
-  {
-    id: 1,
-    val: 293,
-    desc: "Utilizadores Registados",
-  },
   {
     id: 2,
     val: 54,
@@ -64,121 +62,115 @@ const feedbackList = [
 export default function Dashboard(props) {
   const [feedbacks, setFeedbacks] = useState(feedbackList);
   const [notificacoes, setNotificacoes] = useState([feedbacks]);
+  const [userCount, setUserCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  /*  useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get("/feedback/list");
-        setFeedbacks(response);
+        setLoading(true);
+        const { data: response } = await axios.get("/utilizador/list");
+        setUserCount(response.length);
+        setLoading(false);
       } catch (error) {
         toast.error(error);
       }
     };
     fetchData();
-  }, [setFeedbacks]); */
+  }, [setUserCount]);
 
   return (
-    <ThemeProvider>
-      <MenuDrawer pageName="Dashboard">
+    <>
+      <Banner>{"Dashboard"}</Banner>
+      <Box
+        maxWidth="xl"
+        display="grid"
+        gridTemplateColumns={{ md: "repeat(2, 1fr)", lg: "repeat(4, 2fr)" }}
+        gap={5}
+        sx={{ m: "0 auto", p: 5, color: "text.primary" }}
+      >
+        <BoxNumbers
+          loading={loading}
+          info={userCount}
+          text={"Utilizadores Registados"}
+        />
+        {info.map((row) => (
+          <BoxNumbers
+            key={row.id}
+            loading={loading}
+            info={row.val}
+            text={row.desc}
+          />
+        ))}
+
         <Box
-          maxWidth="xl"
-          display="grid"
-          gridTemplateColumns={{ md: "repeat(2, 1fr)", lg: "repeat(4, 2fr)" }}
-          gap={5}
-          sx={{ m: "0 auto", p: 5, color: "text.primary" }}
+          component={Paper}
+          gridColumn="span 2"
+          sx={{
+            border: "solid thin",
+            borderRadius: 3,
+            borderColor: "primary.main",
+            p: 2,
+          }}
         >
-          {info.map((row) => (
-            <Box
-              key={row.id}
-              component={Paper}
-              sx={{
-                color: "text.primary",
-                border: "solid thin",
-                borderRadius: 3,
-                borderColor: "primary.main",
-                textAlign: "center",
-                p: 1,
-              }}
-            >
-              <Typography
-                variant="h5"
-                component="h5"
-                sx={{ color: "primary.main" }}
-              >
-                {row.val}
-              </Typography>
-              <Typography variant="h6" component="h6">
-                {row.desc}
-              </Typography>
-            </Box>
-          ))}
-          <Box
-            component={Paper}
-            gridColumn="span 2"
-            sx={{
-              border: "solid thin",
-              borderRadius: 3,
-              borderColor: "primary.main",
-              p: 2,
-            }}
-          >
-            <Typography variant="h5" component="h5">
-              Feedbacks
-            </Typography>
-            <List sx={{ width: "100%" }}>
-              {feedbacks.map((row) => (
-                <ListItem key={row.id} alignItems="flex-start" button>
-                  <ListItemAvatar>
-                    <Avatar alt="Remy Sharp" src={ava} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={row.val}
-                    sx={{ color: "primary.main" }}
-                    secondary={
-                      <>
-                        <Typography
-                          sx={{ display: "inline" }}
-                          component="span"
-                          variant="body2"
-                          color="gradient.primary"
-                        >
-                          {row.assunto}
-                        </Typography>
-                        {" — " + row.com}
-                        <span
-                          style={{
-                            margin: 0,
-                            padding: 0,
-                            width: "fit-content",
-                            float: "right",
-                          }}
-                        >
-                          {row.time}
-                        </span>
-                      </>
-                    }
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-          <Box
-            component={Paper}
-            gridColumn="span 2"
-            sx={{
-              border: "solid thin",
-              borderRadius: 3,
-              borderColor: "primary.main",
-              p: 2,
-            }}
-          >
-            <Typography variant="h5" component="h5">
-              Notificações
-            </Typography>
-            <ListNotificacoes />
-          </Box>
+          <Typography gutterBottom variant="h5" component="h5">
+            Feedbacks
+          </Typography>
+          <Divider />
+          <List sx={{ width: "100%" }}>
+            {feedbacks.map((row) => (
+              <ListItem key={row.id} alignItems="flex-start" button>
+                <ListItemAvatar>
+                  <Avatar alt="Remy Sharp" src={ava} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={row.val}
+                  sx={{ color: "primary.main" }}
+                  secondary={
+                    <>
+                      <Typography
+                        sx={{ display: "inline" }}
+                        component="span"
+                        variant="body2"
+                        color="gradient.primary"
+                      >
+                        {row.assunto}
+                      </Typography>
+                      {" — " + row.com}
+                      <span
+                        style={{
+                          margin: 0,
+                          padding: 0,
+                          width: "fit-content",
+                          float: "right",
+                        }}
+                      >
+                        {row.time}
+                      </span>
+                    </>
+                  }
+                />
+              </ListItem>
+            ))}
+          </List>
         </Box>
-      </MenuDrawer>
-    </ThemeProvider>
+        <Box
+          component={Paper}
+          gridColumn="span 2"
+          sx={{
+            border: "solid thin",
+            borderRadius: 3,
+            borderColor: "primary.main",
+            p: 2,
+          }}
+        >
+          <Typography gutterBottom variant="h5" component="h5">
+            Notificações
+          </Typography>
+          <Divider />
+          <ListNotificacoes />
+        </Box>
+      </Box>
+    </>
   );
 }

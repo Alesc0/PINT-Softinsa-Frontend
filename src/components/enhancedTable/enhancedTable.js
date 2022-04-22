@@ -1,5 +1,4 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import ShieldIcon from "@mui/icons-material/Shield";
+import { Delete, Build } from "@mui/icons-material/";
 import {
   Avatar,
   Box,
@@ -255,7 +254,7 @@ export default function EnhancedTable(props) {
                           </TableCell>
                           <TableCell align="left">
                             <IconButton sx={{ p: 0.5 }}>
-                              <ShieldIcon color="primary" />
+                              <Build color="primary" />
                             </IconButton>
                             <IconButton
                               onClick={(event) =>
@@ -263,7 +262,7 @@ export default function EnhancedTable(props) {
                               }
                               sx={{ p: 0.5 }}
                             >
-                              <DeleteIcon color="error" />
+                              <Delete color="error" />
                             </IconButton>
                           </TableCell>
                         </TableRow>

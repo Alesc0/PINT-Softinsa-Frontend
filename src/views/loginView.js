@@ -32,8 +32,7 @@ function Copyright(props) {
   );
 }
 
-const Login = (props) => {
-
+const Login = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -95,6 +94,7 @@ const Login = (props) => {
                     width: 270,
                     textAlign: "right",
                     mt: 2,
+                    ml: 2,
                   }}
                 >
                   23 anos de História e sucesso em Portugal

@@ -16,8 +16,7 @@ import PropTypes from "prop-types";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import navBar_logo from "../../imgs/logo-softinsa.png";
-import { ColorModeContext } from "../../theme";
-import ThemeProvider from "../../theme";
+import ThemeProvider, { ColorModeContext } from "../../theme";
 
 import {
   Brightness4,
@@ -78,102 +77,97 @@ function MenuDrawer(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <ThemeProvider>
-      <Box sx={{ display: "flex" }}>
-        <AppBar
-          position="fixed"
-          sx={{
-            width: { md: `calc(100% - ${drawerWidth}px)` },
-            ml: { md: `${drawerWidth}px` },
-          }}
-        >
-          <Toolbar sx={{ bgcolor: "primary.main" }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { md: "none" } }}
-            >
-              <Menu />
+    <Box sx={{ display: "flex" }}>
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
+        }}
+      >
+        <Toolbar sx={{ bgcolor: "primary.main" }}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { md: "none" } }}
+          >
+            <Menu />
+          </IconButton>
+          <Box
+            sx={{
+              ml: "auto",
+              display: "flex",
+              gap: 1,
+            }}
+          >
+            <IconButton sx={{ color: "text.primary" }} onClick={switchMode}>
+              {theme.palette.mode === "dark" ? (
+                <Brightness7 />
+              ) : (
+                <Brightness4 />
+              )}
             </IconButton>
-            <Typography variant="h4">{props.pageName}</Typography>
-            <Box
-              sx={{
-                ml: "auto",
-                display: "flex",
-                gap: 1,
-              }}
-            >
-              <IconButton sx={{ color: "text.primary" }} onClick={switchMode}>
-                {theme.palette.mode === "dark" ? (
-                  <Brightness7 />
-                ) : (
-                  <Brightness4 />
-                )}
-              </IconButton>
-              <IconButton /* onClick={handleOpenUserMenu} */ sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" />
-              </IconButton>
-            </Box>
-          </Toolbar>
-        </AppBar>
-        <Box
-          component="nav"
-          sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
-        >
-          <Drawer
-            container={container}
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true,
-            }}
-            sx={{
-              display: { xs: "block", md: "none" },
-              "& .MuiDrawer-paper": {
-                boxSizing: "border-box",
-                width: drawerWidth,
-                bgcolor: "primary.darker",
-              },
-            }}
-          >
-            {drawer}
-          </Drawer>
-          <Drawer
-            variant="permanent"
-            sx={{
-              display: { xs: "none", md: "block" },
-              "& .MuiDrawer-paper": {
-                boxSizing: "border-box",
-                width: drawerWidth,
-                bgcolor: "primary.darker",
-              },
-            }}
-            open
-          >
-            {drawer}
-          </Drawer>
-        </Box>
-        <Box
-          component="main"
+            <IconButton /* onClick={handleOpenUserMenu} */ sx={{ p: 0 }}>
+              <Avatar alt="Remy Sharp" />
+            </IconButton>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Box
+        component="nav"
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+      >
+        <Drawer
+          container={container}
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true,
+          }}
           sx={{
-            flexGrow: 1,
-            pt: 8,
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-            bgcolor: "Background.default",
+            display: { xs: "block", md: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+              bgcolor: "primary.darker",
+            },
           }}
         >
-          {props.children}
-        </Box>
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: "none", md: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+              bgcolor: "primary.darker",
+            },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
       </Box>
-    </ThemeProvider>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          pt: 8,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
+        {props.children}
+      </Box>
+    </Box>
   );
 }
 
 MenuDrawer.propTypes = {
-  pageName: PropTypes.string,
   window: PropTypes.func,
 };
 

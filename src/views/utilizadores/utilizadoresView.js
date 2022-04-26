@@ -1,9 +1,9 @@
-import { Box, Button } from "@mui/material";
-import { useState, useEffect, useCallback } from "react";
-import EnhancedTable from "../../components/enhancedTable/enhancedTable";
+import { Box, Button, Typography } from "@mui/material";
 import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import EnhancedTable from "../../components/enhancedTable/enhancedTable";
 
 function UtilizadoresView(props) {
   const [users, setUsers] = useState([]);
@@ -12,8 +12,6 @@ function UtilizadoresView(props) {
   const refetch = useCallback(() => {
     toggle((prev) => !prev);
   }, [toggle]);
-
-  props.setPageName("Utilizadores");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,31 +28,37 @@ function UtilizadoresView(props) {
   }, [setUsers, value]);
 
   return (
-    <Box
-      maxWidth="lg"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        m: "0 auto",
-        p: 5,
-        bgcolor: "background.default",
-        color: "text.primary",
-      }}
-    >
-      <Box sx={{ ml: "auto" }}>
-        <Button component={Link} to="add" variant="contained">
-          Adicionar Utilizador
-        </Button>
+    <>
+      <Box
+        maxWidth="xl"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          m: "0 auto",
+          p: 5,
+          pt: 2,
+          bgcolor: "background.default",
+          color: "text.primary",
+        }}
+      >
+        <Box sx={{ display: "flex" }}>
+          <Typography variant="h3">Gerir Utilizadores</Typography>
+          <Box sx={{ ml: "auto" }}>
+            <Button component={Link} to="add" variant="contained">
+              Adicionar Utilizador
+            </Button>
+          </Box>
+        </Box>
+        <EnhancedTable
+          refetch={refetch}
+          setUsers={setUsers}
+          isLoading={isLoading}
+          setLoading={setIsLoading}
+          data={users}
+        />
       </Box>
-      <EnhancedTable
-        refetch={refetch}
-        setUsers={setUsers}
-        isLoading={isLoading}
-        setLoading={setIsLoading}
-        data={users}
-      />
-    </Box>
+    </>
   );
 }
 export default UtilizadoresView;

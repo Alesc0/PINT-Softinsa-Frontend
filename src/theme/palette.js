@@ -36,6 +36,11 @@ const PRIMARY = {
   darker: "#34495E",
   contrastText: "#fff",
 };
+const PRIMARYDARK = {
+  main: "#004f9d",
+  dark: "#0065c9",
+  darker: "#10263b",
+};
 
 const SECONDARY = {
   lighter: "#D6E4FF",
@@ -98,7 +103,8 @@ const CHART_COLORS = {
   red: ["#FF6C40", "#FF8F6D", "#FFBD98", "#FFF2D4"],
 };
 
-const palette = {
+export const paletteDefault = {
+  mode: "light",
   common: { black: "#000", white: "#fff" },
   primary: { ...PRIMARY },
   secondary: { ...SECONDARY },
@@ -111,7 +117,33 @@ const palette = {
   chart: CHART_COLORS,
   divider: GREY[500_24],
   text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
-  background: { paper: "#FFFFFF", default: "#ECF0F1", neutral: GREY[200] },
+  background: { paper: "#FFFFFF", default: "#ECF0F9", neutral: GREY[200] },
+  action: {
+    active: GREY[600],
+    hover: GREY[500_8],
+    selected: GREY[500_16],
+    disabled: GREY[500_80],
+    disabledBackground: GREY[500_24],
+    focus: GREY[500_24],
+    hoverOpacity: 0.08,
+    disabledOpacity: 0.48,
+  },
+};
+export const paletteDark = {
+  mode: "dark",
+  common: { black: "#000", white: "#fff" },
+  primary: { ...PRIMARYDARK },
+  secondary: { ...SECONDARY },
+  info: { ...INFO },
+  success: { ...SUCCESS },
+  warning: { ...WARNING },
+  error: { ...ERROR },
+  grey: GREY,
+  gradients: GRADIENTS,
+  chart: CHART_COLORS,
+  divider: GREY[500_24],
+  text: { primary: GREY[0], secondary: GREY[200], disabled: GREY[400] },
+  background: { paper: "#001e3F", default: "#0a1929", neutral: GREY[200] },
   action: {
     active: GREY[600],
     hover: GREY[500_8],
@@ -124,4 +156,4 @@ const palette = {
   },
 };
 
-export default palette;
+export default paletteDefault;

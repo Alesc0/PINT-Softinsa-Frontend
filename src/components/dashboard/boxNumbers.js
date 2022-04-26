@@ -12,6 +12,7 @@ function BoxNumbers(props) {
         borderRadius: 3,
         borderColor: "primary.main",
         textAlign: "center",
+        bgcolor: "background.paper",
         p: 1,
       }}
     >

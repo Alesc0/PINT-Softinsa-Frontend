@@ -1,17 +1,16 @@
-import PropTypes from "prop-types";
-import { createContext, useMemo, useState } from "react";
 // material
 import { CssBaseline } from "@mui/material";
 import {
-  ThemeProvider as MUIThemeProvider,
   createTheme,
-  StyledEngineProvider,
+  StyledEngineProvider, ThemeProvider as MUIThemeProvider
 } from "@mui/material/styles";
-//
-import palette from "./palette";
-import typography from "./typography";
+import PropTypes from "prop-types";
+import { createContext, useState } from "react";
 import componentsOverride from "./overrides";
+//
+import { paletteDark, paletteDefault } from "./palette";
 import shadows, { customShadows } from "./shadows";
+import typography from "./typography";
 // ----------------------------------------------------------------------
 
 ThemeProvider.propTypes = {
@@ -25,16 +24,14 @@ export default function ThemeProvider({ children }) {
   const switchMode = () => {
     setMode((e) => (e === "light" ? "dark" : "light"));
   };
-  const themeOptions = useMemo(
-    () => ({
-      palette,
-      shape: { borderRadius: 8 },
-      typography,
-      shadows,
-      customShadows,
-    }),
-    []
-  );
+  const palette = mode === "light" ? paletteDefault : paletteDark;
+  const themeOptions = {
+    palette,
+    shape: { borderRadius: 8 },
+    typography,
+    shadows,
+    customShadows,
+  };
   const theme = createTheme(themeOptions);
   theme.components = componentsOverride(theme);
 

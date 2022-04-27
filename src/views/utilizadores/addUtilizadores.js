@@ -10,7 +10,9 @@ import {
   TextField,
   Tabs,
   Divider,
+  useTheme,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -18,7 +20,7 @@ import { toast } from "react-toastify";
 function AddUtilizadoresView() {
   const [permissionTab, setPermissionTab] = useState(0);
   const [centros, setCentros] = useState([]);
-
+  const theme = useTheme();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -54,10 +56,9 @@ function AddUtilizadoresView() {
       <FormControl>
         <TextField id="txtContacto" label="Contacto" variant="outlined" />
       </FormControl>
-
       <Box sx={{ display: "flex", flexDirection: "row" }}>
         <FormControl>
-          <InputLabel id="label-select">Centro</InputLabel>
+          <InputLabel id="label-select"> Centro </InputLabel>
           <Select sx={{ minWidth: 125 }} label="Centro" labelId="label-select">
             {centros.length > 0 ? (
               centros.map((row) => (
@@ -66,7 +67,7 @@ function AddUtilizadoresView() {
                 </MenuItem>
               ))
             ) : (
-              <MenuItem value={-1}>{"Sem centros disponíveis!"}</MenuItem>
+              <MenuItem value={-1}> {"Sem centros disponíveis!"} </MenuItem>
             )}
           </Select>
         </FormControl>
@@ -75,16 +76,20 @@ function AddUtilizadoresView() {
             <Tab label="Regular" value={0} />
             <Tab label="Admin" value={1} />
             <Tab label="Limpeza" value={2} />
-            <Tab label="Manutenção" value={3} />
           </Tabs>
         </Box>
       </Box>
       <Divider />
       <Box sx={{ display: "flex", gap: 1, ml: "auto" }}>
-        <Button color="error" variant="contained">
+        <Button
+          component={Link}
+          to="/utilizadores"
+          color="error"
+          variant="contained"
+        >
           Voltar
         </Button>
-        <Button color="info" variant="contained">
+        <Button color="primary" variant="contained">
           Confirmar
         </Button>
       </Box>

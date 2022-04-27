@@ -30,22 +30,19 @@ function ListFeedbacks({ feedbackList, loading }) {
 
         switch (row.classificacao) {
           case 1:
-            color = "#ff9d00";
+            color = "#ff0000";
             break;
           case 2:
             color = "#ff4400";
             break;
           case 3:
-            color = "#ff9100";
+            color = "#eb7134";
             break;
           case 4:
-            color = "#ff9100";
-            break;
-          case 5:
-            color = "#0015ff";
+            color = "#93f500";
             break;
           default:
-            color = "#ffd900";
+            color = "";
             break;
         }
 
@@ -57,7 +54,9 @@ function ListFeedbacks({ feedbackList, loading }) {
             <ListItemText
               primary={
                 <>
-                  {!row.utilizadore ? "Guest" : row.utilizadore.nome}
+                  <Typography component="legend">
+                    {!row.utilizadore ? "Guest" : row.utilizadore.nome}
+                  </Typography>
                   <Rating
                     sx={{
                       "& .MuiRating-iconFilled": {

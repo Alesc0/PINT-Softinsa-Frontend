@@ -43,7 +43,7 @@ function AddCentros() {
         <Button color="error" variant="contained">
           Voltar
         </Button>
-        <Button color="info" variant="contained">
+        <Button color="primary" variant="contained">
           Confirmar
         </Button>
       </Box>

@@ -86,7 +86,12 @@ const ERROR = {
   darker: "#7A0C2E",
   contrastText: "#fff",
 };
-
+const ERRORDARK = {
+  light: "#FF4842",
+  main: "#B72136",
+  dark: "#7A0C2E",
+  contrastText: "#fff",
+};
 const GRADIENTS = {
   primary: createGradient(PRIMARY.light, PRIMARY.main),
   info: createGradient(INFO.light, INFO.main),
@@ -137,12 +142,12 @@ export const paletteDark = {
   info: { ...INFO },
   success: { ...SUCCESS },
   warning: { ...WARNING },
-  error: { ...ERROR },
+  error: { ...ERRORDARK },
   grey: GREY,
   gradients: GRADIENTS,
   chart: CHART_COLORS,
   divider: GREY[500_24],
-  text: { primary: GREY[0], secondary: GREY[200], disabled: GREY[400] },
+  text: { primary: GREY[200], secondary: GREY[400], disabled: GREY[500] },
   background: { paper: "#001e3F", default: "#0a1929", neutral: GREY[200] },
   action: {
     active: GREY[600],

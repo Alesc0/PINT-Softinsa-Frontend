@@ -1,19 +1,33 @@
 import React, { useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import UploadService from "../../services/fileUpload.service";
-import {
-  Box,
-  Button,
-  LinearProgress,
-  linearProgressClasses,
-  Typography,
-} from "@mui/material";
+import { Box, LinearProgress, Typography, useTheme } from "@mui/material";
 import "./styles.css";
+
+function LinearProgressWithLabel(props) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ width: "100%", mr: 1 }}>
+        <LinearProgress
+          sx={{ height: 10, borderRadius: 5 }}
+          variant="determinate"
+          {...props}
+        />
+      </Box>
+      <Box sx={{ minWidth: 20 }}>
+        <Typography variant="body2" color="text.secondary">{`${Math.round(
+          props.value
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
+}
 function ImgUploader() {
   const [selected, setSelected] = useState(undefined);
   const [current, setCurrent] = useState(undefined);
   const [progress, setProgress] = useState(10);
   const [message, setMessage] = useState("");
+  const theme = useTheme();
 
   /*   useEffect(() => {
     UploadService.getFiles().then((response) => {
@@ -52,42 +66,32 @@ function ImgUploader() {
       );
     }, 800);
   }
-  function LinearProgressWithLabel(props) {
-    return (
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Box sx={{ width: "100%", mr: 1 }}>
-          <LinearProgress
-            sx={{ height: 10, borderRadius: 5 }}
-            variant="determinate"
-            {...props}
-          />
-        </Box>
-        <Box sx={{ minWidth: 20 }}>
-          <Typography variant="body2" color="text.secondary">{`${Math.round(
-            progress
-          )}%`}</Typography>
-        </Box>
-      </Box>
-    );
-  }
   return (
     <>
-      {selected && <LinearProgressWithLabel value={progress} />}
       <Dropzone onDrop={onDrop} multiple={false}>
-        {({ getRootProps, getInputProps }) => (
-          <section>
-            <div {...getRootProps({ className: "dropzone" })}>
+        {({ getRootProps, getInputProps }) => {
+          return (
+            <Box
+              {...getRootProps({
+                ...(theme.palette.mode === "light"
+                  ? { className: "dropzone borderLight" }
+                  : { className: "dropzone borderDark" }),
+              })}
+            >
               <input {...getInputProps()} />
               {selected && selected[0].name ? (
-                <div className="selected-file">
+                <Typography fontWeight="bold">
                   {selected && selected[0].name}
-                </div>
+                </Typography>
               ) : (
-                "Drag and drop file here, or click to select file"
+                <Typography color="text.secondary">
+                  Drag and drop file here, or click to select file
+                </Typography>
               )}
-            </div>
-          </section>
-        )}
+              {selected && <LinearProgressWithLabel value={progress} />}
+            </Box>
+          );
+        }}
       </Dropzone>
       {/* TODO: TOAST error message */}
     </>

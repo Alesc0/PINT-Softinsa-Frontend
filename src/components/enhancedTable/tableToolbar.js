@@ -12,9 +12,8 @@ import {
   TextField,
   Toolbar,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
-import ThemeProvider from "../../theme";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,16 +24,7 @@ const EnhancedTableToolbar = (props) => {
   const [sidebar, setSidebar] = useState(false);
 
   const sideBar = () => (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        width: 300,
-        p: 3,
-      }}
-      role="presentation"
-    >
+    <>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
         <Typography variant="h4" component="div">
           Filtros
@@ -77,8 +67,8 @@ const EnhancedTableToolbar = (props) => {
         variant="outlined"
         placeholder="Email"
       />
-      <Button variant="contained"> Pesquisar </Button>
-    </Box>
+      <Button color="info" variant="contained"> Pesquisar </Button>
+    </>
   );
   const handleSidebar = (open) => (event) => {
     if (
@@ -92,7 +82,7 @@ const EnhancedTableToolbar = (props) => {
   };
 
   return (
-    <ThemeProvider>
+    <>
       <Toolbar
         sx={{
           display: "flex",
@@ -135,7 +125,7 @@ const EnhancedTableToolbar = (props) => {
         inner={sideBar}
       />
       <ToastContainer />
-    </ThemeProvider>
+    </>
   );
 };
 

@@ -2,14 +2,19 @@
 import { CssBaseline } from "@mui/material";
 import {
   createTheme,
-  StyledEngineProvider, ThemeProvider as MUIThemeProvider
+  StyledEngineProvider,
+  ThemeProvider as MUIThemeProvider,
 } from "@mui/material/styles";
 import PropTypes from "prop-types";
 import { createContext, useState } from "react";
 import componentsOverride from "./overrides";
 //
 import { paletteDark, paletteDefault } from "./palette";
-import shadows, { customShadows } from "./shadows";
+import shadowsLight, {
+  customShadowsLight,
+  customShadowsDark,
+  shadowsDark,
+} from "./shadows";
 import typography from "./typography";
 // ----------------------------------------------------------------------
 
@@ -25,6 +30,9 @@ export default function ThemeProvider({ children }) {
     setMode((e) => (e === "light" ? "dark" : "light"));
   };
   const palette = mode === "light" ? paletteDefault : paletteDark;
+  const shadows = mode === "light" ? shadowsLight : shadowsDark;
+  const customShadows =
+    mode === "light" ? customShadowsLight : customShadowsDark;
   const themeOptions = {
     palette,
     shape: { borderRadius: 8 },

@@ -1,4 +1,4 @@
-import { Build, Delete } from "@mui/icons-material/";
+import { Edit, Delete } from "@mui/icons-material/";
 import {
   Avatar,
   Box,
@@ -252,7 +252,7 @@ export default function EnhancedTable(props) {
                         </TableCell>
                         <TableCell align="left">
                           <IconButton sx={{ p: 0.5 }}>
-                            <Build color="primary" />
+                            <Edit color="primary" />
                           </IconButton>
                           <IconButton
                             onClick={(event) =>

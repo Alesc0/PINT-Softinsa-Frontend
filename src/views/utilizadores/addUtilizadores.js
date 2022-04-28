@@ -74,7 +74,7 @@ function AddUtilizadoresView() {
         <Box sx={{ ml: "auto" }}>
           <Tabs value={permissionTab} onChange={handleChange}>
             <Tab label="Regular" value={0} />
-            <Tab label="Admin" value={1} />
+            <Tab label="Administrador" value={1} />
             <Tab label="Limpeza" value={2} />
           </Tabs>
         </Box>
@@ -89,7 +89,7 @@ function AddUtilizadoresView() {
         >
           Voltar
         </Button>
-        <Button color="primary" variant="contained">
+        <Button color="info" variant="contained">
           Confirmar
         </Button>
       </Box>

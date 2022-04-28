@@ -1,10 +1,11 @@
 // material
 import { alpha } from "@mui/material/styles";
-import palette from "./palette";
+import palette, { paletteDark } from "./palette";
 
 // ----------------------------------------------------------------------
 
 const LIGHT_MODE = palette.grey[500];
+const DARK_MODE = paletteDark.primary.darker;
 
 const createShadow = (color) => {
   const transparent1 = alpha(color, 0.2);
@@ -58,8 +59,10 @@ const createCustomShadow = (color) => {
   };
 };
 
-export const customShadows = createCustomShadow(LIGHT_MODE);
+export const customShadowsLight = createCustomShadow(LIGHT_MODE);
+export const customShadowsDark = createCustomShadow(DARK_MODE);
 
 const shadows = createShadow(LIGHT_MODE);
+export const shadowsDark = createShadow(DARK_MODE);
 
 export default shadows;

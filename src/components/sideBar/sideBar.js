@@ -1,4 +1,4 @@
-import { Drawer } from "@mui/material";
+import { Box, Drawer } from "@mui/material";
 
 export default function SideBar(props) {
   return (
@@ -7,7 +7,18 @@ export default function SideBar(props) {
       open={props.state}
       onClose={props.handleSidebar(false)}
     >
-      {props.inner()}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          width: 300,
+          p: 3,
+        }}
+        role="presentation"
+      >
+        {props.inner()}
+      </Box>
     </Drawer>
   );
 }

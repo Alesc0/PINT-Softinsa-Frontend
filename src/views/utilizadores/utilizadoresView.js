@@ -45,7 +45,7 @@ function UtilizadoresView(props) {
         <Box sx={{ display: "flex" }}>
           <Typography variant="h3">Gerir Utilizadores</Typography>
           <Box sx={{ ml: "auto" }}>
-            <Button component={Link} to="add" variant="contained">
+            <Button color="info" component={Link} to="add" variant="contained">
               Adicionar Utilizador
             </Button>
           </Box>

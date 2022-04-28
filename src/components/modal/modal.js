@@ -14,35 +14,36 @@ const style = {
 
 export default function NewModal(props) {
   return (
-    <Modal
-      open={props.open}
-      onClose={props.handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
+    <Modal open={props.open} onClose={props.handleClose}>
       <Box sx={style}>
-        <Typography
-          id="modal-modal-title"
-          variant="h6"
-          component="h2"
-          sx={{ mt: 1, mb: 1 }}
-        >
-          Cuidado!
-        </Typography>
-        <Divider />
-        <Typography id="modal-modal-description" sx={{ mt: 3, mb: 3 }}>
-          Está prestes a eliminar {props.info.length}{" "}
-          {props.info.length > 1 ? "elementos" : "elemento"} pretende continuar?
-        </Typography>
-        <Divider />
-        <Button
-          onClick={props.handleClick}
-          color="error"
-          sx={{ float: "right", mt: 2 }}
-          variant="contained"
-        >
-          Eliminar
-        </Button>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Typography variant="h4" component="h2">
+            Cuidado
+          </Typography>
+          <Divider />
+          <Typography variant="body1">
+            Está prestes a eliminar {props.info.length}{" "}
+            {props.info.length > 1 ? "elementos" : "elemento"} pretende
+            continuar?
+          </Typography>
+          <Divider />
+          <Box sx={{ display: "flex", ml: "auto", gap: 1 }}>
+            <Button
+              onClick={props.handleClose}
+              color="warning"
+              variant="contained"
+            >
+              Voltar
+            </Button>
+            <Button
+              onClick={props.handleClick}
+              color="error"
+              variant="contained"
+            >
+              Eliminar
+            </Button>
+          </Box>
+        </Box>
       </Box>
     </Modal>
   );

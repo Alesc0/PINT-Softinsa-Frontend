@@ -1,8 +1,16 @@
-import { Box, Divider, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Paper,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import BoxNumbers from "../../components/dashboard/boxNumbers";
+import BoxNumbers from "../../components/dashboard/boxNumbers copy";
 import ListFeedbacks from "../../components/dashboard/listFeedbacks";
 import ListNotificacoes from "../../components/dashboard/listNotificacoes";
 
@@ -10,7 +18,7 @@ const info = [
   {
     id: 2,
     val: 54,
-    desc: "Reservas Futuras Agendadas",
+    desc: "Reservas Futuras",
   },
   {
     id: 3,
@@ -21,7 +29,7 @@ const info = [
   {
     id: 4,
     val: 5,
-    desc: "Salas Disponiveis para reserva",
+    desc: "Salas Disponiveis",
   },
 ];
 
@@ -31,10 +39,12 @@ export default function Dashboard() {
   const [userCount, setUserCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  //get data from database
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        //requests
         const { data: responseUsersCount } = await axios.get(
           "/utilizador/list"
         );
@@ -42,9 +52,11 @@ export default function Dashboard() {
         const { data: responseNotificacao } = await axios.get(
           "/notificacao/list"
         );
+        //set states
         setUserCount(responseUsersCount.length);
         setFeedbacks(responseFeedbacks);
         setNotificacoes(responseNotificacao);
+
         setLoading(false);
       } catch (error) {
         toast.error(error);
@@ -74,40 +86,25 @@ export default function Dashboard() {
           text={row.desc}
         />
       ))}
-
-      <Box
-        component={Paper}
-        gridColumn="span 2"
-        sx={{
-          border: "solid thin",
-          borderRadius: 3,
-          borderColor: "primary.main",
-          p: 2,
-          textAlign: "center",
-        }}
-      >
-        <Typography gutterBottom variant="h5" component="h5">
-          Feedbacks
-        </Typography>
-        <Divider />
-        <ListFeedbacks loading={loading} feedbackList={feedbacks} />
+      <Box gridColumn="span 2">
+        <Card sx={{ columnSpan: 2 }}>
+          <CardHeader title="Feedbacks" />
+          <CardContent>
+            <ListFeedbacks loading={loading} feedbackList={feedbacks} />
+          </CardContent>
+        </Card>
       </Box>
-      <Box
-        component={Paper}
-        gridColumn="span 2"
-        sx={{
-          border: "solid thin",
-          borderRadius: 3,
-          borderColor: "primary.main",
-          p: 2,
-          textAlign: "center",
-        }}
-      >
-        <Typography gutterBottom variant="h5" component="h5">
-          Notificações
-        </Typography>
-        <Divider />
-        <ListNotificacoes loading={loading} notificacoesList={notificacoes} />
+
+      <Box gridColumn="span 2">
+        <Card sx={{ columnSpan: 2 }}>
+          <CardHeader title="Notificações" />
+          <CardContent>
+            <ListNotificacoes
+              loading={loading}
+              notificacoesList={notificacoes}
+            />
+          </CardContent>
+        </Card>
       </Box>
     </Box>
   );

@@ -1,12 +1,8 @@
 import { Box, Drawer } from "@mui/material";
 
-export default function SideBar(props) {
+export default function SideBar({ anchor, state, handleSidebar, inner }) {
   return (
-    <Drawer
-      anchor={props.anchor}
-      open={props.state}
-      onClose={props.handleSidebar(false)}
-    >
+    <Drawer anchor={anchor} open={state} onClose={handleSidebar(false)}>
       <Box
         sx={{
           display: "flex",
@@ -17,7 +13,7 @@ export default function SideBar(props) {
         }}
         role="presentation"
       >
-        {props.inner()}
+        {inner()}
       </Box>
     </Drawer>
   );

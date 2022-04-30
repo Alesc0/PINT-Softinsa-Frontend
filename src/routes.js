@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 // layouts
 import DashboardLayout from "./views/dashboardLayout";
+
+// paginas
 import Login from "./views/loginView";
 import NotFound from "./views/notFoundView";
 import Dashboard from "./views/dashboard/dashboardView";
@@ -9,7 +12,6 @@ import Centros from "./views/centros/centrosView";
 import Utilizadores from "./views/utilizadores/utilizadoresView";
 import AddUtilizadores from "./views/utilizadores/addUtilizadores";
 import AddCentros from "./views/centros/addCentros";
-//
 
 // ----------------------------------------------------------------------
 
@@ -25,8 +27,8 @@ export default function Router() {
           <Route path="utilizadores/add" element={<AddUtilizadores />} />
           <Route path="stats" element={<Stats />} />
         </Route>
-        <Route path="login" element={<Login />}/>
-        <Route path="*" element={<NotFound />}/>
+        <Route path="login" element={<Login />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

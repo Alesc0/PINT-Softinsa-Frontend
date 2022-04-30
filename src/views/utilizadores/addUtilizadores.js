@@ -1,26 +1,24 @@
 import {
   Box,
   Button,
+  Divider,
   FormControl,
   InputLabel,
   MenuItem,
   Paper,
   Select,
   Tab,
-  TextField,
   Tabs,
-  Divider,
-  useTheme,
+  TextField,
 } from "@mui/material";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function AddUtilizadoresView() {
   const [permissionTab, setPermissionTab] = useState(0);
   const [centros, setCentros] = useState([]);
-  const theme = useTheme();
   useEffect(() => {
     const fetchData = async () => {
       try {

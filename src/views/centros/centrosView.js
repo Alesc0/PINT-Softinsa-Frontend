@@ -7,9 +7,7 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import ThemeProvider from "../../theme";
 import centroViseu from "../../imgs/centroViseu.png";
-import MenuDrawer from "../../components/menuDrawer/menuDrawer";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";

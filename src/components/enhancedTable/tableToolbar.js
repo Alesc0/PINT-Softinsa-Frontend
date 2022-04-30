@@ -12,18 +12,16 @@ import {
   TextField,
   Toolbar,
   Tooltip,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import SideBar from "../sideBar/sideBar";
 
 const EnhancedTableToolbar = (props) => {
   const { selected, handleOpen } = props;
   const [sidebar, setSidebar] = useState(false);
 
-  const sideBar = () => (
+  const sidebarInner = () => (
     <>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
         <Typography variant="h4" component="div">
@@ -67,7 +65,10 @@ const EnhancedTableToolbar = (props) => {
         variant="outlined"
         placeholder="Email"
       />
-      <Button color="info" variant="contained"> Pesquisar </Button>
+      <Button color="info" variant="contained">
+        {" "}
+        Pesquisar{" "}
+      </Button>
     </>
   );
   const handleSidebar = (open) => (event) => {
@@ -122,9 +123,8 @@ const EnhancedTableToolbar = (props) => {
         anchor="right"
         handleSidebar={handleSidebar}
         state={sidebar}
-        inner={sideBar}
+        inner={sidebarInner}
       />
-      <ToastContainer />
     </>
   );
 };

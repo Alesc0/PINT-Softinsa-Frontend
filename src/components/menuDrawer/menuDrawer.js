@@ -1,4 +1,10 @@
 import {
+  Brightness4,
+  Brightness7,
+  KeyboardArrowRight,
+  Menu,
+} from "@mui/icons-material/";
+import {
   AppBar,
   Avatar,
   Box,
@@ -10,21 +16,15 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
-  Typography,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import navBar_logo from "../../imgs/logo-softinsa.png";
-import ThemeProvider, { ColorModeContext } from "../../theme";
-
-import {
-  Brightness4,
-  Brightness7,
-  Menu,
-  KeyboardArrowRight,
-} from "@mui/icons-material/";
-import { useTheme } from "@mui/material/styles";
+import { ColorModeContext } from "../../theme";
 
 const drawerWidth = 250;
 const pages = [
@@ -162,6 +162,7 @@ function MenuDrawer(props) {
         }}
       >
         {props.children}
+        <ToastContainer />
       </Box>
     </Box>
   );

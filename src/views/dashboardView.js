@@ -1,18 +1,10 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, CardHeader } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import BoxNumbers from "../../components/dashboard/boxNumbers copy";
-import ListFeedbacks from "../../components/dashboard/listFeedbacks";
-import ListNotificacoes from "../../components/dashboard/listNotificacoes";
+import BoxNumbers from "../components/dashboard/boxNumbers";
+import ListFeedbacks from "../components/dashboard/listFeedbacks";
+import ListNotificacoes from "../components/dashboard/listNotificacoes";
 
 const info = [
   {
@@ -94,7 +86,6 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </Box>
-
       <Box gridColumn="span 2">
         <Card sx={{ columnSpan: 2 }}>
           <CardHeader title="Notificações" />

@@ -18,13 +18,15 @@ import {
   Toolbar,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import axios from "axios";
 import PropTypes from "prop-types";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import navBar_logo from "../../imgs/logo-softinsa.png";
 import { ColorModeContext } from "../../theme";
+import Notifications from "./notification";
 
 const drawerWidth = 250;
 const pages = [
@@ -38,6 +40,25 @@ function MenuDrawer(props) {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { switchMode } = useContext(ColorModeContext);
+  const [handleOpenNotification, setOpenNotification] = useState(false);
+  const [notificacoes, setNotificacoes] = useState([]);
+ 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        //requests
+        const { data: responseNotificacao } = await axios.get(
+          "/notificacao/list"
+        );
+        //set states
+        setNotificacoes(responseNotificacao);
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
 
   const handleDrawerToggle = () => {
     setMobileOpen((mobileOpen) => !mobileOpen);
@@ -109,7 +130,8 @@ function MenuDrawer(props) {
                 <Brightness4 />
               )}
             </IconButton>
-            <IconButton /* onClick={handleOpenUserMenu} */ sx={{ p: 0 }}>
+            <Notifications notificacoes={notificacoes}/>
+            <IconButton /* onClick={handleOpenUserMenu} */>
               <Avatar alt="Remy Sharp" />
             </IconButton>
           </Box>

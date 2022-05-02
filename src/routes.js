@@ -6,7 +6,7 @@ import DashboardLayout from "./views/dashboardLayout";
 // paginas
 import Login from "./views/loginView";
 import NotFound from "./views/notFoundView";
-import Dashboard from "./views/dashboard/dashboardView";
+import Dashboard from "./views/dashboardView";
 import Stats from "./views/statsView";
 import Centros from "./views/centros/centrosView";
 import Utilizadores from "./views/utilizadores/utilizadoresView";
@@ -20,16 +20,16 @@ export default function Router() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="centros" element={<Centros />} />
-          <Route path="centros/add" element={<AddCentros />} />
-          <Route path="utilizadores" element={<Utilizadores />} />
-          <Route path="utilizadores/add" element={<AddUtilizadores />} />
-          <Route path="stats" element={<Stats />} />
-        </Route>
-        <Route path="login" element={<Login />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route index element={<Dashboard />} />{" "}
+          <Route path="centros" element={<Centros />} />{" "}
+          <Route path="centros/add" element={<AddCentros />} />{" "}
+          <Route path="utilizadores" element={<Utilizadores />} />{" "}
+          <Route path="utilizadores/add" element={<AddUtilizadores />} />{" "}
+          <Route path="stats" element={<Stats />} />{" "}
+        </Route>{" "}
+        <Route path="login" element={<Login />} />{" "}
+        <Route path="*" element={<NotFound />} />{" "}
+      </Routes>{" "}
     </BrowserRouter>
   );
 }

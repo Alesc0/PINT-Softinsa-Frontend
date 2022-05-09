@@ -1,13 +1,10 @@
 import { Notifications } from "@mui/icons-material";
 import {
-  alpha,
   Card,
   CardContent,
   CardHeader,
   IconButton,
   Popover,
-  styled,
-  useTheme,
 } from "@mui/material";
 import { useState } from "react";
 import ListNotificacoes from "../dashboard/listNotificacoes";
@@ -27,7 +24,7 @@ import ListNotificacoes from "../dashboard/listNotificacoes";
   zIndex: 1,
 }));
  */
-function Notification({ notificacoes }) {
+function Notification({ notificacoes,loading }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -64,7 +61,7 @@ function Notification({ notificacoes }) {
         <Card>
           <CardHeader title="Notificações" />
           <CardContent>
-            <ListNotificacoes loading={false} notificacoesList={notificacoes} />
+            <ListNotificacoes loading={loading} notificacoesList={notificacoes} />
           </CardContent>
         </Card>
       </Popover>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import BoxNumbers from "../components/dashboard/boxNumbers";
 import ListFeedbacks from "../components/dashboard/listFeedbacks";
-import ListNotificacoes from "../components/dashboard/listNotificacoes";
+import PieChart from "../components/nivoCharts/pie";
 
 const info = [
   {
@@ -62,7 +62,7 @@ export default function Dashboard() {
       maxWidth="xl"
       display="grid"
       gridTemplateColumns={{ md: "repeat(2, 1fr)", lg: "repeat(4, 2fr)" }}
-      gap={5}
+      gap={3}
       sx={{ m: "0 auto", p: 4, color: "text.primary" }}
     >
       <BoxNumbers
@@ -78,22 +78,19 @@ export default function Dashboard() {
           text={row.desc}
         />
       ))}
-      <Box gridColumn="span 2">
-        <Card sx={{ columnSpan: 2 }}>
+      <Box gridColumn="span 3">
+        <Card>
           <CardHeader title="Feedbacks" />
           <CardContent>
             <ListFeedbacks loading={loading} feedbackList={feedbacks} />
           </CardContent>
         </Card>
       </Box>
-      <Box gridColumn="span 2">
-        <Card sx={{ columnSpan: 2 }}>
-          <CardHeader title="Notificações" />
-          <CardContent>
-            <ListNotificacoes
-              loading={loading}
-              notificacoesList={notificacoes}
-            />
+      <Box >
+        <Card>
+          <CardHeader title="Salas" />
+          <CardContent sx={{ height: "17rem" }}>
+            <PieChart />
           </CardContent>
         </Card>
       </Box>

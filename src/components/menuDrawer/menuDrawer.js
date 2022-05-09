@@ -42,16 +42,19 @@ function MenuDrawer(props) {
   const { switchMode } = useContext(ColorModeContext);
   const [handleOpenNotification, setOpenNotification] = useState(false);
   const [notificacoes, setNotificacoes] = useState([]);
+  const [loading, setLoading] = useState(false);
  
   useEffect(() => {
     const fetchData = async () => {
       try {
         //requests
+        setLoading(true);
         const { data: responseNotificacao } = await axios.get(
           "/notificacao/list"
         );
         //set states
         setNotificacoes(responseNotificacao);
+        setLoading(false);
       } catch (error) {
         toast.error(error);
       }
@@ -130,7 +133,7 @@ function MenuDrawer(props) {
                 <Brightness4 />
               )}
             </IconButton>
-            <Notifications notificacoes={notificacoes}/>
+            <Notifications loading={loading} notificacoes={notificacoes}/>
             <IconButton /* onClick={handleOpenUserMenu} */>
               <Avatar alt="Remy Sharp" />
             </IconButton>

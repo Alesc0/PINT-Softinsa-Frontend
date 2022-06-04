@@ -1,10 +1,12 @@
-import { Notifications } from "@mui/icons-material";
+import { Notifications, NotificationsNone } from "@mui/icons-material";
 import {
-  Card,
-  CardContent,
-  CardHeader,
+  Container,
   IconButton,
   Popover,
+  Stack,
+  Typography,
+  Badge,
+  Button,
 } from "@mui/material";
 import { useState } from "react";
 import ListNotificacoes from "../dashboard/listNotificacoes";
@@ -24,7 +26,7 @@ import ListNotificacoes from "../dashboard/listNotificacoes";
   zIndex: 1,
 }));
  */
-function Notification({ notificacoes,loading }) {
+function Notification({ notificacoes, loading }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -33,8 +35,26 @@ function Notification({ notificacoes,loading }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  var notRead = notificacoes.reduce(function (filtered, not) {
+    if (!not.recebida) {
+      filtered.push(not);
+    }
+    return filtered;
+  }, []);
+
+  let read = [...notificacoes];
+  read = notificacoes.filter((el) => !notRead.includes(el));
+
+  const props = {
+    read,
+    notRead,
+    loading,
+  };
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+
   return (
     <>
       <IconButton
@@ -42,7 +62,9 @@ function Notification({ notificacoes,loading }) {
         onClick={handleClick}
         sx={{ color: "primary.contrastText" }}
       >
-        <Notifications />
+        <Badge badgeContent={notRead.length} color="warning">
+          {notRead ? <Notifications /> : <NotificationsNone />}
+        </Badge>
       </IconButton>
       <Popover
         id={id}
@@ -58,12 +80,19 @@ function Notification({ notificacoes,loading }) {
           horizontal: "right",
         }}
       >
-        <Card>
-          <CardHeader title="Notificações" />
-          <CardContent>
-            <ListNotificacoes loading={loading} notificacoesList={notificacoes} />
-          </CardContent>
-        </Card>
+        <Container disableGutters sx={{ py: 1, minWidth: "200px" }}>
+          <Stack direction="row" className="center" sx={{ px: 2, py: 1 }}>
+            <Typography variant="h5">Notificações</Typography>
+            <Typography
+              component={Button}
+              sx={{ ml: "auto", textDecoration: "underline" }}
+              variant="caption"
+            >
+              Ler Tudo
+            </Typography>
+          </Stack>
+          <ListNotificacoes {...props} />
+        </Container>
       </Popover>
     </>
   );

@@ -20,7 +20,7 @@ function Centros() {
     const fetchData = async () => {
       try {
         const { data: response } = await axios.get("/centro/list");
-        setCentros(response);
+        setCentros(response.centros);
       } catch (error) {
         toast.error(error);
       }
@@ -38,13 +38,25 @@ function Centros() {
         md: "repeat(3,1fr)",
         sm: "repeat(2,1fr)",
       }}
-      sx={{
-        m: "0 auto",
-        p: 5,
-        bgcolor: "background.default",
-        color: "text.primary",
-      }}
     >
+      {centros.length > 0
+        ? centros.map((row) => (
+            <Card key={row.idcentro} sx={{ maxWidth: 345 }}>
+              <CardActionArea sx={{ height: "100%" }}>
+                <CardMedia
+                  component="img"
+                  image={centroViseu}
+                  alt={row.cidade}
+                />
+                <CardContent>
+                  <Typography variant="h5" textAlign="center" component="div">
+                    {row.nome}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          ))
+        : null}
       <Card sx={{ maxWidth: 345 }}>
         <CardActionArea component={Link} to={"add"} sx={{ height: "100%" }}>
           <CardContent
@@ -70,24 +82,6 @@ function Centros() {
           </CardContent>
         </CardActionArea>
       </Card>
-      {centros.length > 0
-        ? centros.map((row) => (
-            <Card key={row.idcentro} sx={{ maxWidth: 345 }}>
-              <CardActionArea sx={{ height: "100%" }}>
-                <CardMedia
-                  component="img"
-                  image={centroViseu}
-                  alt={row.cidade}
-                />
-                <CardContent>
-                  <Typography variant="h5" textAlign="center" component="div">
-                    {row.nome}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          ))
-        : null}
     </Box>
   );
 }

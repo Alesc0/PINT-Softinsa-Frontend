@@ -17,9 +17,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
-import sampleAvaImg from "../../imgs/avatar.jpg";
-import Label from "../label/label";
-import NewModal from "../modal/modal";
+import sampleAvaImg from "../../../imgs/avatar.jpg";
+import Label from "../../label/label";
+import NewModal from "./modal";
 import EnhancedTableHead from "./tableHead";
 import EnhancedTableToolbar from "./tableToolbar";
 

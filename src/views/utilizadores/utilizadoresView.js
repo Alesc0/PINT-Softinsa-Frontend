@@ -1,14 +1,15 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import EnhancedTable from "../../components/enhancedTable/enhancedTable";
+import EnhancedTable from "../../components/utilizadores/enhancedTable/enhancedTable";
 
 function UtilizadoresView(props) {
   const [users, setUsers] = useState([]);
   const [value, toggle] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+
   const refetch = useCallback(() => {
     toggle((prev) => !prev);
   }, [toggle]);
@@ -16,10 +17,10 @@ function UtilizadoresView(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true);
+        setLoading(true);
         const { data: response } = await axios.get("/utilizador/list");
-        setUsers(response);
-        setIsLoading(false);
+        setUsers(response.utilizadores);
+        setLoading(false);
       } catch (error) {
         toast.error(error);
       }
@@ -29,19 +30,7 @@ function UtilizadoresView(props) {
 
   return (
     <>
-      <Box
-        maxWidth="xl"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          m: "0 auto",
-          p: 5,
-          pt: 2,
-          bgcolor: "background.default",
-          color: "text.primary",
-        }}
-      >
+      <Stack spacing={2}>
         <Box sx={{ display: "flex" }}>
           <Typography variant="h3">Gerir Utilizadores</Typography>
           <Box sx={{ ml: "auto" }}>
@@ -54,10 +43,10 @@ function UtilizadoresView(props) {
           refetch={refetch}
           setUsers={setUsers}
           isLoading={isLoading}
-          setLoading={setIsLoading}
+          setLoading={setLoading}
           data={users}
         />
-      </Box>
+      </Stack>
     </>
   );
 }

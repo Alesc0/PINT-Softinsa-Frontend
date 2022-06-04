@@ -45,7 +45,7 @@ export default function Dashboard() {
           "/notificacao/list"
         );
         //set states
-        setUserCount(responseUsersCount.length);
+        setUserCount(responseUsersCount.utilizadores.length);
         setFeedbacks(responseFeedbacks);
         setNotificacoes(responseNotificacao);
 
@@ -63,7 +63,6 @@ export default function Dashboard() {
       display="grid"
       gridTemplateColumns={{ md: "repeat(2, 1fr)", lg: "repeat(4, 2fr)" }}
       gap={3}
-      sx={{ m: "0 auto", p: 4, color: "text.primary" }}
     >
       <BoxNumbers
         loading={loading}
@@ -86,7 +85,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </Box>
-      <Box >
+      <Box>
         <Card>
           <CardHeader title="Salas" />
           <CardContent sx={{ height: "17rem" }}>

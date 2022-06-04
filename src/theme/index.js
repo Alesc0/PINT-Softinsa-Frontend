@@ -6,7 +6,7 @@ import {
   ThemeProvider as MUIThemeProvider,
 } from "@mui/material/styles";
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import componentsOverride from "./overrides";
 //
 import { paletteDark, paletteDefault } from "./palette";
@@ -25,12 +25,20 @@ ThemeProvider.propTypes = {
 export const ColorModeContext = createContext(null);
 
 export default function ThemeProvider({ children }) {
+  useEffect(() => {
+    const local = localStorage.getItem("mode");
+    if (local) setMode(local);
+  }, []);
+
   const [mode, setMode] = useState("light");
   const switchMode = () => {
     setMode((e) => (e === "light" ? "dark" : "light"));
+    localStorage.setItem("mode", mode === "light" ? "dark" : "light");
   };
+  
   const palette = mode === "light" ? paletteDefault : paletteDark;
   const shadows = mode === "light" ? shadowsLight : shadowsDark;
+
   const customShadows =
     mode === "light" ? customShadowsLight : customShadowsDark;
   const themeOptions = {
@@ -40,6 +48,7 @@ export default function ThemeProvider({ children }) {
     shadows,
     customShadows,
   };
+  
   const theme = createTheme(themeOptions);
   theme.components = componentsOverride(theme);
 

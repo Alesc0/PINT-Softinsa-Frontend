@@ -1,8 +1,11 @@
 import {
   Brightness4,
   Brightness7,
-  KeyboardArrowRight,
   Menu,
+  Person,
+  QueryStats,
+  Apartment,
+  Dashboard,
 } from "@mui/icons-material/";
 import {
   AppBar,
@@ -13,6 +16,7 @@ import {
   IconButton,
   List,
   ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   Toolbar,
@@ -21,7 +25,7 @@ import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import navBar_logo from "../../imgs/logo-softinsa.png";
@@ -30,20 +34,48 @@ import Notifications from "./notification";
 
 const drawerWidth = 250;
 const pages = [
-  { name: "Dashboard", link: "/" },
-  { name: "Estatisticas", link: "/stats" },
-  { name: "Centros", link: "/centros" },
-  { name: "Utilizadores", link: "/utilizadores" },
+  {
+    name: "Dashboard",
+    link: "/",
+    icon: <Dashboard sx={{ color: "white" }} />,
+  },
+  {
+    name: "Estatisticas",
+    link: "/stats",
+    icon: <QueryStats sx={{ color: "white" }} />,
+  },
+  {
+    name: "Centros",
+    link: "/centros",
+    icon: <Apartment sx={{ color: "white" }} />,
+  },
+  {
+    name: "Utilizadores",
+    link: "/utilizadores",
+    icon: <Person sx={{ color: "white" }} />,
+  },
 ];
+
 function MenuDrawer(props) {
   const { window } = props;
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { switchMode } = useContext(ColorModeContext);
-  const [handleOpenNotification, setOpenNotification] = useState(false);
   const [notificacoes, setNotificacoes] = useState([]);
   const [loading, setLoading] = useState(false);
- 
+  const [active, setActive] = useState(0);
+  let location = useLocation();
+
+  const activeStyle = {
+    bgcolor: "#4c6885",
+    borderRadius: 1,
+  };
+
+  useEffect(() => {
+    let page = pages.filter((el) => location.pathname.includes(el.link));
+    setActive(pages.indexOf(page[page.length - 1]));
+  }, [location]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -62,10 +94,10 @@ function MenuDrawer(props) {
     fetchData();
   }, []);
 
-
   const handleDrawerToggle = () => {
     setMobileOpen((mobileOpen) => !mobileOpen);
   };
+
   const drawer = (
     <>
       <Toolbar disableGutters sx={{ bgcolor: "primary.dark" }}>
@@ -75,22 +107,20 @@ function MenuDrawer(props) {
       </Toolbar>
       <Divider />
       <List>
-        {pages.map((row) => (
-          <ListItem
-            key={row.name}
-            component={Link}
-            to={row.link}
-            sx={{ p: 2, py: 1 }}
-            button
-          >
-            <ListItemIcon sx={{ minWidth: 40 }}>
-              <KeyboardArrowRight sx={{ color: "white" }} />
-            </ListItemIcon>
-            <ListItemText
-              sx={{ color: "white" }}
-              primary={row.name}
-              primaryTypographyProps={{ fontSize: "18px" }}
-            />
+        {pages.map((row, i) => (
+          <ListItem key={row.name} sx={{ py: 0.5, px: 2 }}>
+            <ListItemButton
+              component={Link}
+              to={row.link}
+              sx={i === active ? { ...activeStyle } : { borderRadius: 1 }}
+            >
+              <ListItemIcon sx={{ minWidth: 40 }}>{row.icon}</ListItemIcon>
+              <ListItemText
+                sx={{ color: "white" }}
+                primary={row.name}
+                primaryTypographyProps={{ fontSize: "18px" }}
+              />
+            </ListItemButton>
           </ListItem>
         ))}
       </List>
@@ -133,7 +163,7 @@ function MenuDrawer(props) {
                 <Brightness4 />
               )}
             </IconButton>
-            <Notifications loading={loading} notificacoes={notificacoes}/>
+            <Notifications loading={loading} notificacoes={notificacoes} />
             <IconButton /* onClick={handleOpenUserMenu} */>
               <Avatar alt="Remy Sharp" />
             </IconButton>
@@ -182,7 +212,8 @@ function MenuDrawer(props) {
         component="main"
         sx={{
           flexGrow: 1,
-          pt: 8,
+          p: 3,
+          pt: 11,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >

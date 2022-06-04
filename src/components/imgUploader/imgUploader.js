@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import Dropzone from "react-dropzone";
-import UploadService from "../../services/fileUpload.service";
 import { Box, LinearProgress, Typography, useTheme } from "@mui/material";
+import React, { useState } from "react";
+import Dropzone from "react-dropzone";
 import "./styles.css";
 
 function LinearProgressWithLabel(props) {

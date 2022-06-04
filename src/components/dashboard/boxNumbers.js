@@ -12,18 +12,16 @@ function BoxNumbers(props) {
   const { loading, info, text } = props;
   return (
     <Card component={Paper}>
-      <CardHeader title={text} />{" "}
+      <CardHeader title={text} />
       <CardContent>
-        {" "}
         {loading ? (
           <CircularProgress />
         ) : (
           <Typography variant="h3" sx={{ color: "primary.main" }}>
-            {" "}
-            {info}{" "}
+            {info}
           </Typography>
-        )}{" "}
-      </CardContent>{" "}
+        )}
+      </CardContent>
     </Card>
   );
 }

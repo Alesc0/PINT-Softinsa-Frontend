@@ -35,12 +35,13 @@ export default function ThemeProvider({ children }) {
     setMode((e) => (e === "light" ? "dark" : "light"));
     localStorage.setItem("mode", mode === "light" ? "dark" : "light");
   };
-  
+
   const palette = mode === "light" ? paletteDefault : paletteDark;
   const shadows = mode === "light" ? shadowsLight : shadowsDark;
 
   const customShadows =
     mode === "light" ? customShadowsLight : customShadowsDark;
+
   const themeOptions = {
     palette,
     shape: { borderRadius: 8 },
@@ -48,7 +49,7 @@ export default function ThemeProvider({ children }) {
     shadows,
     customShadows,
   };
-  
+
   const theme = createTheme(themeOptions);
   theme.components = componentsOverride(theme);
 

@@ -42,7 +42,11 @@ function Centros() {
       {centros.length > 0
         ? centros.map((row) => (
             <Card key={row.idcentro} sx={{ maxWidth: 345 }}>
-              <CardActionArea sx={{ height: "100%" }}>
+              <CardActionArea
+                sx={{ height: "100%" }}
+                component={Link}
+                to={"edit/" + row.idcentro}
+              >
                 <CardMedia
                   component="img"
                   image={centroViseu}

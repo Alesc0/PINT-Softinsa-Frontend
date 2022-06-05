@@ -1,12 +1,15 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import CentroForm from "../../components/centros/form";
+import { useParams } from "react-router-dom";
 
 function AddCentros() {
+  const { id } = useParams();
+
   const handleRequest = async (e) => {
     try {
       //requests
-      const data = await axios.post("/centro", {});
+      const data = await axios.put("/centros/" + id, {});
       toast.success(data.data);
     } catch (error) {
       for (const [key, value] of Object.entries(error.response.data)) {
@@ -15,7 +18,7 @@ function AddCentros() {
     }
   };
 
-  const centroProps = { handleRequest };
+  const centroProps = { handleRequest, id };
 
   return <CentroForm {...centroProps} />;
 }

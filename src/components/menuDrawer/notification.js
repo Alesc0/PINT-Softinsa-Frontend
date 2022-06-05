@@ -24,7 +24,6 @@ function Notification({ notificacoes, loading, setNotificacoes }) {
   };
 
   const handleClose = () => {
-    readAll();
     setAnchorEl(null);
   };
 
@@ -55,8 +54,8 @@ function Notification({ notificacoes, loading, setNotificacoes }) {
       "& .MuiAvatar-root": {
         width: 32,
         height: 32,
-        ml: -0.5,
-        mr: 1,
+        ml: -1,
+        mr: 1.5,
       },
       "&:before": {
         content: '""',
@@ -104,6 +103,7 @@ function Notification({ notificacoes, loading, setNotificacoes }) {
             <Typography variant="h5">Notificações</Typography>
             <Typography
               component={Button}
+              onClick={readAll}
               sx={{ ml: "auto", textDecoration: "underline" }}
               variant="caption"
             >

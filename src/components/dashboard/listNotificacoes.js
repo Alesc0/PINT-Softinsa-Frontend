@@ -5,22 +5,25 @@ import {
   Divider,
   List,
   ListItem,
-  ListItemAvatar,
   ListItemButton,
   ListItemText,
   Typography,
 } from "@mui/material";
-import ava from "../../imgs/avatar.jpg";
 import React from "react";
+import ava from "../../imgs/avatar.jpg";
 
 function ListNotificacoes({ loading, read, notRead }) {
   const renderList = (rows) => {
+    if (rows.length === 0)
+      return (
+        <Typography textAlign="center" sx={{ marginBlock: 2 }}>
+          Sem Notificações.
+        </Typography>
+      );
     return rows.map((row, i) => (
       <ListItem key={i} alignItems="flex-start" disableGutters disablePadding>
         <ListItemButton sx={{ px: 3 }}>
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src={ava} />
-          </ListItemAvatar>
+          <Avatar alt="Remy Sharp" src={ava} />
           <ListItemText
             primary={
               <>

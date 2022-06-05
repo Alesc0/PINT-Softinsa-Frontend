@@ -46,7 +46,8 @@ export default function Dashboard() {
 
         setLoading(false);
       } catch (error) {
-        toast.error(error);
+        console.log(error);
+        toast.error("Erro na ligação com o servidor!");
       }
     };
     fetchData();
@@ -56,7 +57,7 @@ export default function Dashboard() {
     <Box
       maxWidth="xl"
       display="grid"
-      gridTemplateColumns={{ md: "repeat(2, 1fr)", lg: "repeat(4, 2fr)" }}
+      gridTemplateColumns={{ sm: "repeat(2, 1fr)", md: "repeat(4, 2fr)" }}
       gap={3}
     >
       <BoxNumbers
@@ -72,19 +73,11 @@ export default function Dashboard() {
           text={row.desc}
         />
       ))}
-      <Box gridColumn="span 3">
+      <Box gridColumn="span 2">
         <Card>
           <CardHeader title="Feedbacks" />
           <CardContent>
             <ListFeedbacks loading={loading} feedbackList={feedbacks} />
-          </CardContent>
-        </Card>
-      </Box>
-      <Box>
-        <Card>
-          <CardHeader title="Salas" />
-          <CardContent sx={{ height: "17rem" }}>
-            <PieChart />
           </CardContent>
         </Card>
       </Box>

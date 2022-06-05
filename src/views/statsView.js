@@ -14,11 +14,6 @@ function Stats(props) {
         sm: "repeat(1,1fr)",
       }}
       gap={5}
-      sx={{
-        p: 5,
-        bgcolor: "background.default",
-        color: "text.primary",
-      }}
     >
       <Box
         component={Paper}

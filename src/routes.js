@@ -8,11 +8,14 @@ import Login from "./views/loginView";
 import NotFound from "./views/notFoundView";
 import Dashboard from "./views/dashboardView";
 import Stats from "./views/statsView";
+
 import Centros from "./views/centros/centrosView";
+import AddCentros from "./views/centros/addCentros";
+import EditCentros from "./views/centros/editCentros";
+
 import Utilizadores from "./views/utilizadores/utilizadoresView";
 import AddUtilizadores from "./views/utilizadores/addUtilizadores";
 import EditUtilizadores from "./views/utilizadores/editUtilizadores";
-import AddCentros from "./views/centros/addCentros";
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +27,7 @@ export default function Router() {
           <Route index element={<Dashboard />} />
           <Route path="centros" element={<Centros />} />
           <Route path="centros/add" element={<AddCentros />} />
+          <Route path="centros/edit/:id" element={<EditCentros />} />
           <Route path="utilizadores" element={<Utilizadores />} />
           <Route path="utilizadores/add" element={<AddUtilizadores />} />
           <Route path="utilizadores/edit/:id" element={<EditUtilizadores />} />

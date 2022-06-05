@@ -27,7 +27,7 @@ function ImgUploader({ files, setFiles }) {
       })}
     >
       <input {...getInputProps()} />
-      {files.length > 0 ? (
+      {files && files.length > 0 ? (
         <Typography fontWeight="bold">{files[0].name}</Typography>
       ) : (
         <Typography color="text.secondary">

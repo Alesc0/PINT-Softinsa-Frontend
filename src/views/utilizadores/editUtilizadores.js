@@ -10,7 +10,7 @@ export default function EditUtilizadoresView() {
     console.log(userObj);
     try {
       //requests
-      const data = await axios.post("/utilizador/edit/" + id, userObj);
+      const data = await axios.put("/utilizador/" + id, userObj);
       toast.success(data.data);
     } catch (error) {
       for (const [key, value] of Object.entries(error.response.data)) {

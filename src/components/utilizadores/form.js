@@ -2,6 +2,7 @@ import { Settings } from "@mui/icons-material";
 import {
   Box,
   Button,
+  CircularProgress,
   Divider,
   FormControl,
   IconButton,
@@ -9,6 +10,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Skeleton,
   Stack,
   Tab,
   Tabs,
@@ -30,7 +32,7 @@ const errorList = {
 
 const options = [
   {
-    name: "firstLogin",
+    name: "firstlogin",
     displayName: "Primeiro Login",
     default: true,
   },
@@ -43,7 +45,38 @@ const options = [
 
 const perms = ["Regular", "Administrador", "Limpeza"];
 
+const loadSkeleton = () => {
+  return (
+    <>
+      <Skeleton
+        variant="text"
+        width={160}
+        height={50}
+        sx={{ alignSelf: "center" }}
+      />
+      <Skeleton variant="rectangular" width={450} height={50} />
+      <Skeleton variant="rectangular" width={450} height={50} />
+      <Skeleton variant="rectangular" width={450} height={50} />
+      <Stack direction="row" spacing={2}>
+        <Skeleton variant="rectangular" width={100} height={45} />
+        <Stack direction="row" spacing={1}>
+          <Skeleton variant="rectangular" width={105} height={45} />
+          <Skeleton variant="rectangular" width={105} height={45} />
+          <Skeleton variant="rectangular" width={105} height={45} />
+        </Stack>
+      </Stack>
+      <Divider />
+      <Stack direction="row" spacing={2} sx={{ alignSelf: "flex-end" }}>
+        <Skeleton variant="rectangular" width={50} height={35} />
+        <Skeleton variant="rectangular" width={70} height={35} />
+      </Stack>
+    </>
+  );
+};
+
 export default function UtilizadorForm({ handleRequest, id = undefined }) {
+  const [loading, setLoading] = useState(false);
+
   const [permissionTab, setPermissionTab] = useState(0);
   const [centros, setCentros] = useState([]);
 
@@ -84,8 +117,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
   };
 
   const setAddOptions = (data) => {
-    let op = options.map((row) => data[row.name]);
-    setChecked(op);
+    setChecked(options.map((row) => data[row.name]));
   };
 
   const setFields = useCallback((data) => {
@@ -96,11 +128,12 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
     setCentro(data.idcentro);
     if (data.admin) setPermissionTab(1);
     setAtivo(data.estado);
-    setAddOptions();
+    setAddOptions(data);
   }, []);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const { data: response } = await axios.get("/centro/list");
         setCentros(response.centros);
@@ -111,6 +144,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
       } catch (error) {
         toast.error(error);
       }
+      setLoading(false);
     };
     fetchData();
   }, [setCentro, id, setFields]);
@@ -143,10 +177,11 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
     if (validate()) {
       handleRequest({
         nome: nome.trim(),
-        contacto: contacto.trim(),
+        telemovel: contacto.trim(),
         email: email.trim(),
-        ativo: ativo,
+        estado: ativo,
         ...opObj(),
+        role: perms[permissionTab],
       });
     }
   };
@@ -164,92 +199,103 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
         style={{
           position: "relative",
           width: "fit-content",
-          margin: "2em auto",
+          margin: "1em auto",
         }}
       >
         <Stack
           component={Paper}
+          elevation={2}
           maxWidth="sm"
           spacing={2}
           sx={{ paddingInline: 3, paddingBlock: 2 }}
         >
-          <Typography textAlign="center" variant="h4">
-            Adicionar Utilizador
-          </Typography>
-          <TextField
-            required
-            label="Nome"
-            variant="outlined"
-            error={nomeErr}
-            helperText={nomeErr && errorList.nome}
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            autoComplete="off"
-          />
-          <TextField
-            required
-            label="Email"
-            variant="outlined"
-            type="email"
-            value={email}
-            error={emailErr}
-            autoComplete="off"
-            helperText={emailErr && errorList.email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <PhoneInput
-            required
-            autoComplete="off"
-            value={contacto}
-            error={contactoErr}
-            onChange={setContacto}
-            placeholder="Contacto"
-            inputComponent={CustomPhoneInput}
-          />
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-            <FormControl>
-              <InputLabel id="label-select"> Centro </InputLabel>
-              <Select
-                sx={{ minWidth: 125 }}
-                label="Centro"
-                labelId="label-select"
-                value={centro}
-                onChange={(e) => setCentro(e.target.value)}
-              >
-                {centros.length > 0 ? (
-                  centros.map((row) => (
-                    <MenuItem key={row.idcentro} value={row.idcentro}>
-                      {row.cidade}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem value={1}> {"Sem centros disponíveis!"} </MenuItem>
-                )}
-              </Select>
-            </FormControl>
-            <Box>
-              <Tabs value={permissionTab} onChange={handleChange}>
-                {perms.map((row, i) => (
-                  <Tab key={i} label={row} value={i} />
-                ))}
-              </Tabs>
-            </Box>
-          </Stack>
-          <Divider />
-          <Stack direction="row" spacing={2} sx={{ alignSelf: "flex-end" }}>
-            <Button
-              component={Link}
-              to="/utilizadores"
-              color="error"
-              variant="contained"
-            >
-              Voltar
-            </Button>
-            <Button type="submit" color="info" variant="contained">
-              Confirmar
-            </Button>
-          </Stack>
+          {loading ? (
+            loadSkeleton()
+          ) : (
+            <>
+              <Typography textAlign="center" variant="h4">
+                {!id ? "Adicionar" : "Editar"} Utilizador
+              </Typography>
+              <TextField
+                required
+                label="Nome"
+                variant="outlined"
+                error={nomeErr}
+                helperText={nomeErr && errorList.nome}
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                autoComplete="off"
+              />
+              <TextField
+                required
+                label="Email"
+                variant="outlined"
+                type="email"
+                value={email}
+                error={emailErr}
+                autoComplete="off"
+                helperText={emailErr && errorList.email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <PhoneInput
+                required
+                autoComplete="off"
+                value={contacto}
+                error={contactoErr}
+                onChange={setContacto}
+                placeholder="Contacto"
+                inputComponent={CustomPhoneInput}
+              />
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                <FormControl>
+                  <InputLabel id="label-select"> Centro </InputLabel>
+                  <Select
+                    sx={{ minWidth: 125 }}
+                    label="Centro"
+                    labelId="label-select"
+                    value={centro}
+                    onChange={(e) => setCentro(e.target.value)}
+                  >
+                    {centros.length > 0 ? (
+                      centros.map((row) => (
+                        <MenuItem key={row.idcentro} value={row.idcentro}>
+                          {row.cidade}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem value={1}>
+                        {" "}
+                        {"Sem centros disponíveis!"}{" "}
+                      </MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+                <Box>
+                  <Tabs value={permissionTab} onChange={handleChange}>
+                    {perms.map((row, i) => (
+                      <Tab key={i} label={row} value={i} />
+                    ))}
+                  </Tabs>
+                </Box>
+              </Stack>
+              <Divider />
+              <Stack direction="row" spacing={2} sx={{ alignSelf: "flex-end" }}>
+                <Button
+                  component={Link}
+                  to="/utilizadores"
+                  color="error"
+                  variant="contained"
+                >
+                  Voltar
+                </Button>
+                <Button type="submit" color="info" variant="contained">
+                  Confirmar
+                </Button>
+              </Stack>
+            </>
+          )}
         </Stack>
+
         <IconButton
           sx={{ position: "absolute", top: 0, mt: 1, right: 2 }}
           onClick={handleOpen}

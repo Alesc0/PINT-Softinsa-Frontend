@@ -1,11 +1,15 @@
 import {
-  Apartment, Brightness4,
-  Brightness7, Dashboard, Menu,
+  Apartment,
+  Brightness4,
+  Brightness7,
+  Dashboard,
+  Menu,
   Person,
-  QueryStats
+  QueryStats,
 } from "@mui/icons-material/";
 import {
-  AppBar, Box,
+  AppBar,
+  Box,
   Divider,
   Drawer,
   IconButton,
@@ -16,7 +20,7 @@ import {
   ListItemText,
   Stack,
   Toolbar,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import axios from "axios";
@@ -101,7 +105,9 @@ function MenuDrawer(props) {
         <Typography variant="body2" color="text.secondary" align="center">
           {"Copyright © "}
         </Typography>
-        <Typography>Softinsa {new Date().getFullYear()}</Typography>
+        <Typography color="text.secondary">
+          Softinsa {new Date().getFullYear()}
+        </Typography>
       </Stack>
     );
   };

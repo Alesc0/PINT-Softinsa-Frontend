@@ -1,5 +1,6 @@
 import { Delete, ManageAccounts } from "@mui/icons-material";
 import {
+  alpha,
   Avatar,
   Checkbox,
   IconButton,
@@ -10,6 +11,9 @@ import {
 } from "@mui/material";
 import sampleAvaImg from "../../../imgs/avatar.jpg";
 import Label from "../../label/label";
+
+const admin = "rgba(218, 165, 32, 0.1)";
+const limpeza = "rgba(171, 215, 125, 0.1)";
 
 function UserTableRow(props) {
   const { handleClick, handleClickMenu, handleOpenModal, isItemSelected, row } =
@@ -22,6 +26,7 @@ function UserTableRow(props) {
       key={row.idutilizador}
       selected={isItemSelected}
       onClick={(event) => handleClick(event, row.idutilizador)}
+      style={{ ...(row.admin && { backgroundColor: admin }) }}
     >
       <TableCell padding="checkbox">
         <Checkbox color="primary" checked={isItemSelected} />
@@ -36,7 +41,9 @@ function UserTableRow(props) {
         <Typography>{row.ncolaborador}</Typography>
       </TableCell>
       <TableCell align="left">
-        <Typography>{row.telemovel}</Typography>
+        <Typography>
+          {row.telemovel.length === 13 ? row.telemovel.slice(4) : row.telemovel}
+        </Typography>
       </TableCell>
       <TableCell align="left">
         <Typography>{row.email}</Typography>

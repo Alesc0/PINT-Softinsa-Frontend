@@ -14,6 +14,35 @@ import ava from "../../imgs/avatar.jpg";
 import React from "react";
 
 function ListNotificacoes({ loading, read, notRead }) {
+  const renderList = (rows) => {
+    return rows.map((row, i) => (
+      <ListItem key={i} alignItems="flex-start" disableGutters disablePadding>
+        <ListItemButton sx={{ px: 3 }}>
+          <ListItemAvatar>
+            <Avatar alt="Remy Sharp" src={ava} />
+          </ListItemAvatar>
+          <ListItemText
+            primary={
+              <>
+                {!row.utilizador ? "Sistema" : row.utilizador.nome}
+                <Typography
+                  sx={{ display: "inline" }}
+                  component="span"
+                  variant="body2"
+                  color="secondary.main"
+                >
+                  {" - "}
+                  {row.titulo}
+                </Typography>
+              </>
+            }
+            secondary={row.descricao}
+          />
+        </ListItemButton>
+      </ListItem>
+    ));
+  };
+
   return loading ? (
     <Box
       sx={{
@@ -29,36 +58,8 @@ function ListNotificacoes({ loading, read, notRead }) {
   ) : (
     <>
       <List disablePadding>
-        {notRead.map((row, i) => (
-          <ListItem
-            key={i}
-            alignItems="flex-start"
-            disableGutters
-            disablePadding
-          >
-            <ListItemButton sx={{ px: 3 }}>
-              <ListItemAvatar>
-                <Avatar alt="Remy Sharp" src={ava} />
-              </ListItemAvatar>
-              <ListItemText
-                primary={!row.utilizador ? "Sistema" : row.utilizador.nome}
-                secondary={
-                  <>
-                    <Typography
-                      sx={{ display: "inline" }}
-                      component="span"
-                      variant="body2"
-                      color="secondary.main"
-                    >
-                      {row.titulo}
-                    </Typography>
-                    {" — " + row.descricao}
-                  </>
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {renderList(notRead)}
+
         <Divider component="li" />
         <li>
           <Typography
@@ -73,36 +74,7 @@ function ListNotificacoes({ loading, read, notRead }) {
       </List>
 
       <List disablePadding dense>
-        {read.map((row, i) => (
-          <ListItem
-            key={i}
-            alignItems="flex-start"
-            disableGutters
-            disablePadding
-          >
-            <ListItemButton sx={{ px: 3 }}>
-              <ListItemAvatar>
-                <Avatar alt="Remy Sharp" src={ava} />
-              </ListItemAvatar>
-              <ListItemText
-                primary={!row.utilizador ? "Sistema" : row.utilizador.nome}
-                secondary={
-                  <>
-                    <Typography
-                      sx={{ display: "inline" }}
-                      component="span"
-                      variant="body2"
-                      color="secondary.main"
-                    >
-                      {row.titulo}
-                    </Typography>
-                    {" — " + row.descricao}
-                  </>
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {renderList(read)}
       </List>
     </>
   );

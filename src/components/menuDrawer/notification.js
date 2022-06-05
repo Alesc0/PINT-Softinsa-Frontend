@@ -11,32 +11,24 @@ import {
 import { useState } from "react";
 import ListNotificacoes from "../dashboard/listNotificacoes";
 
-/* const ArrowStyled = styled("span")(({ theme }) => ({
-  background: theme.palette.background.paper,
-  borderBottom: `solid 1px ${alpha(theme.palette.grey[500], 0.12)}`,
-  borderRadius: "0 0 4px 0",
-  borderRight: `solid 1px ${alpha(theme.palette.grey[500], 0.12)}`,
-  content: "''",
-  height: 12,
-  position: "absolute",
-  right: "20",
-  top: "-7",
-  transform: "rotate(-135deg)",
-  width: 12,
-  zIndex: 1,
-}));
- */
-function Notification({ notificacoes, loading }) {
+function Notification({ notificacoes, loading, setNotificacoes }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const readAll = () => {
+    let a = [...notificacoes];
+    a.map((row) => (row.recebida = true));
+    setNotificacoes(a);
+  };
+
   const handleClose = () => {
+    readAll();
     setAnchorEl(null);
   };
 
-  var notRead = notificacoes.reduce(function (filtered, not) {
+  var notRead = notificacoes.reduce((filtered, not) => {
     if (!not.recebida) {
       filtered.push(not);
     }
@@ -51,9 +43,35 @@ function Notification({ notificacoes, loading }) {
     notRead,
     loading,
   };
-
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+
+  const paperProps = {
+    elevation: 0,
+    sx: {
+      overflow: "visible",
+      filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+      mt: 1.5,
+      "& .MuiAvatar-root": {
+        width: 32,
+        height: 32,
+        ml: -0.5,
+        mr: 1,
+      },
+      "&:before": {
+        content: '""',
+        display: "block",
+        position: "absolute",
+        top: 0,
+        right: 14,
+        width: 10,
+        height: 10,
+        bgcolor: "background.paper",
+        transform: "translateY(-50%) rotate(45deg)",
+        zIndex: 0,
+      },
+    },
+  };
 
   return (
     <>
@@ -62,8 +80,8 @@ function Notification({ notificacoes, loading }) {
         onClick={handleClick}
         sx={{ color: "primary.contrastText" }}
       >
-        <Badge badgeContent={notRead.length} color="warning">
-          {notRead ? <Notifications /> : <NotificationsNone />}
+        <Badge badgeContent={notRead.length} color="error">
+          {notRead.length > 0 ? <Notifications /> : <NotificationsNone />}
         </Badge>
       </IconButton>
       <Popover
@@ -79,8 +97,9 @@ function Notification({ notificacoes, loading }) {
           vertical: "top",
           horizontal: "right",
         }}
+        PaperProps={paperProps}
       >
-        <Container disableGutters sx={{ py: 1, minWidth: "200px" }}>
+        <Container disableGutters sx={{ py: 1, minWidth: "300px" }}>
           <Stack direction="row" className="center" sx={{ px: 2, py: 1 }}>
             <Typography variant="h5">Notificações</Typography>
             <Typography
@@ -88,7 +107,7 @@ function Notification({ notificacoes, loading }) {
               sx={{ ml: "auto", textDecoration: "underline" }}
               variant="caption"
             >
-              Ler Tudo
+              Marcar como lido
             </Typography>
           </Stack>
           <ListNotificacoes {...props} />

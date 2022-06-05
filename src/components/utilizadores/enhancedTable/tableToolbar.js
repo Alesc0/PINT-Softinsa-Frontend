@@ -5,7 +5,7 @@ import { useState } from "react";
 import SideBar from "./sideBar";
 
 const EnhancedTableToolbar = (props) => {
-  const { selected, handleOpen } = props;
+  const { selected, handleOpenModal } = props;
   const [sidebar, setSidebar] = useState(false);
 
   const handleSidebar = (open) => (event) => {
@@ -43,7 +43,7 @@ const EnhancedTableToolbar = (props) => {
         ) : null}
         {selected.length > 0 ? (
           <Tooltip title="Delete" sx={{ ml: "auto" }}>
-            <IconButton onClick={(event) => handleOpen(event, selected)}>
+            <IconButton onClick={(event) => handleOpenModal(event, selected)}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>

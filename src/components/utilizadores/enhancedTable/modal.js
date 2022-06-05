@@ -12,7 +12,7 @@ const style = {
 };
 
 export default function NewModal(props) {
-  const { open, handleClose, info, handleClick } = props;
+  const { open, handleClose, info, handleClickModal } = props;
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
@@ -30,7 +30,7 @@ export default function NewModal(props) {
             <Button onClick={handleClose} color="warning" variant="contained">
               Voltar
             </Button>
-            <Button onClick={handleClick} color="error" variant="contained">
+            <Button onClick={handleClickModal} color="error" variant="contained">
               Eliminar
             </Button>
           </Box>

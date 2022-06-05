@@ -1,54 +1,23 @@
-import {
-  FormControl,
-  Paper,
-  Box,
-  TextField,
-  Divider,
-  Button,
-  Typography,
-} from "@mui/material";
-import React from "react";
-import ImgUploader from "../../components/imgUploader/imgUploader";
+import axios from "axios";
+import { toast } from "react-toastify";
+import CentroForm from "../../components/centros/form";
 
 function AddCentros() {
-  return (
-    <Box
-      component={Paper}
-      maxWidth="sm"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        m: "2em auto",
-        p: 3,
-        color: "text.primary",
-      }}
-    >
-      <FormControl>
-        <TextField id="txtNome" label="Nome" variant="outlined" />
-      </FormControl>
-      <FormControl>
-        <TextField id="txtCidade" label="Cidade" variant="outlined" />
-      </FormControl>
-      <FormControl>
-        <TextField id="txtEndereco" label="Endereço" variant="outlined" />
-      </FormControl>
-      <FormControl>
-        <TextField id="txtDescricao" label="Descrição" variant="outlined" />
-      </FormControl>
-      <Typography variant="subtitle1">Imagem do centro:</Typography>
-      <ImgUploader />
-      <Divider />
-      <Box sx={{ display: "flex", gap: 1, ml: "auto" }}>
-        <Button color="error" variant="contained">
-          Voltar
-        </Button>
-        <Button color="primary" variant="contained">
-          Confirmar
-        </Button>
-      </Box>
-    </Box>
-  );
+  const handleRequest = async (e) => {
+    try {
+      //requests
+      const data = await axios.post("/centros/add", {});
+      toast.success(data.data);
+    } catch (error) {
+      for (const [key, value] of Object.entries(error.response.data)) {
+        toast.error(value, { toastId: key });
+      }
+    }
+  };
+
+  const centroProps = { handleRequest };
+
+  return <CentroForm {...centroProps} />;
 }
 
 export default AddCentros;

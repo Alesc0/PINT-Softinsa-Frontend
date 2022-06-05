@@ -20,14 +20,14 @@ const headCells = [
   {
     id: "ncolaborador",
     numeric: false,
-    disablePadding: false,
-    label: "Nº Colaborador",
+    disablePadding: true,
+    label: "Nº Colab.",
   },
   {
     id: "telemovel",
     numeric: false,
-    disablePadding: false,
-    label: "Telemóvel",
+    disablePadding: true,
+    label: "Contacto",
   },
   {
     id: "email",
@@ -38,14 +38,14 @@ const headCells = [
   {
     id: "verificado",
     numeric: false,
-    disablePadding: false,
+    disablePadding: true,
     label: "Verificado",
   },
 
   {
     id: "estado",
-    numeric: false,
-    disablePadding: false,
+    numeric: true,
+    disablePadding: true,
     label: "Estado",
   },
   {
@@ -74,6 +74,7 @@ function EnhancedTableHead(props) {
     rowCount,
     onRequestSort,
   } = props;
+
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };

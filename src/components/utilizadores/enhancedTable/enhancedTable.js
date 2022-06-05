@@ -1,9 +1,4 @@
-import { Edit, Delete } from "@mui/icons-material/";
 import {
-  Avatar,
-  Box,
-  Checkbox,
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -17,10 +12,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
-import sampleAvaImg from "../../../imgs/avatar.jpg";
-import Label from "../../label/label";
+import BasicMenu from "../menuPopover/menuPopover";
 import NewModal from "./modal";
 import EnhancedTableHead from "./tableHead";
+import UserTableRow from "./tableRow";
 import EnhancedTableToolbar from "./tableToolbar";
 
 function descendingComparator(a, b, orderBy) {
@@ -40,6 +35,8 @@ function getComparator(order, orderBy) {
 }
 
 export default function EnhancedTable(props) {
+  const { data, refetch, setUsers, isLoading, setLoading } = props;
+
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("nome");
   const [selected, setSelected] = useState([]);
@@ -47,7 +44,32 @@ export default function EnhancedTable(props) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
 
-  const { data, refetch, setUsers, isLoading, setLoading } = props;
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
+  const [selectedMenu, setSelectedMenu] = useState(0);
+
+  const handleClickMenu = (e, id) => {
+    e.stopPropagation();
+    setSelectedMenu(id);
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setSelectedMenu(undefined);
+    setAnchorEl(null);
+  };
+
+  const getRowFromID = () => {
+    return data.find((el) => el.idutilizador === selectedMenu);
+  };
+
+  const menuProps = {
+    openMenu,
+    anchorEl,
+    handleCloseMenu,
+    row: getRowFromID(),
+    refetch,
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -55,8 +77,8 @@ export default function EnhancedTable(props) {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
+  const handleSelectAllClick = (e) => {
+    if (e.target.checked) {
       const newSelecteds = data.map((n) => n.idutilizador);
       setSelected(newSelecteds);
       return;
@@ -64,15 +86,19 @@ export default function EnhancedTable(props) {
     setSelected([]);
   };
 
-  const handleOpen = (event, ids) => {
+  const handleOpenModal = (e, ids) => {
+    e.stopPropagation();
+
     let i = [];
     i = i.concat(ids);
     setSelected(i);
     setOpen(true);
   };
+
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
+    console.log(selectedIndex);
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -100,6 +126,7 @@ export default function EnhancedTable(props) {
   };
 
   const handleClose = () => setOpen(false);
+
   const handleError = (error) =>
     toast.error(error, {
       position: toast.POSITION.BOTTOM_LEFT,
@@ -128,15 +155,14 @@ export default function EnhancedTable(props) {
         setLoading(true);
         await Promise.all(promises);
         refetch();
-      } catch (error) {
-        handleError(error);
-      } finally {
-        setSelected([]);
-        setLoading(false);
         toast.success("A operação foi bem sucedida!", {
           position: toast.POSITION.BOTTOM_LEFT,
         });
+      } catch (error) {
+        handleError(error);
       }
+      setSelected([]);
+      setLoading(false);
     }
   }, [selected, refetch, setSelected, setLoading]);
 
@@ -156,7 +182,7 @@ export default function EnhancedTable(props) {
           setUsers={setUsers}
           selected={selected}
           setOpen={setOpen}
-          handleOpen={handleOpen}
+          handleOpenModal={handleOpenModal}
         />
         <TableContainer>
           <Table
@@ -185,86 +211,15 @@ export default function EnhancedTable(props) {
                   .sort(getComparator(order, orderBy))
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.idutilizador);
-                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.idutilizador}
-                        selected={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            onClick={(event) =>
-                              handleClick(event, row.idutilizador)
-                            }
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              "aria-labelledby": labelId,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
-                        >
-                          <Box
-                            display="flex"
-                            sx={{
-                              alignItems: "center",
-                              gap: 2,
-                            }}
-                          >
-                            <Avatar alt="Remy Sharp" src={sampleAvaImg} />
-                            <Typography>{row.nome}</Typography>
-                          </Box>
-                        </TableCell>
-                        <TableCell align="left">
-                          <Typography>{row.ncolaborador}</Typography>
-                        </TableCell>
-                        <TableCell align="left">
-                          <Typography>{row.telemovel}</Typography>
-                        </TableCell>
-                        <TableCell align="left">
-                          <Typography>{row.email}</Typography>
-                        </TableCell>
-                        <TableCell align="left">
-                          <Label
-                            variant="ghost"
-                            color={row.verificado ? "success" : "error"}
-                          >
-                            {row.verificado ? "Sim" : "Não"}
-                          </Label>
-                        </TableCell>
-                        <TableCell align="left">
-                          <Label
-                            variant="ghost"
-                            color={row.estado ? "success" : "error"}
-                          >
-                            {row.estado ? "Ativo" : "Inativo"}
-                          </Label>
-                        </TableCell>
-                        <TableCell align="left">
-                          <IconButton sx={{ p: 0.5 }}>
-                            <Edit color="primary" />
-                          </IconButton>
-                          <IconButton
-                            onClick={(event) =>
-                              handleOpen(event, row.idutilizador)
-                            }
-                            sx={{ p: 0.5 }}
-                          >
-                            <Delete color="error" />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
+                    const tableRowProps = {
+                      isItemSelected,
+                      row,
+                      handleClick,
+                      handleClickMenu,
+                      handleOpenModal,
+                    };
+                    return <UserTableRow key={index} {...tableRowProps} />;
                   })
               )}
 
@@ -296,10 +251,11 @@ export default function EnhancedTable(props) {
       </Paper>
       <NewModal
         info={selected}
-        handleClick={handleClickModal}
+        handleClickModal={handleClickModal}
         open={open}
         handleClose={handleClose}
       />
+      <BasicMenu {...menuProps} />
     </>
   );
 }

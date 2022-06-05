@@ -27,7 +27,6 @@ const info = [
 
 export default function Dashboard() {
   const [feedbacks, setFeedbacks] = useState([]);
-  const [notificacoes, setNotificacoes] = useState([]);
   const [userCount, setUserCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -41,13 +40,9 @@ export default function Dashboard() {
           "/utilizador/list"
         );
         const { data: responseFeedbacks } = await axios.get("/feedback/list");
-        const { data: responseNotificacao } = await axios.get(
-          "/notificacao/list"
-        );
         //set states
         setUserCount(responseUsersCount.utilizadores.length);
         setFeedbacks(responseFeedbacks);
-        setNotificacoes(responseNotificacao);
 
         setLoading(false);
       } catch (error) {

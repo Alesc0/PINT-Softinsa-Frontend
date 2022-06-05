@@ -1,16 +1,11 @@
 import {
-  Brightness4,
-  Brightness7,
-  Menu,
+  Apartment, Brightness4,
+  Brightness7, Dashboard, Menu,
   Person,
-  QueryStats,
-  Apartment,
-  Dashboard,
+  QueryStats
 } from "@mui/icons-material/";
 import {
-  AppBar,
-  Avatar,
-  Box,
+  AppBar, Box,
   Divider,
   Drawer,
   IconButton,
@@ -19,7 +14,9 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Stack,
   Toolbar,
+  Typography
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import axios from "axios";
@@ -30,6 +27,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import navBar_logo from "../../imgs/logo-softinsa.png";
 import { ColorModeContext } from "../../theme";
+import UtilizadorMenu from "./menuUtilizador";
 import Notifications from "./notification";
 
 const drawerWidth = 250;
@@ -97,7 +95,16 @@ function MenuDrawer(props) {
   const handleDrawerToggle = () => {
     setMobileOpen((mobileOpen) => !mobileOpen);
   };
-
+  const Copyright = () => {
+    return (
+      <Stack>
+        <Typography variant="body2" color="text.secondary" align="center">
+          {"Copyright © "}
+        </Typography>
+        <Typography>Softinsa {new Date().getFullYear()}</Typography>
+      </Stack>
+    );
+  };
   const drawer = (
     <>
       <Toolbar disableGutters sx={{ bgcolor: "primary.dark" }}>
@@ -124,6 +131,10 @@ function MenuDrawer(props) {
           </ListItem>
         ))}
       </List>
+      <Stack spacing={2} className="center" sx={{ mt: "auto", mb: 2 }}>
+        <Divider variant="middle" width="80%" />
+        {Copyright()}
+      </Stack>
     </>
   );
 
@@ -131,96 +142,100 @@ function MenuDrawer(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml: { md: `${drawerWidth}px` },
-        }}
-      >
-        <Toolbar sx={{ bgcolor: "primary.main" }}>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: "none" } }}
-          >
-            <Menu />
-          </IconButton>
-          <Box
+    <>
+      <Box sx={{ display: "flex" }}>
+        <AppBar
+          position="fixed"
+          sx={{
+            width: { md: `calc(100% - ${drawerWidth}px)` },
+            ml: { md: `${drawerWidth}px` },
+          }}
+        >
+          <Toolbar sx={{ bgcolor: "primary.main" }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { md: "none" } }}
+            >
+              <Menu />
+            </IconButton>
+            <Box
+              sx={{
+                ml: "auto",
+                display: "flex",
+                gap: 1,
+              }}
+            >
+              <IconButton sx={{ color: "text.primary" }} onClick={switchMode}>
+                {theme.palette.mode === "dark" ? (
+                  <Brightness7 />
+                ) : (
+                  <Brightness4 />
+                )}
+              </IconButton>
+              <Notifications
+                loading={loading}
+                notificacoes={notificacoes}
+                setNotificacoes={setNotificacoes}
+              />
+              <UtilizadorMenu />
+            </Box>
+          </Toolbar>
+        </AppBar>
+        <Box
+          component="nav"
+          sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+        >
+          <Drawer
+            container={container}
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true,
+            }}
             sx={{
-              ml: "auto",
-              display: "flex",
-              gap: 1,
+              display: { xs: "block", md: "none" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+                bgcolor: "primary.darker",
+              },
             }}
           >
-            <IconButton sx={{ color: "text.primary" }} onClick={switchMode}>
-              {theme.palette.mode === "dark" ? (
-                <Brightness7 />
-              ) : (
-                <Brightness4 />
-              )}
-            </IconButton>
-            <Notifications loading={loading} notificacoes={notificacoes} />
-            <IconButton /* onClick={handleOpenUserMenu} */>
-              <Avatar alt="Remy Sharp" />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Box
-        component="nav"
-        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
-      >
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
+            {drawer}
+          </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: "none", md: "block" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+                bgcolor: "primary.darker",
+              },
+            }}
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Box>
+        <Box
+          component="main"
           sx={{
-            display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-              bgcolor: "primary.darker",
-            },
+            flexGrow: 1,
+            p: 3,
+            pt: 11,
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
           }}
         >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: "none", md: "block" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-              bgcolor: "primary.darker",
-            },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
+          {props.children}
+          <ToastContainer />
+        </Box>
       </Box>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          pt: 11,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-        }}
-      >
-        {props.children}
-        <ToastContainer />
-      </Box>
-    </Box>
+    </>
   );
 }
 

@@ -19,7 +19,7 @@ function UtilizadoresView(props) {
       try {
         setLoading(true);
         const { data: response } = await axios.get("/utilizador/list");
-        setUsers(response.utilizadores);
+        setUsers(response.data);
         setLoading(false);
       } catch (error) {
         toast.error(error);

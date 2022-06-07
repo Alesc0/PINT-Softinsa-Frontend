@@ -6,6 +6,7 @@ import {
   Menu,
   Person,
   QueryStats,
+  ViewModule,
 } from "@mui/icons-material/";
 import {
   AppBar,
@@ -50,6 +51,11 @@ const pages = [
     name: "Centros",
     link: "/centros",
     icon: <Apartment sx={{ color: "white" }} />,
+  },
+  {
+    name: "Salas",
+    link: "/salas",
+    icon: <ViewModule sx={{ color: "white" }} />,
   },
   {
     name: "Utilizadores",

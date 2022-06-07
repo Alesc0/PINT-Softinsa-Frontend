@@ -20,7 +20,7 @@ function Centros() {
     const fetchData = async () => {
       try {
         const { data: response } = await axios.get("/centro/list");
-        setCentros(response.centros);
+        setCentros(response.data);
       } catch (error) {
         toast.error(error);
       }

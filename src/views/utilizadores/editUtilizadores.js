@@ -8,6 +8,10 @@ export default function EditUtilizadoresView() {
 
   const handleRequest = async (userObj) => {
     console.log(userObj);
+    if (userObj.role === "Administrador") {
+      userObj.admin = true;
+    } else userObj.admin = false;
+
     try {
       //requests
       const data = await axios.put("/utilizador/" + id, userObj);

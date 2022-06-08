@@ -1,26 +1,17 @@
-import { AddCircle } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Container,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import SalasForm from "../../components/salas/form";
 import ListSalas from "../../components/salas/listSalas";
 
-const limit = 3;
+const limit = 4;
 
 function SalasView(props) {
   const [salas, setSalas] = useState(undefined);
   const [isLoading, setLoading] = useState(false);
   const [selected, setSelected] = useState(0);
-  
+
   const [offset, setOffset] = useState(0);
   const [count, setCount] = useState(0);
 
@@ -29,7 +20,6 @@ function SalasView(props) {
     selected,
     setSelected,
     setOffset,
-    offset,
     limit,
     count,
     isLoading,
@@ -53,7 +43,8 @@ function SalasView(props) {
     fetchData();
   }, [setSalas, offset]);
 
-  console.log(salas && salas);
+  const handleRequest = (salaObj) => {};
+
   return (
     <>
       <Stack direction="row" sx={{ mb: 2 }}>
@@ -69,12 +60,15 @@ function SalasView(props) {
           Criar nova sala
         </Button>
       </Stack>
-      <Stack spacing={2} className="center">
-        <Stack spacing={3} direction="row">
+      <Box display="flex" className="center">
+        <Stack spacing={3} direction={{ xs: "column", sm: "row" }}>
           <ListSalas {...listSalasProps} />
-          <SalasForm data={salas && salas[selected]} />
+          <SalasForm
+            data={salas && salas[selected]}
+            handleRequest={handleRequest}
+          />
         </Stack>
-      </Stack>
+      </Box>
     </>
   );
 }

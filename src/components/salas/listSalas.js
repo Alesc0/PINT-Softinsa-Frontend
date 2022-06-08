@@ -2,11 +2,13 @@ import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 import {
   Avatar,
   CircularProgress,
+  Container,
   IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
+  Pagination,
   Paper,
   Stack,
   Typography,
@@ -14,37 +16,18 @@ import {
 import img from "../../imgs/centroViseu.png";
 
 export default function ListSalas(props) {
-  const {
-    salas,
-    selected,
-    setSelected,
-    setOffset,
-    offset,
-    limit,
-    count,
-    isLoading,
-  } = props;
+  const { salas, selected, setSelected, setOffset, limit, count, isLoading } =
+    props;
   if (!salas) return;
 
-  const checkPrev = () => {
-    return offset - limit < 0;
+  const handleChangePagination = (event, value) => {
+    setOffset((value - 1) * limit);
   };
-  const checkNext = () => {
-    return offset + limit >= count;
-  };
-  const handlePrev = () => {
-    if (checkPrev) setOffset((prev) => prev - limit);
-  };
-
-  const handleNext = () => {
-    if (checkNext) setOffset((prev) => prev + limit);
-  };
-
   if (!salas) return;
 
   return (
-    <Stack spacing={1}>
-      <List disablePadding>
+    <Stack spacing={2} className="center">
+      <List disablePadding sx={{ minHeight: 390 }}>
         {isLoading ? (
           <ListItem
             component={Paper}
@@ -78,21 +61,15 @@ export default function ListSalas(props) {
           ))
         )}
       </List>
-      <Stack
-        direction="row"
+      <Pagination
         sx={{
-          alignSelf: "flex-end",
+          alignSelf: "center",
           bgcolor: "background.paper",
           borderRadius: 2,
         }}
-      >
-        <IconButton disabled={checkPrev()} onClick={handlePrev}>
-          <ArrowBackIosNew />
-        </IconButton>
-        <IconButton disabled={checkNext()} onClick={handleNext}>
-          <ArrowForwardIos />
-        </IconButton>
-      </Stack>
+        count={Math.ceil(count / limit)}
+        onChange={handleChangePagination}
+      />
     </Stack>
   );
 }

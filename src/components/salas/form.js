@@ -5,9 +5,8 @@ import {
   FormControl,
   Input,
   InputLabel,
-  MenuItem,
   Paper,
-  Select,
+  Skeleton,
   Slider,
   Stack,
   Switch,
@@ -15,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 const errorList = {
@@ -23,7 +22,38 @@ const errorList = {
   email: "Este email não é válido.",
 };
 
-function SalasForm({ data, handleRequest }) {
+const loadSkeleton = () => {
+  return (
+    <>
+      <Skeleton
+        variant="text"
+        width={160}
+        height={50}
+        sx={{ alignSelf: "center" }}
+      />
+      <Skeleton variant="rectangular" width={450} height={50} />
+      <Skeleton variant="rectangular" width={450} height={50} />
+      <Stack direction="row" spacing={2}>
+        <Skeleton variant="rectangular" width={70} height={40} />
+        <Stack className="center">
+          <Skeleton variant="text" width={270} />
+          <Skeleton variant="text" width={150} />
+        </Stack>
+        <Skeleton variant="rectangular" width={70} height={40} />
+      </Stack>
+      <Skeleton variant="rectangular" width={450} height={40} />
+      <Divider />
+      <Skeleton
+        variant="rectangular"
+        width={100}
+        height={35}
+        sx={{ alignSelf: "flex-end" }}
+      />
+    </>
+  );
+};
+
+function SalasForm({ data, handleRequest, handleDelete }) {
   const [centros, setCentros] = useState([]);
   const [centro, setCentro] = useState(1);
   const [nome, setNome] = useState("");
@@ -40,16 +70,27 @@ function SalasForm({ data, handleRequest }) {
     return Math.floor((lotacaoMax * valSlider) / 100);
   }, [lotacaoMax, valSlider]);
 
+  const clearForm = useCallback(() => {
+    setNome("");
+    setDescricao("");
+    setCentro(centros[0]);
+    setLotacaoMax(50);
+    setValSlider(70);
+    setAtivo(true);
+  }, [centros]);
+
   useEffect(() => {
-    clearForm();
-    if (!data) return;
+    if (!data) {
+      clearForm();
+      return;
+    }
     setNome(data.nome);
-    setCentro(data.idcentro);
+    setCentro(centros[data.idcentro]);
     setDescricao(data.descricao);
     setLotacaoMax(data.lotacaomax);
     setValSlider((100 * data.lotacao) / data.lotacaomax);
     setAtivo(data.estado);
-  }, [data]);
+  }, [data, clearForm, centros]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,15 +106,6 @@ function SalasForm({ data, handleRequest }) {
     fetchData();
   }, []);
 
-  const clearForm = () => {
-    setNome("");
-    setDescricao("");
-    setCentro(1);
-    setLotacaoMax(50);
-    setValSlider(70);
-    setAtivo(true);
-  };
-
   const validate = () => {
     return false;
   };
@@ -84,13 +116,13 @@ function SalasForm({ data, handleRequest }) {
       handleRequest({
         nome,
         descricao,
-        centro,
+        centro: centro.idcentro,
         lotacaoMax,
-        lotacao: calcLotacaoFinal(),
+        lotacao: calcLotacaoFinal,
         ativo,
       });
   };
-  console.log(centro);
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -107,8 +139,9 @@ function SalasForm({ data, handleRequest }) {
         spacing={2}
         sx={{ paddingInline: 3, paddingBlock: 2 }}
       >
-        {isLoading ? null : (
-          /* loadSkeleton() */
+        {isLoading ? (
+          loadSkeleton()
+        ) : (
           <>
             <Typography textAlign="center" variant="h4">
               {!data ? "Adicionar" : "Editar"} Sala
@@ -173,59 +206,36 @@ function SalasForm({ data, handleRequest }) {
                 />
               </FormControl>
             </Stack>
-            {/* <Stack direction={{ xs: "column", sm: "row" }} spacing={2}> */}
             <Autocomplete
               options={centros}
-              value={centros[centro] || null}
-              isOptionEqualToValue={(op, val) => {
-                if (!op || !val) {
-                  console.log("op.", op);
-                  console.log("val.", val);
-                  return false;
-                }
-                return op.idcentro === val.idcentro;
-              }}
-              getOptionLabel={(option) => option.cidade}
+              value={centro || ""}
+              isOptionEqualToValue={(op, val) => true}
+              getOptionLabel={(option) => option.cidade || ""}
               onChange={(event, value, reason) => {
-                if (reason === "clear") setCentro(1);
-                else setCentro(value.idcentro);
+                if (reason === "clear") return;
+                else setCentro(value);
               }}
               onInputChange={(event, value, reason) => {
                 if (reason === "clear") {
-                  setCentro(1);
+                  setCentro(value);
                 }
               }}
               renderInput={(params) => <TextField {...params} label="Cidade" />}
             />
-            {/*  <FormControl sx={{ width: "100%" }}>
-              <InputLabel id="label-select"> Centro </InputLabel>
-              <Select
-                label="Centro"
-                labelId="label-select"
-                value={centro}
-                onChange={(e) => setCentro(e.target.value)}
-              >
-                {centros.length > 0 ? (
-                  centros.map((row) => (
-                    <MenuItem key={row.idcentro} value={row.idcentro}>
-                      {row.cidade}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem value={1}> {"Sem centros disponíveis!"} </MenuItem>
-                )}
-              </Select>
-            </FormControl> */}
-            {/* </Stack> */}
             <Divider />
-            <Button
-              type="submit"
-              color="info"
-              variant="contained"
-              sx={{ alignSelf: "flex-end" }}
-            >
-              Confirmar
-            </Button>
+            <Stack direction="row">
+              <Button color="error" variant="contained" onClick={handleDelete}>
+                Apagar
+              </Button>
+              <Button
+                type="submit"
+                color="info"
+                variant="contained"
+                sx={{ ml: "auto" }}
+              >
+                Confirmar
+              </Button>
+            </Stack>
           </>
         )}
       </Stack>

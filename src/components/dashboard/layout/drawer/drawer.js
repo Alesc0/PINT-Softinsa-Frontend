@@ -1,19 +1,14 @@
 import {
   Apartment,
-  Brightness4,
-  Brightness7,
   Dashboard,
-  Menu,
   Person,
   QueryStats,
   ViewModule,
 } from "@mui/icons-material/";
 import {
-  AppBar,
   Box,
   Divider,
   Drawer,
-  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -30,12 +25,15 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import navBar_logo from "../../imgs/logo-softinsa.png";
-import { ColorModeContext } from "../../theme";
-import UtilizadorMenu from "./menuUtilizador";
-import Notifications from "./notification";
+import navBar_logo from "../../../../imgs/logo-softinsa.png";
+import { ColorModeContext } from "../../../../theme";
+import LayoutAppBar from "../layoutAppBar";
+import PermDrawer from "./permDrawer";
+import SettingsDrawer from "../settingsDrawer";
+import TempDrawer from "./tempDrawer";
 
 const drawerWidth = 250;
+
 const pages = [
   {
     name: "Dashboard",
@@ -64,20 +62,36 @@ const pages = [
   },
 ];
 
+const activeStyle = {
+  bgcolor: "#4c6885",
+  borderRadius: 1,
+};
+
+const Copyright = () => {
+  return (
+    <Stack>
+      <Typography variant="body2" color="text.secondary" align="center">
+        {"Copyright © "}
+      </Typography>
+      <Typography color="text.secondary">
+        Softinsa {new Date().getFullYear()}
+      </Typography>
+    </Stack>
+  );
+};
+
 function MenuDrawer(props) {
   const { window } = props;
-  const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { switchMode } = useContext(ColorModeContext);
   const [notificacoes, setNotificacoes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState(0);
+
   let location = useLocation();
 
-  const activeStyle = {
-    bgcolor: "#4c6885",
-    borderRadius: 1,
-  };
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   useEffect(() => {
     let page = pages.filter((el) => location.pathname.includes(el.link));
@@ -105,18 +119,16 @@ function MenuDrawer(props) {
   const handleDrawerToggle = () => {
     setMobileOpen((mobileOpen) => !mobileOpen);
   };
-  const Copyright = () => {
-    return (
-      <Stack>
-        <Typography variant="body2" color="text.secondary" align="center">
-          {"Copyright © "}
-        </Typography>
-        <Typography color="text.secondary">
-          Softinsa {new Date().getFullYear()}
-        </Typography>
-      </Stack>
-    );
+
+  const appBarProps = {
+    loading,
+    handleDrawerToggle,
+    drawerWidth,
+    switchMode,
+    notificacoes,
+    setNotificacoes,
   };
+
   const drawer = (
     <>
       <Toolbar disableGutters sx={{ bgcolor: "primary.dark" }}>
@@ -150,90 +162,28 @@ function MenuDrawer(props) {
     </>
   );
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
+  const tempDrawerProps = {
+    container,
+    mobileOpen,
+    handleDrawerToggle,
+    drawerWidth,
+    drawer,
+  };
 
   return (
     <>
       <Box sx={{ display: "flex" }}>
-        <AppBar
-          position="fixed"
-          sx={{
-            width: { md: `calc(100% - ${drawerWidth}px)` },
-            ml: { md: `${drawerWidth}px` },
-          }}
-        >
-          <Toolbar sx={{ bgcolor: "primary.main" }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { md: "none" } }}
-            >
-              <Menu />
-            </IconButton>
-            <Box
-              sx={{
-                ml: "auto",
-                display: "flex",
-                gap: 1,
-              }}
-            >
-              <IconButton sx={{ color: "text.primary" }} onClick={switchMode}>
-                {theme.palette.mode === "dark" ? (
-                  <Brightness7 />
-                ) : (
-                  <Brightness4 />
-                )}
-              </IconButton>
-              <Notifications
-                loading={loading}
-                notificacoes={notificacoes}
-                setNotificacoes={setNotificacoes}
-              />
-              <UtilizadorMenu />
-            </Box>
-          </Toolbar>
-        </AppBar>
+        <LayoutAppBar {...appBarProps} />
+
         <Box
           component="nav"
           sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
         >
-          <Drawer
-            container={container}
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true,
-            }}
-            sx={{
-              display: { xs: "block", md: "none" },
-              "& .MuiDrawer-paper": {
-                boxSizing: "border-box",
-                width: drawerWidth,
-                bgcolor: "primary.darker",
-              },
-            }}
-          >
-            {drawer}
-          </Drawer>
-          <Drawer
-            variant="permanent"
-            sx={{
-              display: { xs: "none", md: "block" },
-              "& .MuiDrawer-paper": {
-                boxSizing: "border-box",
-                width: drawerWidth,
-                bgcolor: "primary.darker",
-              },
-            }}
-            open
-          >
-            {drawer}
-          </Drawer>
+          <TempDrawer {...tempDrawerProps} />
+
+          <PermDrawer drawerWidth={drawerWidth} drawer={drawer} />
         </Box>
+
         <Box
           component="main"
           sx={{
@@ -247,6 +197,7 @@ function MenuDrawer(props) {
           <ToastContainer />
         </Box>
       </Box>
+      <SettingsDrawer />
     </>
   );
 }

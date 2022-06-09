@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashboardLayout from "./views/dashboardLayout";
 
 // paginas
-import Login from "./views/loginView";
+import Login from "./views/login/loginView";
 import NotFound from "./views/notFoundView";
 import Dashboard from "./views/dashboardView";
 import Stats from "./views/statsView";

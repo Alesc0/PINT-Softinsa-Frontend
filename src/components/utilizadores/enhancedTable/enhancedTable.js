@@ -35,7 +35,7 @@ function getComparator(order, orderBy) {
 }
 
 export default function EnhancedTable(props) {
-  const { data, refetch, setUsers, isLoading, setLoading } = props;
+  const { data, refetch, isLoading, setLoading } = props;
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("nome");
@@ -47,6 +47,9 @@ export default function EnhancedTable(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
   const [selectedMenu, setSelectedMenu] = useState(0);
+
+  const dataUsers = data ? data.data : [];
+  const countUsers = data ? data.count : 0;
 
   const handleClickMenu = (e, id) => {
     e.stopPropagation();
@@ -60,7 +63,7 @@ export default function EnhancedTable(props) {
   };
 
   const getRowFromID = () => {
-    return data.find((el) => el.idutilizador === selectedMenu);
+    return dataUsers.find((el) => el.idutilizador === selectedMenu);
   };
 
   const menuProps = {
@@ -79,7 +82,7 @@ export default function EnhancedTable(props) {
 
   const handleSelectAllClick = (e) => {
     if (e.target.checked) {
-      const newSelecteds = data.map((n) => n.idutilizador);
+      const newSelecteds = dataUsers.map((n) => n.idutilizador);
       setSelected(newSelecteds);
       return;
     }
@@ -170,7 +173,7 @@ export default function EnhancedTable(props) {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - dataUsers.length) : 0;
 
   return (
     <>
@@ -179,7 +182,6 @@ export default function EnhancedTable(props) {
           setLoading={setLoading}
           refetch={refetch}
           setSelected={setSelected}
-          setUsers={setUsers}
           selected={selected}
           setOpen={setOpen}
           handleOpenModal={handleOpenModal}
@@ -196,7 +198,7 @@ export default function EnhancedTable(props) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={data.length}
+              rowCount={dataUsers.length}
             />
             <TableBody>
               {isLoading ? (
@@ -206,7 +208,7 @@ export default function EnhancedTable(props) {
                   </TableCell>
                 </TableRow>
               ) : (
-                data
+                dataUsers
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .sort(getComparator(order, orderBy))
                   .map((row, index) => {
@@ -223,7 +225,7 @@ export default function EnhancedTable(props) {
                   })
               )}
 
-              {data.length === 0 && !isLoading && (
+              {dataUsers.length === 0 && !isLoading && (
                 <TableRow
                   style={{
                     height: 33 * emptyRows,
@@ -242,7 +244,7 @@ export default function EnhancedTable(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={data.length}
+          count={countUsers}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

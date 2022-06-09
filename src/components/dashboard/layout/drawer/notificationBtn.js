@@ -9,7 +9,7 @@ import {
   Button,
 } from "@mui/material";
 import { useState } from "react";
-import ListNotificacoes from "../dashboard/listNotificacoes";
+import ListNotificacoes from "../../listNotificacoes";
 
 function Notification({ notificacoes, loading, setNotificacoes }) {
   const [anchorEl, setAnchorEl] = useState(null);

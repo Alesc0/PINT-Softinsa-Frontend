@@ -1,26 +1,27 @@
-import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 import {
   Avatar,
-  CircularProgress,
-  Container,
-  IconButton,
-  List,
+  CircularProgress, List,
   ListItem,
   ListItemButton,
   ListItemText,
   Pagination,
   Paper,
   Stack,
-  Typography,
+  Typography
 } from "@mui/material";
+import { useState } from "react";
 import img from "../../imgs/centroViseu.png";
 
 export default function ListSalas(props) {
   const { salas, selected, setSelected, setOffset, limit, count, isLoading } =
     props;
-  if (!salas) return;
+
+  const [page, setPage] = useState(1);
 
   const handleChangePagination = (event, value) => {
+    if (page === value) return;
+    setPage(value);
+    setSelected(0);
     setOffset((value - 1) * limit);
   };
   if (!salas) return;

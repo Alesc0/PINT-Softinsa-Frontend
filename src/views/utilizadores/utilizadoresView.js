@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import EnhancedTable from "../../components/utilizadores/enhancedTable/enhancedTable";
 
 function UtilizadoresView(props) {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(undefined);
   const [value, toggle] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
@@ -19,7 +19,7 @@ function UtilizadoresView(props) {
       try {
         setLoading(true);
         const { data: response } = await axios.get("/utilizador/list");
-        setUsers(response.data);
+        setUsers(response);
         setLoading(false);
       } catch (error) {
         toast.error(error);
@@ -41,7 +41,6 @@ function UtilizadoresView(props) {
         </Box>
         <EnhancedTable
           refetch={refetch}
-          setUsers={setUsers}
           isLoading={isLoading}
           setLoading={setLoading}
           data={users}

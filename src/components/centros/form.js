@@ -13,6 +13,7 @@ import {
 import { Box } from "@mui/system";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ImgUploader from "../fileUploader/fileUploader";
 
 const errorList = {
@@ -57,6 +58,7 @@ export default function CentroForm({ handleRequest, id = undefined }) {
   const [descricao, setDescricao] = useState("");
   const [descricaoErr, setDescricaoErr] = useState(false);
   const [ativo, setAtivo] = useState(true);
+  const navigate = useNavigate();
 
   const setFields = useCallback((data) => {
     setNome(data.nome);
@@ -186,7 +188,11 @@ export default function CentroForm({ handleRequest, id = undefined }) {
 
             <Divider />
             <Stack direction="row" spacing={2} alignSelf="flex-end">
-              <Button color="error" variant="contained">
+              <Button
+                color="error"
+                variant="contained"
+                onClick={() => navigate(-1)}
+              >
                 Voltar
               </Button>
               <Button color="primary" variant="contained">

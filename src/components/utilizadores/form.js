@@ -2,7 +2,6 @@ import { Settings } from "@mui/icons-material";
 import {
   Box,
   Button,
-  CircularProgress,
   Divider,
   FormControl,
   IconButton,
@@ -20,10 +19,10 @@ import {
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import PhoneInput from "react-phone-number-input/input";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Modal from "../../components/opcoesModal";
-import CustomPhoneInput from "../../components/phoneInput";
+import Modal from "./opcoesModal";
+import CustomPhoneInput from "./phoneInput";
 
 const errorList = {
   nome: "O nome precisa de ter entre 5 a 100 caracteres.",
@@ -89,6 +88,8 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
   const [centro, setCentro] = useState(1);
   const [ativo, setAtivo] = useState(true);
 
+  const navigate = useNavigate();
+
   //MODAL
   const [openModal, setOpenModal] = useState(false);
   const [checked, setChecked] = useState(
@@ -136,10 +137,10 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
       setLoading(true);
       try {
         const { data: response } = await axios.get("/centro/list");
-        setCentros(response.centros);
+        setCentros(response.data);
         if (id) {
           const { data: response } = await axios.get("/utilizador/" + id);
-          setFields(response.utilizador);
+          setFields(response.data);
         }
       } catch (error) {
         toast.error(error);
@@ -281,8 +282,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
               <Divider />
               <Stack direction="row" spacing={2} sx={{ alignSelf: "flex-end" }}>
                 <Button
-                  component={Link}
-                  to="/utilizadores"
+                  onClick={() => navigate(-1)}
                   color="error"
                   variant="contained"
                 >

@@ -29,9 +29,8 @@ function SalasView(props) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const { data: response } = await axios.post("/sala/list", {
-          offset,
-          limit,
+        const { data: response } = await axios.get("/sala/list/", {
+          params: { offset: offset, limit: limit },
         });
         setSalas(response.data);
         if (response.count) setCount(response.count);
@@ -43,8 +42,9 @@ function SalasView(props) {
     fetchData();
   }, [setSalas, offset]);
 
+  //TODO
   const handleRequest = (salaObj) => {};
-
+  const handleDelete = () => {};
   return (
     <>
       <Stack direction="row" sx={{ mb: 2 }}>
@@ -66,6 +66,7 @@ function SalasView(props) {
           <SalasForm
             data={salas && salas[selected]}
             handleRequest={handleRequest}
+            handleDelete={handleDelete}
           />
         </Stack>
       </Box>

@@ -31,7 +31,7 @@ function ImgUploader({ files, setFiles }) {
         <Typography fontWeight="bold">{files[0].name}</Typography>
       ) : (
         <Typography color="text.secondary">
-          Drag and drop file here, or click to select file
+          Arrasta e larga um ficheiro aqui, ou clica para selecionar
         </Typography>
       )}
     </Box>

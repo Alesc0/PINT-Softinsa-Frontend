@@ -1,10 +1,9 @@
 import { Box, Card, CardContent, CardHeader } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import axios from "../api/axios";
 import BoxNumbers from "../components/dashboard/boxNumbers";
 import ListFeedbacks from "../components/dashboard/listFeedbacks";
-import PieChart from "../components/nivoCharts/pie";
 
 const info = [
   {

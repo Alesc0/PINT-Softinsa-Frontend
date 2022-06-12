@@ -8,7 +8,6 @@ import {
 import {
   Box,
   Divider,
-  Drawer,
   List,
   ListItem,
   ListItemButton,
@@ -18,18 +17,17 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import axios from "axios";
+import axios from "../../../api/axios";
 import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import navBar_logo from "../../../../imgs/logo-softinsa.png";
-import { ColorModeContext } from "../../../../theme";
+import navBar_logo from "../../../imgs/logo-softinsa.png";
+import { ColorModeContext } from "../../../theme";
 import LayoutAppBar from "../layoutAppBar";
-import PermDrawer from "./permDrawer";
 import SettingsDrawer from "../settingsDrawer";
+import PermDrawer from "./permDrawer";
 import TempDrawer from "./tempDrawer";
 
 const drawerWidth = 250;
@@ -83,12 +81,20 @@ const Copyright = () => {
 function MenuDrawer(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { switchMode } = useContext(ColorModeContext);
+  const { handleColorMode } = useContext(ColorModeContext);
   const [notificacoes, setNotificacoes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState(0);
+  const [open, setOpen] = useState(false);
 
   let location = useLocation();
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -118,15 +124,6 @@ function MenuDrawer(props) {
 
   const handleDrawerToggle = () => {
     setMobileOpen((mobileOpen) => !mobileOpen);
-  };
-
-  const appBarProps = {
-    loading,
-    handleDrawerToggle,
-    drawerWidth,
-    switchMode,
-    notificacoes,
-    setNotificacoes,
   };
 
   const drawer = (
@@ -161,6 +158,14 @@ function MenuDrawer(props) {
       </Stack>
     </>
   );
+  const appBarProps = {
+    loading,
+    handleDrawerToggle,
+    drawerWidth,
+    notificacoes,
+    setNotificacoes,
+    handleOpen,
+  };
 
   const tempDrawerProps = {
     container,
@@ -168,6 +173,12 @@ function MenuDrawer(props) {
     handleDrawerToggle,
     drawerWidth,
     drawer,
+  };
+
+  const settingsDrawerProps = {
+    open,
+    handleClose,
+    handleColorMode,
   };
 
   return (
@@ -197,7 +208,7 @@ function MenuDrawer(props) {
           <ToastContainer />
         </Box>
       </Box>
-      <SettingsDrawer />
+      <SettingsDrawer {...settingsDrawerProps} />
     </>
   );
 }

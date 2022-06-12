@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import axios from "axios";
+import axios from "../../api/axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import SalasForm from "../../components/salas/form";
@@ -48,9 +48,7 @@ function SalasView(props) {
   return (
     <>
       <Stack direction="row" sx={{ mb: 2 }}>
-        <Box sx={{ display: "flex" }}>
-          <Typography variant="h3">Gerir Salas</Typography>
-        </Box>
+        <Typography variant="h3">Gerir Salas</Typography>
         <Button
           color="info"
           variant="outlined"

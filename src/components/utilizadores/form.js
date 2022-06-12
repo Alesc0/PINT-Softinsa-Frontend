@@ -16,7 +16,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import axios from "axios";
+import axios from "../../api/axios";
 import { useCallback, useEffect, useState } from "react";
 import PhoneInput from "react-phone-number-input/input";
 import { useNavigate } from "react-router-dom";
@@ -128,6 +128,8 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
     setEmail(data.email);
     setCentro(data.idcentro);
     if (data.admin) setPermissionTab(1);
+    if (data.role === "U") setPermissionTab(perms.indexOf("Regular"));
+    else if (data.role === "L") setPermissionTab(perms.indexOf("Limpeza"));
     setAtivo(data.estado);
     setAddOptions(data);
   }, []);
@@ -140,7 +142,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
         setCentros(response.data);
         if (id) {
           const { data: response } = await axios.get("/utilizador/" + id);
-          setFields(response.data);
+          setFields(response.utilizador);
         }
       } catch (error) {
         toast.error(error);

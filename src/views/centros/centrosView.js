@@ -10,7 +10,7 @@ import {
 import centroViseu from "../../imgs/centroViseu.png";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
+import axios from "../../api/axios";
 import { Link } from "react-router-dom";
 
 function Centros() {

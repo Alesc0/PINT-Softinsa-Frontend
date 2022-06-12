@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import axios from "axios";
+import axios from "../../../api/axios";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
 import BasicMenu from "../menuPopover/menuPopover";
@@ -35,21 +35,29 @@ function getComparator(order, orderBy) {
 }
 
 export default function EnhancedTable(props) {
-  const { data, refetch, isLoading, setLoading } = props;
+  const {
+    users,
+    refetch,
+    isLoading,
+    setLoading,
+    page,
+    setPage,
+    rowsPerPage,
+    setRowsPerPage,
+    count,
+  } = props;
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("nome");
   const [selected, setSelected] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  //modal
   const [open, setOpen] = useState(false);
 
+  //edit utilizador menu
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
   const [selectedMenu, setSelectedMenu] = useState(0);
-
-  const dataUsers = data ? data.data : [];
-  const countUsers = data ? data.count : 0;
 
   const handleClickMenu = (e, id) => {
     e.stopPropagation();
@@ -63,7 +71,7 @@ export default function EnhancedTable(props) {
   };
 
   const getRowFromID = () => {
-    return dataUsers.find((el) => el.idutilizador === selectedMenu);
+    return users.find((el) => el.idutilizador === selectedMenu);
   };
 
   const menuProps = {
@@ -82,7 +90,7 @@ export default function EnhancedTable(props) {
 
   const handleSelectAllClick = (e) => {
     if (e.target.checked) {
-      const newSelecteds = dataUsers.map((n) => n.idutilizador);
+      const newSelecteds = users.map((n) => n.idutilizador);
       setSelected(newSelecteds);
       return;
     }
@@ -92,8 +100,7 @@ export default function EnhancedTable(props) {
   const handleOpenModal = (e, ids) => {
     e.stopPropagation();
 
-    let i = [];
-    i = i.concat(ids);
+    let i = [...ids];
     setSelected(i);
     setOpen(true);
   };
@@ -101,7 +108,6 @@ export default function EnhancedTable(props) {
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
-    console.log(selectedIndex);
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -130,11 +136,6 @@ export default function EnhancedTable(props) {
 
   const handleClose = () => setOpen(false);
 
-  const handleError = (error) =>
-    toast.error(error, {
-      position: toast.POSITION.BOTTOM_LEFT,
-    });
-
   const handleClickModal = useCallback(async () => {
     handleClose();
 
@@ -142,7 +143,7 @@ export default function EnhancedTable(props) {
       try {
         await axios.delete("utilizador/" + id);
       } catch (error) {
-        handleError(error);
+        toast.error(error);
       }
     };
 
@@ -162,7 +163,7 @@ export default function EnhancedTable(props) {
           position: toast.POSITION.BOTTOM_LEFT,
         });
       } catch (error) {
-        handleError(error);
+        toast.error(error);
       }
       setSelected([]);
       setLoading(false);
@@ -173,17 +174,13 @@ export default function EnhancedTable(props) {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - dataUsers.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
 
   return (
     <>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar
-          setLoading={setLoading}
-          refetch={refetch}
-          setSelected={setSelected}
           selected={selected}
-          setOpen={setOpen}
           handleOpenModal={handleOpenModal}
         />
         <TableContainer>
@@ -198,7 +195,7 @@ export default function EnhancedTable(props) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={dataUsers.length}
+              rowCount={users.length}
             />
             <TableBody>
               {isLoading ? (
@@ -208,24 +205,21 @@ export default function EnhancedTable(props) {
                   </TableCell>
                 </TableRow>
               ) : (
-                dataUsers
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .sort(getComparator(order, orderBy))
-                  .map((row, index) => {
-                    const isItemSelected = isSelected(row.idutilizador);
+                users.sort(getComparator(order, orderBy)).map((row, index) => {
+                  const isItemSelected = isSelected(row.idutilizador);
 
-                    const tableRowProps = {
-                      isItemSelected,
-                      row,
-                      handleClick,
-                      handleClickMenu,
-                      handleOpenModal,
-                    };
-                    return <UserTableRow key={index} {...tableRowProps} />;
-                  })
+                  const tableRowProps = {
+                    isItemSelected,
+                    row,
+                    handleClick,
+                    handleClickMenu,
+                    handleOpenModal,
+                  };
+                  return <UserTableRow key={index} {...tableRowProps} />;
+                })
               )}
 
-              {dataUsers.length === 0 && !isLoading && (
+              {users.length === 0 && !isLoading && (
                 <TableRow
                   style={{
                     height: 33 * emptyRows,
@@ -242,9 +236,13 @@ export default function EnhancedTable(props) {
           </Table>
         </TableContainer>
         <TablePagination
+          labelRowsPerPage={"Linhas por página:"}
+          labelDisplayedRows={({ from, to, count }) =>
+            `${from}-${to} de ${count !== -1 ? count : `mais de ${to}`}`
+          }
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={countUsers}
+          count={count}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

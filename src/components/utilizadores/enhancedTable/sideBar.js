@@ -5,6 +5,7 @@ import {
   Drawer,
   IconButton,
   InputAdornment,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -13,11 +14,9 @@ import { Close, Search } from "@mui/icons-material";
 export default function SideBar({ anchor, state, handleSidebar }) {
   return (
     <Drawer anchor={anchor} open={state} onClose={handleSidebar(false)}>
-      <Box
+      <Stack
+        spacing={2}
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
           width: 300,
           p: 3,
         }}
@@ -71,7 +70,7 @@ export default function SideBar({ anchor, state, handleSidebar }) {
         <Button color="info" variant="contained">
           Pesquisar
         </Button>
-      </Box>
+      </Stack>
     </Drawer>
   );
 }

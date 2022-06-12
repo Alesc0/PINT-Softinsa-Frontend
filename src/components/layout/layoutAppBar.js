@@ -1,17 +1,16 @@
-import { Brightness4, Brightness7, Menu } from "@mui/icons-material";
-import { AppBar, Box, IconButton, Toolbar, useTheme } from "@mui/material";
-import UtilizadorMenu from "./menuUtilizador";
+import { Menu, Settings } from "@mui/icons-material";
+import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
 import Notification from "./drawer/notificationBtn";
+import UtilizadorMenu from "./menuUtilizador";
 
 function LayoutAppBar(props) {
-  const theme = useTheme();
   const {
     loading,
     handleDrawerToggle,
     drawerWidth,
-    switchMode,
     notificacoes,
     setNotificacoes,
+    handleOpen,
   } = props;
 
   return (
@@ -38,8 +37,11 @@ function LayoutAppBar(props) {
             gap: 1,
           }}
         >
-          <IconButton sx={{ color: "text.primary" }} onClick={switchMode}>
-            {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
+          <IconButton
+            sx={{ color: "primary.contrastText" }}
+            onClick={handleOpen}
+          >
+            <Settings />
           </IconButton>
           <Notification
             loading={loading}

@@ -1,10 +1,10 @@
-import Drawer from "../components/dashboard/layout/drawer/drawer";
 import { Outlet } from "react-router-dom";
+import MenuDrawer from "../components/layout/drawer/drawer";
 
 export default function DashboardLayout() {
   return (
-    <Drawer>
+    <MenuDrawer>
       <Outlet />
-    </Drawer>
+    </MenuDrawer>
   );
 }

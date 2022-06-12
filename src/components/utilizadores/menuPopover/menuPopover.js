@@ -2,7 +2,7 @@ import { AccountCircle, Edit, NoAccounts } from "@mui/icons-material";
 import { Divider, ListItemIcon } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import axios from "axios";
+import axios from "../../../api/axios";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";

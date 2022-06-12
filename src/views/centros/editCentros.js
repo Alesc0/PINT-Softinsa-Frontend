@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../api/axios";
 import { toast } from "react-toastify";
 import CentroForm from "../../components/centros/form";
 import { useParams } from "react-router-dom";

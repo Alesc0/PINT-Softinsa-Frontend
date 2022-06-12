@@ -1,7 +1,6 @@
 import {
   Autocomplete,
   Button,
-  CircularProgress,
   Divider,
   Paper,
   Skeleton,
@@ -10,10 +9,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Box } from "@mui/system";
-import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "../../api/axios";
 import ImgUploader from "../fileUploader/fileUploader";
 
 const errorList = {

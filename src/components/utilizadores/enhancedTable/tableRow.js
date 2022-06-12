@@ -66,7 +66,7 @@ function UserTableRow(props) {
           <ManageAccounts color="primary" />
         </IconButton>
         <IconButton
-          onClick={(e) => handleOpenModal(e, row.idutilizador)}
+          onClick={(e) => handleOpenModal(e, [row.idutilizador])}
           sx={{ p: 0.5 }}
         >
           <Delete color="error" />

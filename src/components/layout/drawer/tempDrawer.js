@@ -1,4 +1,4 @@
-import { Drawer } from "@mui/material";
+import { Box, Drawer } from "@mui/material";
 import React from "react";
 
 function TempDrawer(props) {
@@ -22,7 +22,13 @@ function TempDrawer(props) {
         },
       }}
     >
-      {drawer}
+      <Box
+        role="presentation"
+        onClick={handleDrawerToggle}
+        onKeyDown={handleDrawerToggle}
+      >
+        {drawer}
+      </Box>
     </Drawer>
   );
 }

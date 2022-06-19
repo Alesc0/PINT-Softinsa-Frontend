@@ -1,1 +1,1 @@
-web: node src/index.cjs
+web: node src/index.js

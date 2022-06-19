@@ -14,7 +14,7 @@ const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const shitgoback = useCallback(() => {
+  const goBack = useCallback(() => {
     if (location.state?.from) {
       navigate(location.state.from);
     } else navigate("/");
@@ -22,9 +22,9 @@ const Login = () => {
 
   useEffect(() => {
     if (auth) {
-      shitgoback();
+      goBack();
     }
-  }, [auth, shitgoback]);
+  }, [auth, goBack]);
 
   const handleRequest = async (obj) => {
     try {
@@ -34,9 +34,14 @@ const Login = () => {
       });
 
       if (data.status === 200) {
-        const jwt = data.data.data;
-
-        localStorage.setItem("jwt", jwt);
+        if (obj.remember) {
+          localStorage.setItem("jwt", data.data.data.accessToken);
+          localStorage.setItem("refreshToken", data.data.data.refreshToken);
+        } else {
+          sessionStorage.setItem("jwt", data.data.data.accessToken);
+          sessionStorage.setItem("refreshToken", data.data.data.refreshToken);
+        }
+        localStorage.setItem("remember", obj.remember);
 
         setAuth(true);
 

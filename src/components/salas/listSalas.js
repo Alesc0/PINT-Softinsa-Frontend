@@ -1,13 +1,14 @@
 import {
   Avatar,
-  CircularProgress, List,
+  CircularProgress,
+  List,
   ListItem,
   ListItemButton,
   ListItemText,
   Pagination,
   Paper,
   Stack,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 import img from "../../imgs/centroViseu.png";
@@ -27,7 +28,7 @@ export default function ListSalas(props) {
   if (!salas) return;
 
   return (
-    <Stack spacing={2} className="center">
+    <Stack spacing={2}>
       <List disablePadding sx={{ minHeight: 390 }}>
         {isLoading ? (
           <ListItem

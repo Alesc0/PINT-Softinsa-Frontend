@@ -1,7 +1,8 @@
 import {
   Apartment,
+  Assignment,
   Dashboard,
-  Person,
+  Group,
   QueryStats,
   ViewModule,
 } from "@mui/icons-material/";
@@ -17,12 +18,12 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import axios from "../../../api/axios";
 import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "../../../api/axios";
 import navBar_logo from "../../../imgs/logo-softinsa.png";
 import { ColorModeContext } from "../../../theme";
 import LayoutAppBar from "../layoutAppBar";
@@ -43,6 +44,12 @@ const pages = [
     link: "/stats",
     icon: <QueryStats sx={{ color: "white" }} />,
   },
+
+  {
+    name: "Reservas",
+    link: "/reservas",
+    icon: <Assignment sx={{ color: "white" }} />,
+  },
   {
     name: "Centros",
     link: "/centros",
@@ -56,7 +63,7 @@ const pages = [
   {
     name: "Utilizadores",
     link: "/utilizadores",
-    icon: <Person sx={{ color: "white" }} />,
+    icon: <Group sx={{ color: "white" }} />,
   },
 ];
 
@@ -185,13 +192,11 @@ function MenuDrawer(props) {
     <>
       <Box sx={{ display: "flex" }}>
         <LayoutAppBar {...appBarProps} />
-
         <Box
           component="nav"
           sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
         >
           <TempDrawer {...tempDrawerProps} />
-
           <PermDrawer drawerWidth={drawerWidth} drawer={drawer} />
         </Box>
 

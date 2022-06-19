@@ -1,8 +1,10 @@
 import {
   Autocomplete,
   Button,
+  Collapse,
   Divider,
   FormControl,
+  FormHelperText,
   Input,
   InputLabel,
   Paper,
@@ -13,14 +15,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import axios from "../../api/axios";
+import { useFormik } from "formik";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-
-const errorList = {
-  nome: "O nome precisa de ter entre 5 a 100 caracteres.",
-  email: "Este email não é válido.",
-};
+import * as yup from "yup";
+import axios from "../../api/axios";
 
 const loadSkeleton = () => {
   return (
@@ -53,43 +52,74 @@ const loadSkeleton = () => {
   );
 };
 
+const validationSchema = yup.object({
+  nome: yup
+    .string()
+    .min(3, "O nome deve ter pelo menos 5 caracteres.")
+    .max(50, "O nome deve ter no máximo 50 caracteres.")
+    .required("Este campo é obrigatório."),
+  descricao: yup
+    .string()
+    .min(5, "A descrição deve ter pelo menos 10 caracteres.")
+    .max(250, "A descrição só pode ter até 250 caracteres.")
+    .required("Este campo é obrigatório."),
+  lotacaoMax: yup
+    .number()
+    .min(10, "10-100")
+    .max(100, "10-100.")
+    .required("Obrigatório"),
+  estado: yup.boolean(),
+  justificacao: yup
+    .string()
+    .min(10, "A justificação deve ter pelo menos 10 caracteres.")
+    .max(250, "A justificação só pode ter até 250 caracteres.")
+    .when("estado", {
+      is: (value) => !value,
+      then: yup.string().required("Campo obrigatório"),
+    }),
+});
+
 function SalasForm({ data, handleRequest, handleDelete }) {
   const [centros, setCentros] = useState([]);
   const [centro, setCentro] = useState(1);
-  const [nome, setNome] = useState("");
-  const [nomeErr, setNomeErr] = useState(false);
-  const [descricao, setDescricao] = useState("");
-  const [descricaoErr, setDescricaoErr] = useState(false);
-  const [lotacaoMax, setLotacaoMax] = useState(50);
   const [valSlider, setValSlider] = useState(70);
-  const [ativo, setAtivo] = useState(true);
 
   const [isLoading, setLoading] = useState(false);
 
-  const calcLotacaoFinal = useMemo(() => {
-    return Math.floor((lotacaoMax * valSlider) / 100);
-  }, [lotacaoMax, valSlider]);
-
   const clearForm = useCallback(() => {
-    setNome("");
-    setDescricao("");
     setCentro(centros[0]);
-    setLotacaoMax(50);
     setValSlider(70);
-    setAtivo(true);
   }, [centros]);
+
+  const formik = useFormik({
+    initialValues: {
+      nome: data?.nome || "",
+      descricao: data?.descricao || "",
+      lotacaoMax: data?.lotacaomax || 50,
+      estado: data?.estado || false,
+      justificacao: "",
+    },
+    enableReinitialize: true,
+    validationSchema: validationSchema,
+
+    onSubmit: async (values) => {
+      await handleRequest({
+        ...values,
+      });
+    },
+  });
+
+  const calcLotacaoFinal = useMemo(() => {
+    return Math.floor((formik.values.lotacaoMax * valSlider) / 100);
+  }, [formik.values.lotacaoMax, valSlider]);
 
   useEffect(() => {
     if (!data) {
       clearForm();
       return;
     }
-    setNome(data.nome);
     setCentro(centros[data.idcentro]);
-    setDescricao(data.descricao);
-    setLotacaoMax(data.lotacaomax);
     setValSlider((100 * data.lotacao) / data.lotacaomax);
-    setAtivo(data.estado);
   }, [data, clearForm, centros]);
 
   useEffect(() => {
@@ -106,38 +136,23 @@ function SalasForm({ data, handleRequest, handleDelete }) {
     fetchData();
   }, []);
 
-  const validate = () => {
-    return false;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validate)
-      handleRequest({
-        nome,
-        descricao,
-        centro: centro.idcentro,
-        lotacaoMax,
-        lotacao: calcLotacaoFinal,
-        ativo,
-      });
-  };
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        width: 500,
-        flexGrow: 1,
-        position: "relative",
-      }}
-    >
-      <Stack
-        component={Paper}
+    <>
+      <Paper
+        component="form"
+        onSubmit={formik.handleSubmit}
         elevation={2}
-        maxWidth="sm"
-        spacing={2}
-        sx={{ paddingInline: 3, paddingBlock: 2 }}
+        maxwidth="sm"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          paddingInline: 3,
+          paddingBlock: 2,
+          margin: "1em auto",
+          width: 500,
+          flexGrow: 1,
+        }}
       >
         {isLoading ? (
           loadSkeleton()
@@ -147,42 +162,53 @@ function SalasForm({ data, handleRequest, handleDelete }) {
               {!data ? "Adicionar" : "Editar"} Sala
             </Typography>
             <TextField
-              required
+              id="nome"
               label="Nome"
               variant="outlined"
-              error={nomeErr}
-              helperText={nomeErr && errorList.nome}
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
               autoComplete="off"
+              value={formik.values.nome}
+              onChange={formik.handleChange}
+              error={formik.touched.nome && Boolean(formik.errors.nome)}
+              helperText={formik.touched.nome && formik.errors.nome}
             />
             <TextField
-              required
+              id="descricao"
+              label="Descrição"
               multiline
               maxRows={5}
-              label="Descrição"
               variant="outlined"
-              error={descricaoErr}
-              helperText={descricaoErr && errorList.descricao}
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
               autoComplete="off"
+              value={formik.values.descricao}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.descricao && Boolean(formik.errors.descricao)
+              }
+              helperText={formik.touched.descricao && formik.errors.descricao}
             />
             <Stack direction="row" spacing={2} className="center">
-              <FormControl>
+              <FormControl
+                error={
+                  formik.touched.lotacaoMax && Boolean(formik.errors.lotacaoMax)
+                }
+              >
                 <InputLabel>Lotação</InputLabel>
                 <Input
+                  name="lotacaoMax"
                   size="small"
-                  value={lotacaoMax}
-                  onChange={(e) => setLotacaoMax(e.target.value)}
+                  value={formik.values.lotacaoMax}
+                  onChange={formik.handleChange}
                   inputProps={{
                     step: 10,
-                    min: 0,
-                    max: 100,
+                    min: { ...formik.values.lotacaoMax.min },
+                    max: { ...formik.values.lotacaoMax.max },
                     type: "number",
-                    style: { textAlign: "center" },
+
+                    style: { textAlign: "center", width: "70px" },
                   }}
                 />
+                <FormHelperText>
+                  {formik.touched.lotacaoMax && formik.errors.lotacaoMax}
+                </FormHelperText>
               </FormControl>
               <Stack sx={{ flexGrow: 1 }} className="center ">
                 <Slider
@@ -222,6 +248,33 @@ function SalasForm({ data, handleRequest, handleDelete }) {
               }}
               renderInput={(params) => <TextField {...params} label="Cidade" />}
             />
+            <Stack direction="row" className="center">
+              <Typography>Indisponivel</Typography>
+              <Switch
+                id="estado"
+                checked={formik.values.estado}
+                onChange={formik.handleChange}
+              />
+              <Typography>Disponível</Typography>
+            </Stack>
+            <Collapse sx={{ width: "100%" }} in={!formik.values.estado}>
+              <TextField
+                id="justificacao"
+                sx={{ width: "100%" }}
+                label="Justificação de inatividade"
+                multiline
+                rows={3}
+                value={formik.values.justificacao}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.justificacao &&
+                  Boolean(formik.errors.justificacao)
+                }
+                helperText={
+                  formik.touched.justificacao && formik.errors.justificacao
+                }
+              />
+            </Collapse>
             <Divider />
             <Stack direction="row">
               <Button color="error" variant="contained" onClick={handleDelete}>
@@ -238,13 +291,8 @@ function SalasForm({ data, handleRequest, handleDelete }) {
             </Stack>
           </>
         )}
-      </Stack>
-      <Switch
-        sx={{ position: "absolute", top: 0, mt: 1, right: 2 }}
-        checked={ativo}
-        onChange={(e) => setAtivo(e.target.checked)}
-      />
-    </form>
+      </Paper>
+    </>
   );
 }
 

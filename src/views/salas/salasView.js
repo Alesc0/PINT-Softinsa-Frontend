@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import axios from "../../api/axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import axios from "../../api/axios";
 import SalasForm from "../../components/salas/form";
 import ListSalas from "../../components/salas/listSalas";
 
@@ -43,7 +43,9 @@ function SalasView(props) {
   }, [setSalas, offset]);
 
   //TODO
-  const handleRequest = (salaObj) => {};
+  const handleRequest = (salaObj) => {
+    console.log(salaObj);
+  };
   const handleDelete = () => {};
   return (
     <>
@@ -58,7 +60,7 @@ function SalasView(props) {
           Criar nova sala
         </Button>
       </Stack>
-      <Box display="flex" className="center">
+      <Box display="flex" sx={{ width: "fit-content", m: "0 auto" }}>
         <Stack spacing={3} direction={{ xs: "column", sm: "row" }}>
           <ListSalas {...listSalasProps} />
           <SalasForm

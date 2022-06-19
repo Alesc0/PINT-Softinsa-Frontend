@@ -16,18 +16,31 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import axios from "../../api/axios";
+import { useFormik } from "formik";
 import { useCallback, useEffect, useState } from "react";
-import PhoneInput from "react-phone-number-input/input";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import * as yup from "yup";
+import axios from "../../api/axios";
 import Modal from "./opcoesModal";
-import CustomPhoneInput from "./phoneInput";
 
-const errorList = {
-  nome: "O nome precisa de ter entre 5 a 100 caracteres.",
-  email: "Este email não é válido.",
-};
+const phoneRegex =
+  "^(?:9[1-36][0-9]|2[12][0-9]|2[35][1-689]|24[1-59]|26[1-35689]|27[1-9]|28[1-69]|29[1256])[0-9]{6}$";
+
+const validationSchema = yup.object({
+  nome: yup
+    .string()
+    .min(8, "O nome deve ter pelo menos 5 caracteres.")
+    .required("Este campo é obrigatório."),
+  email: yup
+    .string()
+    .email("Email inválido.")
+    .required("Este campo é obrigatório."),
+  telemovel: yup
+    .string()
+    .matches(phoneRegex, "Contacto inválido.")
+    .required("Este campo é obrigatório."),
+});
 
 const options = [
   {
@@ -78,13 +91,6 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
 
   const [permissionTab, setPermissionTab] = useState(0);
   const [centros, setCentros] = useState([]);
-
-  const [nome, setNome] = useState("");
-  const [nomeErr, setNomeErr] = useState(false);
-  const [email, setEmail] = useState("");
-  const [emailErr, setEmailErr] = useState(false);
-  const [contacto, setContacto] = useState("+351");
-  const [contactoErr, setContactoErr] = useState(false);
   const [centro, setCentro] = useState(1);
   const [ativo, setAtivo] = useState(true);
 
@@ -121,11 +127,33 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
     setChecked(options.map((row) => data[row.name]));
   };
 
-  const setFields = useCallback((data) => {
-    setNome(data.nome);
-    if (data.telemovel.length < 13) setContacto("+351" + data.telemovel);
-    else setContacto(data.telemovel);
-    setEmail(data.email);
+  const formik = useFormik({
+    initialValues: {
+      nome: "",
+      email: "",
+      telemovel: "",
+    },
+    enableReinitialize: true,
+    validationSchema: validationSchema,
+
+    onSubmit: async (values) => {
+      let res = await handleRequest({
+        ...values,
+        estado: ativo,
+        ...opObj(),
+        role: perms[permissionTab],
+      });
+      if (res) navigate(-1);
+    },
+  });
+
+  const opObj = () => {
+    let a = {};
+    options.map((row, i) => (a[row.name] = checked[i]));
+    return a;
+  };
+
+  const setExtraFields = useCallback((data) => {
     setCentro(data.idcentro);
     if (data.admin) setPermissionTab(1);
     if (data.role === "U") setPermissionTab(perms.indexOf("Regular"));
@@ -142,7 +170,12 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
         setCentros(response.data);
         if (id) {
           const { data: response } = await axios.get("/utilizador/" + id);
-          setFields(response.utilizador);
+          formik.setValues({
+            nome: response.data.nome,
+            telemovel: response.data.telemovel,
+            email: response.data.email,
+          });
+          setExtraFields(response.utilizador);
         }
       } catch (error) {
         toast.error(error);
@@ -150,161 +183,122 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
       setLoading(false);
     };
     fetchData();
-  }, [setCentro, id, setFields]);
+  }, [setCentro, id, setExtraFields]);
 
   const handleChange = (event, newValue) => setPermissionTab(newValue);
 
-  const clearErr = () => {
-    setNomeErr(false);
-    setEmailErr(false);
-    setContactoErr(false);
-  };
-
-  const validate = () => {
-    let valid = true;
-    if (!nome || nome.trim().length < 5 || nome.trim().length > 100) {
-      valid = false;
-      setNomeErr(true);
-    }
-    if (!contacto || contacto.trim().length !== 13) {
-      valid = false;
-      setContactoErr(true);
-    }
-    return valid;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    clearErr();
-
-    if (validate()) {
-      handleRequest({
-        nome: nome.trim(),
-        telemovel: contacto.trim(),
-        email: email.trim(),
-        estado: ativo,
-        ...opObj(),
-        role: perms[permissionTab],
-      });
-    }
-  };
-
-  const opObj = () => {
-    let a = {};
-    options.map((row, i) => (a[row.name] = checked[i]));
-    return a;
-  };
-
   return (
     <>
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          position: "relative",
-          width: "fit-content",
+      <Paper
+        component="form"
+        onSubmit={formik.handleSubmit}
+        elevation={2}
+        maxwidth="sm"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          paddingInline: 3,
+          paddingBlock: 2,
           margin: "1em auto",
+          width: "fit-content",
+          position: "relative",
         }}
       >
-        <Stack
-          component={Paper}
-          elevation={2}
-          maxWidth="sm"
-          spacing={2}
-          sx={{ paddingInline: 3, paddingBlock: 2 }}
-        >
-          {loading ? (
-            loadSkeleton()
-          ) : (
-            <>
-              <Typography textAlign="center" variant="h4">
-                {!id ? "Adicionar" : "Editar"} Utilizador
-              </Typography>
-              <TextField
-                required
-                label="Nome"
-                variant="outlined"
-                error={nomeErr}
-                helperText={nomeErr && errorList.nome}
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                autoComplete="off"
-              />
-              <TextField
-                required
-                label="Email"
-                variant="outlined"
-                type="email"
-                value={email}
-                error={emailErr}
-                autoComplete="off"
-                helperText={emailErr && errorList.email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <PhoneInput
-                required
-                autoComplete="off"
-                value={contacto}
-                error={contactoErr}
-                onChange={setContacto}
-                placeholder="Contacto"
-                inputComponent={CustomPhoneInput}
-              />
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                <FormControl>
-                  <InputLabel id="label-select"> Centro </InputLabel>
-                  <Select
-                    sx={{ minWidth: 125 }}
-                    label="Centro"
-                    labelId="label-select"
-                    value={centro}
-                    onChange={(e) => setCentro(e.target.value)}
-                  >
-                    {centros.length > 0 ? (
-                      centros.map((row) => (
-                        <MenuItem key={row.idcentro} value={row.idcentro}>
-                          {row.cidade}
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <MenuItem value={1}>
-                        {" "}
-                        {"Sem centros disponíveis!"}{" "}
-                      </MenuItem>
-                    )}
-                  </Select>
-                </FormControl>
-                <Box>
-                  <Tabs value={permissionTab} onChange={handleChange}>
-                    {perms.map((row, i) => (
-                      <Tab key={i} label={row} value={i} />
-                    ))}
-                  </Tabs>
-                </Box>
-              </Stack>
-              <Divider />
-              <Stack direction="row" spacing={2} sx={{ alignSelf: "flex-end" }}>
-                <Button
-                  onClick={() => navigate(-1)}
-                  color="error"
-                  variant="contained"
+        {loading ? (
+          loadSkeleton()
+        ) : (
+          <>
+            <Typography textAlign="center" variant="h4">
+              {!id ? "Adicionar" : "Editar"} Utilizador
+            </Typography>
+            <TextField
+              id="nome"
+              label="Nome"
+              variant="outlined"
+              autoComplete="off"
+              value={formik.values.nome}
+              onChange={formik.handleChange}
+              error={formik.touched.nome && Boolean(formik.errors.nome)}
+              helperText={formik.touched.nome && formik.errors.nome}
+            />
+            <TextField
+              id="email"
+              label="Email"
+              variant="outlined"
+              autoComplete="off"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
+            />
+            <TextField
+              id="telemovel"
+              label="Contacto"
+              autoComplete="off"
+              variant="outlined"
+              value={formik.values.telemovel}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.telemovel && Boolean(formik.errors.telemovel)
+              }
+              helperText={formik.touched.telemovel && formik.errors.telemovel}
+            />
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+              <FormControl>
+                <InputLabel id="label-select"> Centro </InputLabel>
+                <Select
+                  sx={{ minWidth: 125 }}
+                  label="Centro"
+                  labelId="label-select"
+                  value={centro}
+                  onChange={(e) => setCentro(e.target.value)}
                 >
-                  Voltar
-                </Button>
-                <Button type="submit" color="info" variant="contained">
-                  Confirmar
-                </Button>
-              </Stack>
-            </>
-          )}
-        </Stack>
-
+                  {centros.length > 0 ? (
+                    centros.map((row) => (
+                      <MenuItem key={row.idcentro} value={row.idcentro}>
+                        {row.cidade}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value={1}>
+                      {" "}
+                      {"Sem centros disponíveis!"}{" "}
+                    </MenuItem>
+                  )}
+                </Select>
+              </FormControl>
+              <Box>
+                <Tabs value={permissionTab} onChange={handleChange}>
+                  {perms.map((row, i) => (
+                    <Tab key={i} label={row} value={i} />
+                  ))}
+                </Tabs>
+              </Box>
+            </Stack>
+            <Divider />
+            <Stack direction="row" spacing={2} sx={{ alignSelf: "flex-end" }}>
+              <Button
+                onClick={() => navigate(-1)}
+                color="error"
+                variant="contained"
+              >
+                Voltar
+              </Button>
+              <Button type="submit" color="info" variant="contained">
+                Confirmar
+              </Button>
+            </Stack>
+          </>
+        )}
         <IconButton
           sx={{ position: "absolute", top: 0, mt: 1, right: 2 }}
           onClick={handleOpen}
         >
           <Settings />
         </IconButton>
-      </form>
+      </Paper>
+
       <Modal {...modalProps} />
     </>
   );

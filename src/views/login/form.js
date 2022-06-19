@@ -1,7 +1,6 @@
 import LockOutlined from "@mui/icons-material/LockOutlined";
 import {
   Avatar,
-  Box,
   Button,
   Checkbox,
   Container,
@@ -12,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Copyright = (props) => {
@@ -55,7 +54,7 @@ function LoginForm({ handleRequest }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
-    handleRequest({ email, pwd });
+    handleRequest({ email, pwd, remember });
   };
 
   const navigate = useNavigate();

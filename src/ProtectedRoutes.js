@@ -6,8 +6,6 @@ const ProtectedRoutes = () => {
   const { auth } = useContext(UserContext);
   const location = useLocation();
 
-  console.log("render");
-
   return auth ? (
     <Outlet />
   ) : (

@@ -7,7 +7,6 @@ export default function EditUtilizadoresView() {
   const { id } = useParams();
 
   const handleRequest = async (userObj) => {
-    console.log(userObj);
     if (userObj.role === "Administrador") {
       userObj.admin = true;
     } else userObj.admin = false;
@@ -16,10 +15,12 @@ export default function EditUtilizadoresView() {
       //requests
       const data = await axios.put("/utilizador/" + id, userObj);
       toast.success(data.data);
+      return true;
     } catch (error) {
       for (const [key, value] of Object.entries(error.response.data)) {
         toast.error(value, { toastId: key });
       }
+      return false;
     }
   };
 

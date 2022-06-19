@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 // layouts
 import DashboardLayout from "./views/dashboardLayout";
@@ -15,10 +16,11 @@ import EditCentros from "./views/centros/editCentros";
 
 import Salas from "./views/salas/salasView";
 
+import Reservas from "./views/reservas/reservasView"
+
 import Utilizadores from "./views/utilizadores/utilizadoresView";
 import AddUtilizadores from "./views/utilizadores/addUtilizadores";
 import EditUtilizadores from "./views/utilizadores/editUtilizadores";
-import ProtectedRoutes from "./ProtectedRoutes";
 
 // ----------------------------------------------------------------------
 
@@ -41,7 +43,7 @@ export default function Router() {
               path="utilizadores/edit/:id"
               element={<EditUtilizadores />}
             />
-
+            <Route path="reservas" element={<Reservas />} />
             <Route path="stats" element={<Stats />} />
           </Route>
         </Route>

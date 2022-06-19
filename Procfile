@@ -1,1 +1,1 @@
-web: react-scripts src/index.js
+web: npm start

@@ -63,6 +63,8 @@ function LoginForm({ handleRequest }) {
     <Paper
       square
       sx={{
+        display: "flex",
+        flexDirection: "column",
         flexGrow: 1,
         paddingInline: 4,
         pt: 4,
@@ -87,7 +89,7 @@ function LoginForm({ handleRequest }) {
         component="form"
         noValidate
         onSubmit={handleSubmit}
-        sx={{ mt: 2, width: 450, flexGrow: 1 }}
+        sx={{ mt: 2, width: 400, flexGrow: 1 }}
       >
         <TextField
           required

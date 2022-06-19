@@ -10,6 +10,7 @@
         "@mui/icons-material": "^5.5.0",
         "@mui/lab": "^5.0.0-alpha.84",
         "@mui/material": "^5.8.2",
+        "@mui/x-data-grid": "^5.12.1",
         "@nivo/bar": "^0.79.1",
         "@nivo/calendar": "^0.79.1",
         "@nivo/colors": "^0.79.1",
@@ -20,6 +21,7 @@
         "@testing-library/user-event": "^13.5.0",
         "axios": "^0.26.1",
         "express": "^4.17.3",
+        "formik": "^2.2.9",
         "pg": "^8.7.3",
         "react": "^18.0.0",
         "react-dom": "^18.0.0",
@@ -30,7 +32,8 @@
         "react-scripts": "^5.0.0",
         "react-toastify": "^8.2.0",
         "redux": "^4.2.0",
-        "web-vitals": "^2.1.4"
+        "web-vitals": "^2.1.4",
+        "yup": "^0.32.11"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -55,5 +58,9 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "engines": {
+        "node": "16.13.2",
+        "npm": "8.1.2"
     }
 }

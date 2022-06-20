@@ -70,14 +70,14 @@ const Login = () => {
         backgroundPosition: "center",
       }}
     >
-      <Box display="flex" sx={{ m: "0 auto", maxWidth: "md" }}>
+      <Box display="flex" sx={{ maxWidth: "md", flexGrow: 1 }}>
         <Box
-          display={{ xs: "none", sm: "none", md: "flex" }}
+          display={{ xs: "none", sm: "flex" }}
           flexDirection="column"
           sx={{
             p: 3,
-            minWidth: 400,
             background: "#3498DB",
+            flexGrow: 1,
           }}
         >
           <Stack

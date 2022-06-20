@@ -69,11 +69,11 @@ function LoginForm({ handleRequest, isLoading }) {
       sx={{
         display: "flex",
         flexDirection: "column",
-        flexGrow: 1,
         paddingInline: 4,
         pt: 4,
         pb: 2,
         zIndex: 1,
+        flexGrow: 3,
       }}
     >
       <Container
@@ -91,9 +91,8 @@ function LoginForm({ handleRequest, isLoading }) {
       <Stack
         spacing={2}
         component="form"
-        noValidate
         onSubmit={formik.handleSubmit}
-        sx={{ mt: 2, width: 400, flexGrow: 1 }}
+        sx={{ mt: 2 }}
       >
         <TextField
           id="email"

@@ -32,6 +32,7 @@ function Centros() {
     <Box
       maxWidth="xl"
       display="grid"
+      className="center"
       gap={5}
       gridTemplateColumns={{
         lg: "repeat(4,1fr)",
@@ -81,7 +82,7 @@ function Centros() {
               textAlign="center"
               component="div"
             >
-              {" Adicionar Centro"}
+              {"Adicionar"}
             </Typography>
           </CardContent>
         </CardActionArea>

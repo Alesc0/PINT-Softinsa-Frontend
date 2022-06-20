@@ -142,16 +142,13 @@ function SalasForm({ data, handleRequest, handleDelete }) {
         component="form"
         onSubmit={formik.handleSubmit}
         elevation={2}
-        maxwidth="sm"
         sx={{
           display: "flex",
           flexDirection: "column",
           gap: 2,
           paddingInline: 3,
           paddingBlock: 2,
-          margin: "1em auto",
-          width: 500,
-          flexGrow: 1,
+          flexGrow: 2,
         }}
       >
         {isLoading ? (
@@ -257,7 +254,7 @@ function SalasForm({ data, handleRequest, handleDelete }) {
               />
               <Typography>Disponível</Typography>
             </Stack>
-            <Collapse sx={{ width: "100%" }} in={!formik.values.estado}>
+            <Collapse in={!formik.values.estado}>
               <TextField
                 id="justificacao"
                 sx={{ width: "100%" }}

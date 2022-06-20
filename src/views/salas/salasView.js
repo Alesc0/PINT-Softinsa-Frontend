@@ -60,16 +60,18 @@ function SalasView(props) {
           Criar nova sala
         </Button>
       </Stack>
-      <Box display="flex" sx={{ width: "fit-content", m: "0 auto" }}>
-        <Stack spacing={3} direction={{ xs: "column", sm: "row" }}>
-          <ListSalas {...listSalasProps} />
-          <SalasForm
-            data={salas && salas[selected]}
-            handleRequest={handleRequest}
-            handleDelete={handleDelete}
-          />
-        </Stack>
-      </Box>
+      <Stack
+        spacing={3}
+        direction={{ xs: "column", sm: "row" }}
+        sx={{ m: "0 auto", maxWidth: "md" }}
+      >
+        <ListSalas {...listSalasProps} />
+        <SalasForm
+          data={salas && salas[selected]}
+          handleRequest={handleRequest}
+          handleDelete={handleDelete}
+        />
+      </Stack>
     </>
   );
 }

@@ -28,14 +28,14 @@ export default function ListSalas(props) {
   if (!salas) return;
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} sx={{ flexGrow: 1 }}>
       <List disablePadding sx={{ minHeight: 390 }}>
         {isLoading ? (
           <ListItem
             component={Paper}
             elevation={4}
             className="center"
-            sx={{ mb: 2, width: 250, bgcolor: "background.paper" }}
+            sx={{ mb: 2, bgcolor: "background.paper" }}
           >
             <CircularProgress />
           </ListItem>
@@ -45,7 +45,7 @@ export default function ListSalas(props) {
               key={i}
               component={Paper}
               elevation={4}
-              sx={{ mb: 2, width: 250, bgcolor: "background.paper" }}
+              sx={{ mb: 2, bgcolor: "background.paper" }}
               selected={selected === i}
               onClick={() => setSelected(i)}
             >

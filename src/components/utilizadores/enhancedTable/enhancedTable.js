@@ -178,17 +178,18 @@ export default function EnhancedTable(props) {
 
   return (
     <>
-      <Paper sx={{ width: "100%", mb: 2 }}>
+      <Paper
+        sx={{
+          width: "100%",
+          mb: 2,
+        }}
+      >
         <EnhancedTableToolbar
           selected={selected}
           handleOpenModal={handleOpenModal}
         />
         <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size="medium"
-          >
+          <Table size="small">
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}

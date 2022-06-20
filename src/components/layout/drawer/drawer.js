@@ -206,7 +206,7 @@ function MenuDrawer(props) {
             flexGrow: 1,
             p: 3,
             pt: 11,
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            width: { xs: "100%", sm: `calc(100% - ${drawerWidth}px)` },
           }}
         >
           {props.children}

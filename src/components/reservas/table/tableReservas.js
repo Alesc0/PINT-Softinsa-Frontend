@@ -69,14 +69,10 @@ export default function TableReservas(props) {
 
   return (
     <>
-      <Paper sx={{ width: "100%", mb: 2 }}>
+      <Paper sx={{ mb: 2 }}>
         <EnhancedTableToolbar />
         <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size="medium"
-          >
+          <Table aria-labelledby="tableTitle" size="small">
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}

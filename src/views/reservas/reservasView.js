@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "../../api/axios";
-import TableReservas from "../../components/reservas/enhancedTable/enhancedTable";
+import TableReservas from "../../components/reservas/table/tableReservas";
 
 function ReservasView() {
   const [reservas, setReservas] = useState([]);

@@ -180,7 +180,6 @@ export default function EnhancedTable(props) {
     <>
       <Paper
         sx={{
-          width: "100%",
           mb: 2,
         }}
       >

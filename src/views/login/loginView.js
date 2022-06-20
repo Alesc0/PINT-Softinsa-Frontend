@@ -5,12 +5,14 @@ import logo from "../../imgs/logo-softinsa.png";
 import Contacts from "./contacts";
 import LoginForm from "./form";
 import axios from "../../api/axios";
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { setAuth, auth } = useContext(UserContext);
+  const [isLoading, setLoading] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -27,10 +29,11 @@ const Login = () => {
   }, [auth, goBack]);
 
   const handleRequest = async (obj) => {
+    setLoading(true);
     try {
-      const data = await axios.post("/utilizador/login", {
-        email: obj.email,
-        password: obj.pwd,
+      const data = await axios.post("/utilizador/loginWeb", {
+        email: obj.values.email,
+        password: obj.values.password,
       });
 
       if (data.status === 200) {
@@ -52,6 +55,7 @@ const Login = () => {
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
   };
 
   return (
@@ -99,7 +103,7 @@ const Login = () => {
           </Stack>
           <Contacts />
         </Box>
-        <LoginForm handleRequest={handleRequest} />
+        <LoginForm handleRequest={handleRequest} isLoading={isLoading} />
       </Box>
 
       <img

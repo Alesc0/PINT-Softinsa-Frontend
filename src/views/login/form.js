@@ -1,4 +1,5 @@
 import LockOutlined from "@mui/icons-material/LockOutlined";
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Avatar,
   Button,
@@ -11,8 +12,18 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useFormik } from "formik";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+
+const validationSchema = yup.object({
+  email: yup
+    .string()
+    .email("Email inválido!")
+    .required("Este campo é obrigatório."),
+  password: yup.string().required("Este campo é obrigatório."),
+});
 
 const Copyright = (props) => {
   return (
@@ -31,31 +42,24 @@ const Copyright = (props) => {
   );
 };
 
-function isValidEmail(email) {
-  return /\S+@\S+\.\S+/.test(email);
-}
-
-function LoginForm({ handleRequest }) {
-  const [email, setEmail] = useState("");
-  const [emailErr, setEmailErr] = useState(false);
-  const [pwd, setPwd] = useState("");
+function LoginForm({ handleRequest, isLoading }) {
   const [remember, setRemember] = useState(false);
 
-  const validate = () => {
-    let valid = true;
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    enableReinitialize: true,
+    validationSchema: validationSchema,
 
-    if (!isValidEmail(email)) {
-      valid = false;
-      setEmailErr(true);
-    }
-    return valid;
-  };
+    onSubmit: async (values) => {
+      await handleRequest({ values, remember });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-    handleRequest({ email, pwd, remember });
-  };
+      //if didnt redirect, show error
+      formik.setErrors({ email: "Combinação errada de email e password!" });
+    },
+  });
 
   const navigate = useNavigate();
 
@@ -88,25 +92,27 @@ function LoginForm({ handleRequest }) {
         spacing={2}
         component="form"
         noValidate
-        onSubmit={handleSubmit}
+        onSubmit={formik.handleSubmit}
         sx={{ mt: 2, width: 400, flexGrow: 1 }}
       >
         <TextField
-          required
+          id="email"
           label="Email"
           autoComplete="email"
           autoFocus
-          value={email}
-          error={emailErr}
-          helperText={emailErr && ""}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
         />
         <TextField
-          required
+          id="password"
           label="Password"
           type="password"
-          value={pwd}
-          onChange={(e) => setPwd(e.target.value)}
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
         />
         <FormControlLabel
           control={
@@ -119,9 +125,9 @@ function LoginForm({ handleRequest }) {
           label="Lembrar-me"
         />
         <Stack spacing={1}>
-          <Button type="submit" variant="contained">
+          <LoadingButton loading={isLoading} type="submit" variant="contained">
             Log In
-          </Button>
+          </LoadingButton>
           <Button
             variant="contained"
             onClick={() => navigate(-1)}

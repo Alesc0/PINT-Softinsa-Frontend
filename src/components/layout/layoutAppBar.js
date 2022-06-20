@@ -63,14 +63,7 @@ function LayoutAppBar(props) {
             notificacoes={notificacoes}
             setNotificacoes={setNotificacoes}
           />
-          <IconButton
-            sx={{ color: "primary.contrastText" }}
-            onClick={handleOpen}
-          >
-            <Settings />
-          </IconButton>
-
-          <UtilizadorMenu />
+          <UtilizadorMenu handleOpen={handleOpen} />
         </Box>
       </Toolbar>
     </AppBar>

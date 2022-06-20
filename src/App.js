@@ -38,10 +38,8 @@ function App() {
     const fetchData = async () => {
       var authed = false;
       try {
-        const response = await axios.get("utilizador/getUserByToken", {
-          headers: { Authorization: "Bearer " + jwt },
-        });
-        setUser({ ...response.data.data, jwt });
+        const response = await axios.get("utilizador/getUserByToken");
+        setUser({ ...response.data.data });
         authed = true;
       } catch (error) {
         if (error.response.status === 401 || error.response.status === 403) {

@@ -5,6 +5,18 @@ export const clearStorages = () => {
   localStorage.removeItem("refreshToken");
 };
 
+export const getTokens = () => {
+  let jwt = "";
+  let rT = "";
+  jwt = localStorage.getItem("jwt");
+  rT = localStorage.getItem("refreshToken");
+  if (!jwt || !rT) {
+    jwt = sessionStorage.getItem("jwt");
+    rT = sessionStorage.getItem("refreshToken");
+  }
+  return [jwt, rT];
+};
+
 export const getLocalStorage = () => {
   let jwt = "";
   let rT = "";

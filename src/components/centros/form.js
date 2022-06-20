@@ -19,6 +19,7 @@ const errorList = {
   endereco: "O endereço precisa de ter entre 20 a 250 caracteres.",
   descricao: "A descrição precisa de ter entre 20 a 250 caracteres.",
 };
+
 const loadSkeleton = () => {
   return (
     <>
@@ -76,7 +77,7 @@ export default function CentroForm({ handleRequest, id = undefined }) {
         setCidades(response);
         if (id) {
           const { data: response } = await axios.get("/centro/" + id);
-          setFields(response.centro);
+          setFields(response.data);
         }
       } catch (error) {
         console.log(error);

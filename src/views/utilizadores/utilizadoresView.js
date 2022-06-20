@@ -1,11 +1,13 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import axios from "../../api/axios";
-import { useCallback, useEffect, useState } from "react";
+import { Button, Stack, Typography } from "@mui/material";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import EnhancedTable from "../../components/utilizadores/enhancedTable/enhancedTable";
+import axios from "../../api/axios";
+import { UserContext } from "../../App";
+import EnhancedTable from "../../components/utilizadores/table/tableUtilizadores";
 
-function UtilizadoresView(props) {
+function UtilizadoresView() {
+  const { user } = useContext(UserContext);
   const [users, setUsers] = useState([]);
   const [value, toggle] = useState(false);
   const [isLoading, setLoading] = useState(false);

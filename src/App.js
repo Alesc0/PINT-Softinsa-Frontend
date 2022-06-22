@@ -19,6 +19,7 @@ function App() {
 
   useEffect(() => {
     if (user) return;
+
     let jwt = "";
     let rT = "";
     var rem = JSON.parse(localStorage.getItem("remember"));
@@ -35,8 +36,10 @@ function App() {
       setLoading(false);
       return;
     }
+
     const fetchData = async () => {
-      var authed = false;
+      console.log(jwt);
+      let authed = false;
       try {
         const response = await axios.get("utilizador/getUserByToken");
         setUser({ ...response.data.data });

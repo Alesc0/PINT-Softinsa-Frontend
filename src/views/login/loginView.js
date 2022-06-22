@@ -8,6 +8,11 @@ import axios from "../../api/axios";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
 import { useLocation, useNavigate } from "react-router-dom";
+import {
+  clearStorages,
+  setLocalStorage,
+  setSessionStorage,
+} from "../../utils/sessionManager";
 
 const Login = () => {
   const { setAuth, auth } = useContext(UserContext);
@@ -38,11 +43,15 @@ const Login = () => {
 
       if (data.status === 200) {
         if (obj.remember) {
-          localStorage.setItem("jwt", data.data.data.accessToken);
-          localStorage.setItem("refreshToken", data.data.data.refreshToken);
+          setLocalStorage(
+            data.data.data.accessToken,
+            data.data.data.refreshToken
+          );
         } else {
-          sessionStorage.setItem("jwt", data.data.data.accessToken);
-          sessionStorage.setItem("refreshToken", data.data.data.refreshToken);
+          setSessionStorage(
+            data.data.data.accessToken,
+            data.data.data.refreshToken
+          );
         }
         localStorage.setItem("remember", obj.remember);
 

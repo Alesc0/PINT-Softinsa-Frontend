@@ -20,7 +20,8 @@ function ReservasView() {
             limit: rowsPerPage,
           },
         });
-        setReservas(response.data.reservas);
+        console.log(response);
+        setReservas(response.data.data);
         if (response.count) setCount(response.count);
       } catch (error) {
         console.log(error);

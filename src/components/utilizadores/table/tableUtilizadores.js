@@ -188,7 +188,7 @@ export default function EnhancedTable(props) {
           handleOpenModal={handleOpenModal}
         />
         <TableContainer>
-          <Table size="small">
+          <Table size="medium">
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}

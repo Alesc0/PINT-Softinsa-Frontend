@@ -38,11 +38,10 @@ function App() {
     }
 
     const fetchData = async () => {
-      console.log(jwt);
       let authed = false;
       try {
         const response = await axios.get("utilizador/getUserByToken");
-        setUser({ ...response.data.data });
+        setUser({ ...response.data.data, jwt });
         authed = true;
       } catch (error) {
         if (error.response.status === 401 || error.response.status === 403) {

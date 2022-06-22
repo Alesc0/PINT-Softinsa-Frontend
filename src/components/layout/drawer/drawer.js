@@ -120,7 +120,7 @@ function MenuDrawer(props) {
           "/notificacao/list"
         );
         //set states
-        setNotificacoes(responseNotificacao);
+        setNotificacoes(responseNotificacao.data);
         setLoading(false);
       } catch (error) {
         toast.error(error);

@@ -41,7 +41,7 @@ export default function Dashboard() {
         const { data: responseFeedbacks } = await axios.get("/feedback/list");
         //set states
         setUserCount(responseUsersCount.data.length);
-        setFeedbacks(responseFeedbacks);
+        setFeedbacks(responseFeedbacks.data);
 
         setLoading(false);
       } catch (error) {

@@ -54,10 +54,11 @@ function LoginForm({ handleRequest, isLoading }) {
     validationSchema: validationSchema,
 
     onSubmit: async (values) => {
-      await handleRequest({ values, remember });
+      let log = await handleRequest({ values, remember });
 
       //if didnt redirect, show error
-      formik.setErrors({ email: "Combinação errada de email e password!" });
+      if (log === false)
+        formik.setErrors({ email: "Combinação errada de email e password!" });
     },
   });
 

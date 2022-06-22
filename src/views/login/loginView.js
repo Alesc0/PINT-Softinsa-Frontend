@@ -47,10 +47,6 @@ const Login = () => {
         localStorage.setItem("remember", obj.remember);
 
         setAuth(true);
-
-        if (location.state?.from) {
-          navigate(location.state.from);
-        } else navigate("/");
       }
     } catch (error) {
       console.log(error);

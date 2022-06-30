@@ -1,55 +1,41 @@
 import { Button, Stack, Typography } from "@mui/material";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "../../api/axios";
-import { UserContext } from "../../App";
 import EnhancedTable from "../../components/utilizadores/table/tableUtilizadores";
-
+const fetchUtilizadores = async (page, rowsPerPage) =>
+  await axios.get("/utilizador/list", {
+    params: {
+      offset: page * rowsPerPage,
+      limit: rowsPerPage,
+    },
+  });
 function UtilizadoresView() {
-  const { user } = useContext(UserContext);
-  const [users, setUsers] = useState([]);
-  const [value, toggle] = useState(false);
-  const [isLoading, setLoading] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  const [count, setCount] = useState(0);
 
-  const refetch = useCallback(() => {
-    toggle((prev) => !prev);
-  }, [toggle]);
+  const { isFetching, error, data } = useQuery(
+    ["getUtilizadores", page, rowsPerPage],
+    async () => {
+      return (await fetchUtilizadores(page, rowsPerPage)).data;
+    },
+    {
+      keepPreviousData: true,
+    }
+  );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const { data: response } = await axios.get("/utilizador/list", {
-          params: {
-            offset: page * rowsPerPage,
-            limit: rowsPerPage,
-          },
-        });
-
-        setUsers(response.data);
-        if (response.count) setCount(response.count);
-        setLoading(false);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
-    fetchData();
-  }, [setUsers, value, page, rowsPerPage]);
+  if (error) toast.error("Erro a obter utilizadores!");
 
   const tableProps = {
-    refetch,
-    isLoading,
-    setLoading,
-    users,
+    isLoading: isFetching,
+    users: data?.data || [],
     rowsPerPage,
     setRowsPerPage,
     page,
     setPage,
-    count,
+    count: data?.count || 0,
   };
 
   return (

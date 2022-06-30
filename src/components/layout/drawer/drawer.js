@@ -30,6 +30,8 @@ import LayoutAppBar from "../layoutAppBar";
 import SettingsDrawer from "../settingsDrawer";
 import PermDrawer from "./permDrawer";
 import TempDrawer from "./tempDrawer";
+import { useQuery } from "react-query";
+import { UserContext } from "../../../App";
 
 const drawerWidth = 250;
 
@@ -89,10 +91,9 @@ function MenuDrawer(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const { handleColorMode } = useContext(ColorModeContext);
-  const [notificacoes, setNotificacoes] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState(false);
+  const { user } = useContext(UserContext);
 
   let location = useLocation();
 
@@ -111,23 +112,14 @@ function MenuDrawer(props) {
     setActive(pages.indexOf(page[page.length - 1]));
   }, [location]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        //requests
-        setLoading(true);
-        const { data: responseNotificacao } = await axios.get(
-          "/notificacao/list"
-        );
-        //set states
-        setNotificacoes(responseNotificacao.data);
-        setLoading(false);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
-    fetchData();
-  }, []);
+  const { isLoading, error, data } = useQuery("notificationsData", async () => {
+    let { data: response } = await axios.get(
+      "/notificacao/utilizador/" + user.idutilizador
+    );
+    return response.data[0].notificacoes;
+  });
+
+  if (error) toast.error(error);
 
   const handleDrawerToggle = () => {
     setMobileOpen((mobileOpen) => !mobileOpen);
@@ -166,11 +158,10 @@ function MenuDrawer(props) {
     </>
   );
   const appBarProps = {
-    loading,
+    isLoading,
     handleDrawerToggle,
     drawerWidth,
-    notificacoes,
-    setNotificacoes,
+    notificacoes: data,
     handleOpen,
   };
 

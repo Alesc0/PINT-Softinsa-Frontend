@@ -19,6 +19,7 @@ import { useFormik } from "formik";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { useQuery } from "react-query";
 import axios from "../../api/axios";
 
 const loadSkeleton = () => {
@@ -80,16 +81,29 @@ const validationSchema = yup.object({
 });
 
 function SalasForm({ data, handleRequest, handleDelete }) {
-  const [centros, setCentros] = useState([]);
   const [centro, setCentro] = useState(1);
   const [valSlider, setValSlider] = useState(70);
 
-  const [isLoading, setLoading] = useState(false);
+  const {
+    isLoading: loadingCentros,
+    data: dataCentros,
+    error: erroCentros,
+  } = useQuery(
+    ["getCentros"],
+    async () => {
+      const { data: response } = await axios.get("/centro/list");
+      console.log(response);
+      return response.data;
+    },
+    { keepPreviousData: true }
+  );
+
+  if (erroCentros) toast.error("Erro ao obter centros!");
 
   const clearForm = useCallback(() => {
-    setCentro(centros[0]);
+    setCentro(dataCentros && dataCentros[0]);
     setValSlider(70);
-  }, [centros]);
+  }, [dataCentros]);
 
   const formik = useFormik({
     initialValues: {
@@ -103,9 +117,7 @@ function SalasForm({ data, handleRequest, handleDelete }) {
     validationSchema: validationSchema,
 
     onSubmit: async (values) => {
-      await handleRequest({
-        ...values,
-      });
+      await handleRequest(values);
     },
   });
 
@@ -118,23 +130,11 @@ function SalasForm({ data, handleRequest, handleDelete }) {
       clearForm();
       return;
     }
-    setCentro(centros[data.idcentro]);
+    setCentro(
+      dataCentros && dataCentros.find((val) => val.idcentro === data.idcentro)
+    );
     setValSlider((100 * data.lotacao) / data.lotacaomax);
-  }, [data, clearForm, centros]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const { data: response } = await axios.get("/centro/list");
-        setCentros(response.data);
-      } catch (error) {
-        toast.error(error);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+  }, [data, clearForm, dataCentros]);
 
   return (
     <>
@@ -151,7 +151,7 @@ function SalasForm({ data, handleRequest, handleDelete }) {
           flexGrow: 2,
         }}
       >
-        {isLoading ? (
+        {loadingCentros ? (
           loadSkeleton()
         ) : (
           <>
@@ -230,7 +230,7 @@ function SalasForm({ data, handleRequest, handleDelete }) {
               </FormControl>
             </Stack>
             <Autocomplete
-              options={centros}
+              options={dataCentros || []}
               value={centro || ""}
               isOptionEqualToValue={(op, val) => true}
               getOptionLabel={(option) => option.cidade || ""}

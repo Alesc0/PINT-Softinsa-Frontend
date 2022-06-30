@@ -53,10 +53,7 @@ export default function OptionsModal(props) {
             <FormControlLabel
               sx={{ ml: "auto" }}
               control={
-                <Switch
-                  checked={ativo}
-                  onChange={(e) => setAtivo(e.target.checked)}
-                />
+                <Switch id="estado" checked={ativo} onChange={setAtivo} />
               }
               label="Estado"
               labelPlacement="start"

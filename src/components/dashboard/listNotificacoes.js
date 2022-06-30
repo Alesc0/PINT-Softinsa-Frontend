@@ -9,10 +9,9 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import React from "react";
-import ava from "../../imgs/avatar.jpg";
+import icon from "../../imgs/icon.png";
 
-function ListNotificacoes({ loading, read, notRead }) {
+function ListNotificacoes({ isLoading, read, unRead }) {
   const renderList = (rows) => {
     if (rows.length === 0)
       return (
@@ -20,33 +19,43 @@ function ListNotificacoes({ loading, read, notRead }) {
           Sem Notificações.
         </Typography>
       );
-    return rows.map((row, i) => (
-      <ListItem key={i} alignItems="flex-start" disableGutters disablePadding>
-        <ListItemButton sx={{ px: 3 }}>
-          <Avatar alt="Remy Sharp" src={ava} />
-          <ListItemText
-            primary={
-              <>
-                {!row.utilizador ? "Sistema" : row.utilizador.nome}
-                <Typography
-                  sx={{ display: "inline" }}
-                  component="span"
-                  variant="body2"
-                  color="secondary.main"
-                >
-                  {" - "}
-                  {row.titulo}
-                </Typography>
-              </>
-            }
-            secondary={row.descricao}
-          />
-        </ListItemButton>
-      </ListItem>
-    ));
+    return rows.map((row, i) => {
+      return (
+        <ListItem key={i} alignItems="flex-start" disableGutters disablePadding>
+          <ListItemButton sx={{ px: 3 }}>
+            <Avatar
+              alt={row.utilizador?.nome || "S"}
+              src={
+                (row.utilizador &&
+                  "data:image/jpeg;base64, " + row.utilizador.fotoConv) ||
+                icon
+              }
+              style={{ height: 50, width: 50 }}
+            />
+            <ListItemText
+              primary={
+                <>
+                  {!row.utilizador ? "Sistema" : row.utilizador.nome}
+                  <Typography
+                    sx={{ display: "inline" }}
+                    component="span"
+                    variant="body2"
+                    color="secondary.main"
+                  >
+                    {" - "}
+                    {row.titulo}
+                  </Typography>
+                </>
+              }
+              secondary={row.descricao}
+            />
+          </ListItemButton>
+        </ListItem>
+      );
+    });
   };
 
-  return loading ? (
+  return isLoading ? (
     <Box
       sx={{
         display: "flex",
@@ -60,25 +69,25 @@ function ListNotificacoes({ loading, read, notRead }) {
     </Box>
   ) : (
     <>
-      <List disablePadding>
-        {renderList(notRead)}
-
-        <Divider component="li" />
-        <li>
-          <Typography
-            sx={{ mt: 0.5, ml: 2 }}
-            color="text.secondary"
-            display="block"
-            variant="caption"
-          >
-            Lidas
-          </Typography>
-        </li>
-      </List>
-
-      <List disablePadding dense>
-        {renderList(read)}
-      </List>
+      <List disablePadding>{renderList(unRead)}</List>
+      {read.length > 0 && (
+        <>
+          <Divider component="li" />
+          <li>
+            <Typography
+              sx={{ mt: 0.5, ml: 2 }}
+              color="text.secondary"
+              display="block"
+              variant="caption"
+            >
+              Lidas
+            </Typography>
+          </li>
+          <List disablePadding dense>
+            {renderList(read)}
+          </List>
+        </>
+      )}
     </>
   );
 }

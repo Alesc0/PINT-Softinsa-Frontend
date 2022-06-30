@@ -9,16 +9,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useFormik } from "formik";
+import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import * as yup from "yup";
 import axios from "../../api/axios";
 import ImgUploader from "../fileUploader/fileUploader";
-
-const errorList = {
-  nome: "O nome precisa de ter entre 5 a 100 caracteres.",
-  endereco: "O endereço precisa de ter entre 20 a 250 caracteres.",
-  descricao: "A descrição precisa de ter entre 20 a 250 caracteres.",
-};
 
 const loadSkeleton = () => {
   return (
@@ -43,66 +41,76 @@ const loadSkeleton = () => {
     </>
   );
 };
+const validationSchema = yup.object({
+  nome: yup
+    .string()
+    .min(3, "O nome deve ter pelo menos 5 caracteres.")
+    .max(50, "O nome deve ter no máximo 50 caracteres.")
+    .required("Este campo é obrigatório."),
+  endereco: yup
+    .string()
+    .min(3, "O endereço deve ter pelo menos 5 caracteres.")
+    .max(50, "O endereço deve ter no máximo 50 caracteres.")
+    .required("Este campo é obrigatório."),
+  descricao: yup
+    .string()
+    .min(5, "A descrição deve ter pelo menos 10 caracteres.")
+    .max(250, "A descrição só pode ter até 250 caracteres.")
+    .required("Este campo é obrigatório."),
+  cidade: yup.string().required("Este campo é obrigatório."),
+});
+
 export default function CentroForm({ handleRequest, id = undefined }) {
-  const [loading, setLoading] = useState(false);
-
   const [cidades, setCidades] = useState([]);
-  const [cidade, setCidade] = useState("");
-
   const [files, setFiles] = useState([]);
-  const [nome, setNome] = useState("");
-  const [nomeErr, setNomeErr] = useState(false);
-  const [endereco, setEndereco] = useState("");
-  const [enderecoErr, setEnderecoErr] = useState(false);
-  const [descricao, setDescricao] = useState("");
-  const [descricaoErr, setDescricaoErr] = useState(false);
-  const [ativo, setAtivo] = useState(true);
   const navigate = useNavigate();
 
-  const setFields = useCallback((data) => {
-    setNome(data.nome);
-    setEndereco(data.endereco);
-    setDescricao(data.descricao);
-    setAtivo(data.estado);
-    setCidade(data.cidade);
-  }, []);
+  const {
+    isLoading: loadingMunicipios,
+    data: dataMunicipios,
+    error: erroMunicipios,
+  } = useQuery(["getMunicipios"], async () => {
+    const { data: response } = await axios.get(
+      "https://geoptapi.org/municipios?json=1"
+    );
+    return response;
+  });
+
+  if (dataMunicipios && cidades.length === 0) setCidades(dataMunicipios);
+  if (erroMunicipios) toast.error("Erro ao obter municipios.");
+
+  const {
+    refetch,
+    isFetching: loadingCentro,
+    data: dataCentro,
+  } = useQuery(
+    ["getCentroByID"],
+    async () => {
+      const { data: response } = await axios.get("/centro/" + id);
+      return response.data;
+    },
+    { enabled: !!id }
+  );
+
+  const formik = useFormik({
+    initialValues: {
+      nome: dataCentro?.nome || "",
+      endereco: dataCentro?.endereco || "",
+      descricao: dataCentro?.descricao || "",
+      estado: dataCentro?.estado || false,
+      cidade: dataCentro?.cidade || "",
+    },
+    enableReinitialize: true,
+    validationSchema: validationSchema,
+
+    onSubmit: async (values) => {
+      handleRequest({ ...values, files });
+    },
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const { data: response } = await axios.get(
-          "https://geoptapi.org/municipios?json=1"
-        );
-        setCidades(response);
-        if (id) {
-          const { data: response } = await axios.get("/centro/" + id);
-          setFields(response.data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [setCidades, setFields, id]);
-
-  const validate = () => {};
-
-  const clearErr = () => {
-    setNomeErr(false);
-    setEnderecoErr(false);
-    setDescricaoErr(false);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    clearErr();
-
-    if (validate()) {
-      handleRequest({ nome, endereco, descricao, estado: ativo, cidade });
-    }
-  };
+    refetch();
+  }, [id, refetch]);
 
   const imgProps = {
     files,
@@ -110,102 +118,105 @@ export default function CentroForm({ handleRequest, id = undefined }) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        width: "fit-content",
+    <Paper
+      component="form"
+      onSubmit={formik.handleSubmit}
+      elevation={2}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        paddingInline: 3,
+        paddingBlock: 2,
         margin: "1em auto",
         position: "relative",
+        flexGrow: 1,
+        maxWidth: "sm",
       }}
     >
-      <Stack
-        component={Paper}
-        spacing={2}
-        width="500px"
-        sx={{ paddingInline: 3, paddingBlock: 2 }}
-      >
-        {loading ? (
-          loadSkeleton()
-        ) : (
-          <>
-            <Typography textAlign="center" variant="h4">
-              {!id ? "Adicionar" : "Editar"} Centro
-            </Typography>
+      {loadingCentro || loadingMunicipios ? (
+        loadSkeleton()
+      ) : (
+        <>
+          <Typography textAlign="center" variant="h4">
+            {!id ? "Adicionar" : "Editar"} Centro
+          </Typography>
 
-            <TextField
-              required
-              label="Nome"
-              variant="outlined"
-              error={nomeErr}
-              helperText={nomeErr && errorList.nome}
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              autoComplete="off"
-            />
+          <TextField
+            id="nome"
+            label="Nome"
+            variant="outlined"
+            autoComplete="off"
+            value={formik.values.nome}
+            onChange={formik.handleChange}
+            error={formik.touched.nome && Boolean(formik.errors.nome)}
+            helperText={formik.touched.nome && formik.errors.nome}
+          />
 
-            <Autocomplete
-              options={cidades}
-              isOptionEqualToValue={() => true}
-              value={cidade}
-              onChange={(event, value, reason) => {
-                setCidade("");
-                if (reason === "clear") setCidade("");
-                else setCidade(value);
-              }}
-              onInputChange={(event, value, reason) => {
-                if (reason === "clear") {
-                  setCidade("");
-                }
-              }}
-              renderInput={(params) => <TextField {...params} label="Cidade" />}
-            />
+          <Autocomplete
+            id="cidade"
+            options={cidades}
+            isOptionEqualToValue={() => true}
+            value={formik.values.cidade}
+            onChange={(event, value, reason) => {
+              formik.values.cidade = "";
+              if (reason === "clear") formik.values.cidade = "";
+              else formik.handleChange();
+            }}
+            onInputChange={(event, value, reason) => {
+              if (reason === "clear") {
+                formik.values.cidade = "";
+              }
+            }}
+            renderInput={(params) => <TextField {...params} label="Cidade" />}
+          />
 
-            <TextField
-              required
-              label="Endereco"
-              variant="outlined"
-              error={enderecoErr}
-              helperText={enderecoErr && errorList.endereco}
-              value={endereco}
-              onChange={(e) => setEndereco(e.target.value)}
-              autoComplete="off"
-            />
+          <TextField
+            id="endereco"
+            label="Endereco"
+            variant="outlined"
+            autoComplete="off"
+            value={formik.values.endereco}
+            onChange={formik.handleChange}
+            error={formik.touched.endereco && Boolean(formik.errors.endereco)}
+            helperText={formik.touched.endereco && formik.errors.endereco}
+          />
 
-            <TextField
-              required
-              label="Descrição"
-              variant="outlined"
-              error={descricaoErr}
-              helperText={descricaoErr && errorList.descricao}
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              autoComplete="off"
-            />
+          <TextField
+            id="descricao"
+            label="Descrição"
+            variant="outlined"
+            autoComplete="off"
+            value={formik.values.descricao}
+            onChange={formik.handleChange}
+            error={formik.touched.descricao && Boolean(formik.errors.descricao)}
+            helperText={formik.touched.descricao && formik.errors.descricao}
+          />
 
-            <Typography variant="subtitle1">Imagem do centro:</Typography>
-            <ImgUploader {...imgProps} />
+          <Typography variant="subtitle1">Imagem do centro:</Typography>
+          <ImgUploader {...imgProps} />
 
-            <Divider />
-            <Stack direction="row" spacing={2} alignSelf="flex-end">
-              <Button
-                color="error"
-                variant="contained"
-                onClick={() => navigate(-1)}
-              >
-                Voltar
-              </Button>
-              <Button color="primary" variant="contained">
-                Confirmar
-              </Button>
-            </Stack>
-          </>
-        )}
-      </Stack>
+          <Divider />
+          <Stack direction="row" spacing={2} alignSelf="flex-end">
+            <Button
+              color="error"
+              variant="contained"
+              onClick={() => navigate(-1)}
+            >
+              Voltar
+            </Button>
+            <Button type="submit" color="primary" variant="contained">
+              Confirmar
+            </Button>
+          </Stack>
+        </>
+      )}
       <Switch
+        id="estado"
         sx={{ position: "absolute", top: 0, mt: 1, right: 2 }}
-        checked={ativo}
-        onChange={(e) => setAtivo(e.target.checked)}
+        checked={formik.values.estado}
+        onChange={formik.handleChange}
       />
-    </form>
+    </Paper>
   );
 }

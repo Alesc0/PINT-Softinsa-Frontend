@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as yup from "yup";
@@ -30,7 +31,7 @@ const phoneRegex =
 const validationSchema = yup.object({
   nome: yup
     .string()
-    .min(8, "O nome deve ter pelo menos 5 caracteres.")
+    .min(5, "O nome deve ter pelo menos 5 caracteres.")
     .required("Este campo é obrigatório."),
   email: yup
     .string()
@@ -87,12 +88,7 @@ const loadSkeleton = () => {
 };
 
 export default function UtilizadorForm({ handleRequest, id = undefined }) {
-  const [loading, setLoading] = useState(false);
-
   const [permissionTab, setPermissionTab] = useState(0);
-  const [centros, setCentros] = useState([]);
-  const [centro, setCentro] = useState(1);
-  const [ativo, setAtivo] = useState(true);
 
   const navigate = useNavigate();
 
@@ -103,6 +99,46 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
       return row.default;
     })
   );
+  const handleOpen = () => setOpenModal(true);
+  const handleClose = () => setOpenModal(false);
+
+  const { isLoading: loadingCentros, data: dataCentros } = useQuery(
+    ["getCentros"],
+    async () => {
+      const { data: response } = await axios.get("/centro/list");
+      return response.data;
+    }
+  );
+
+  const {
+    refetch,
+    isFetching: loadingUtilizador,
+    data: dataUtilizador,
+  } = useQuery(
+    ["getUtilizadorByID"],
+    async () => {
+      const { data: response } = await axios.get("/utilizador/" + id);
+      return response.data;
+    },
+    { enabled: !!id }
+  );
+
+  const setExtraFields = useCallback((data) => {
+    if (!data) return;
+    if (data.admin) setPermissionTab(1);
+    if (data.role === "U") setPermissionTab(perms.indexOf("Regular"));
+    else if (data.role === "L") setPermissionTab(perms.indexOf("Limpeza"));
+    setAddOptions(data);
+  }, []);
+
+  useEffect(() => {
+    refetch();
+  }, [id, refetch]);
+
+  useEffect(() => {
+    if (!dataUtilizador) return;
+    setExtraFields(dataUtilizador);
+  }, [dataUtilizador, setExtraFields]);
 
   const handleToggle = (value) => () => {
     const newChecked = [...checked];
@@ -110,42 +146,9 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
     setChecked(newChecked);
   };
 
-  const handleOpen = () => setOpenModal(true);
-  const handleClose = () => setOpenModal(false);
-
-  const modalProps = {
-    options,
-    openModal,
-    handleClose,
-    handleToggle,
-    checked,
-    setAtivo,
-    ativo,
-  };
-
   const setAddOptions = (data) => {
     setChecked(options.map((row) => data[row.name]));
   };
-
-  const formik = useFormik({
-    initialValues: {
-      nome: "",
-      email: "",
-      telemovel: "",
-    },
-    enableReinitialize: true,
-    validationSchema: validationSchema,
-
-    onSubmit: async (values) => {
-      let res = await handleRequest({
-        ...values,
-        estado: ativo,
-        ...opObj(),
-        role: perms[permissionTab],
-      });
-      if (res) navigate(-1);
-    },
-  });
 
   const opObj = () => {
     let a = {};
@@ -153,39 +156,38 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
     return a;
   };
 
-  const setExtraFields = useCallback((data) => {
-    setCentro(data.idcentro);
-    if (data.admin) setPermissionTab(1);
-    if (data.role === "U") setPermissionTab(perms.indexOf("Regular"));
-    else if (data.role === "L") setPermissionTab(perms.indexOf("Limpeza"));
-    setAtivo(data.estado);
-    setAddOptions(data);
-  }, []);
+  const formik = useFormik({
+    initialValues: {
+      nome: dataUtilizador?.nome || "",
+      telemovel: dataUtilizador?.telemovel || "",
+      email: dataUtilizador?.email || "",
+      estado: dataUtilizador?.estado || false,
+      idcentro: dataUtilizador?.idcentro || 1,
+    },
+    enableReinitialize: true,
+    validationSchema: validationSchema,
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const { data: response } = await axios.get("/centro/list");
-        setCentros(response.data);
-        if (id) {
-          const { data: response } = await axios.get("/utilizador/" + id);
-          formik.setValues({
-            nome: response.data.nome,
-            telemovel: response.data.telemovel,
-            email: response.data.email,
-          });
-          setExtraFields(response.utilizador);
-        }
-      } catch (error) {
-        toast.error(error);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [setCentro, id, setExtraFields]);
+    onSubmit: async (values) => {
+      let res = await handleRequest({
+        ...values,
+        ...opObj(),
+        role: perms[permissionTab],
+      });
+      if (res) navigate(-1);
+    },
+  });
 
   const handleChange = (event, newValue) => setPermissionTab(newValue);
+
+  const modalProps = {
+    options,
+    openModal,
+    handleClose,
+    handleToggle,
+    checked,
+    setAtivo: formik.handleChange,
+    ativo: formik.values.estado,
+  };
 
   return (
     <>
@@ -205,7 +207,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
           position: "relative",
         }}
       >
-        {loading ? (
+        {loadingCentros || loadingUtilizador ? (
           loadSkeleton()
         ) : (
           <>
@@ -249,13 +251,14 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
                 <InputLabel id="label-select"> Centro </InputLabel>
                 <Select
                   sx={{ minWidth: 125 }}
+                  id="idcentro"
                   label="Centro"
                   labelId="label-select"
-                  value={centro}
-                  onChange={(e) => setCentro(e.target.value)}
+                  value={formik.values.idcentro}
+                  onChange={formik.handleChange}
                 >
-                  {centros.length > 0 ? (
-                    centros.map((row) => (
+                  {dataCentros?.length > 0 ? (
+                    dataCentros?.map((row) => (
                       <MenuItem key={row.idcentro} value={row.idcentro}>
                         {row.cidade}
                       </MenuItem>

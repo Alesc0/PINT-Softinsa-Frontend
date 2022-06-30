@@ -1,31 +1,42 @@
 import axios from "../../api/axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import UtilizadorForm from "../../components/utilizadores/form";
+import { useMutation, useQueryClient } from "react-query";
 
 export default function EditUtilizadoresView() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  const handleRequest = async (userObj) => {
-    if (userObj.role === "Administrador") {
-      userObj.admin = true;
-    } else userObj.admin = false;
+  const queryClient = useQueryClient();
 
-    try {
-      //requests
-      const data = await axios.put("/utilizador/" + id, userObj);
-      toast.success(data.data);
-      return true;
-    } catch (error) {
-      for (const [key, value] of Object.entries(error.response.data)) {
-        toast.error(value, { toastId: key });
+  const updateUtilizador = useMutation(
+    async (userObj) => {
+      if (userObj.role === "Administrador") {
+        userObj.admin = true;
+      } else userObj.admin = false;
+
+      delete userObj.role;
+
+      let formData = new FormData();
+      for (var [key, value] of Object.entries(userObj)) {
+        formData.append(key, value);
       }
-      return false;
+
+      const data = await axios.put("/utilizador/" + id, userObj);
+      return data;
+    },
+    {
+      onSuccess: () => {
+        toast.success("Utilizador atualizado!");
+        navigate("/utilizadores");
+        queryClient.invalidateQueries("getUtilizadores");
+      },
     }
-  };
+  );
 
   const formProps = {
-    handleRequest,
+    handleRequest: updateUtilizador.mutate,
     id,
   };
 

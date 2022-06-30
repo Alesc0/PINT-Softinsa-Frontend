@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useContext, useState } from "react";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import axios from "../../api/axios";
 import { UserContext } from "../../App";
@@ -36,7 +37,7 @@ const paperProps = {
 };
 
 export default function UtilizadorMenu({ handleOpen }) {
-  const { setAuth, user } = useContext(UserContext);
+  const { user, setAuth } = useContext(UserContext);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
@@ -47,17 +48,20 @@ export default function UtilizadorMenu({ handleOpen }) {
     setAnchorEl(null);
   };
 
-  const handleLogout = async () => {
-    try {
-      await axios.delete("utilizador/logout", {
+  const { refetch } = useQuery(
+    ["logout"],
+    async () => {
+      return await axios.delete("utilizador/logout", {
         data: {
-          refreshToken: getTokens()[1],
+          refreshToken: getTokens().rT,
         },
       });
-    } catch (error) {
-      console.log(error);
-    }
+    },
+    { enabled: false }
+  );
 
+  const handleLogout = async () => {
+    refetch();
     clearStorages();
     setAuth(false);
   };

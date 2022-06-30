@@ -1,46 +1,75 @@
-import { AccountCircle, Edit, NoAccounts } from "@mui/icons-material";
-import { Divider, ListItemIcon } from "@mui/material";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import {
+  AccountCircle,
+  Edit,
+  NoAccounts,
+  NoPhotography,
+} from "@mui/icons-material";
+import { Divider, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import axios from "../../../api/axios";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useMutation, useQueryClient } from "react-query";
 
 export default function BasicMenu(props) {
-  const { handleCloseMenu, openMenu, anchorEl, row, refetch } = props;
-  if (!row) return;
+  const { handleCloseMenu, openMenu, anchorEl, row } = props;
 
-  const handleToggleActive = async () => {
-    try {
-      //requests
-      const data = await axios.put("/utilizador/" + row.idutilizador, {
-        estado: !row.estado,
-      });
-      toast.success(data.data);
-      handleCloseMenu();
-      refetch();
-    } catch (error) {
-      for (const [key, value] of Object.entries(error.response.data)) {
-        toast.error(value, { toastId: key });
-      }
+  const queryClient = useQueryClient();
+
+  const toggleActive = useMutation(
+    async () => {
+      const { data: response } = await axios.put(
+        "/utilizador/" + row.idutilizador,
+        {
+          estado: !row.estado,
+        }
+      );
+      return response;
+    },
+    {
+      onSuccess: () => {
+        toast.success("Utilizador atualizado!");
+        handleCloseMenu();
+        queryClient.invalidateQueries("getUtilizadores");
+      },
     }
-  };
+  );
+  const removePhoto = useMutation(
+    async () => {
+      const { data: response } = await axios.delete(
+        `/utilizador/${row.idutilizador}/foto`
+      );
+      return response;
+    },
+    {
+      onSuccess: () => {
+        toast.success("Utilizador atualizado!");
+        handleCloseMenu();
+        queryClient.invalidateQueries("getUtilizadores");
+      },
+    }
+  );
 
   return (
     <Menu anchorEl={anchorEl} open={openMenu} onClose={handleCloseMenu}>
-      <MenuItem component={Link} to={"edit/" + row.idutilizador}>
+      <MenuItem component={Link} to={"edit/" + row?.idutilizador}>
         <ListItemIcon>
           <Edit />
         </ListItemIcon>
         Editar
       </MenuItem>
-      <Divider />
-      <MenuItem onClick={handleToggleActive}>
+      <MenuItem onClick={removePhoto.mutate}>
         <ListItemIcon>
-          {row.estado ? <NoAccounts /> : <AccountCircle />}
+          <NoPhotography />
         </ListItemIcon>
-        {row.estado ? "Desativar" : "Ativar"}
+        Remover Foto
+      </MenuItem>
+      <Divider />
+      <MenuItem onClick={toggleActive.mutate}>
+        <ListItemIcon>
+          {row?.estado ? <NoAccounts /> : <AccountCircle />}
+        </ListItemIcon>
+        {row?.estado ? "Desativar" : "Ativar"}
       </MenuItem>
     </Menu>
   );

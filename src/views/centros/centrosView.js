@@ -7,26 +7,16 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import centroViseu from "../../imgs/centroViseu.png";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import ava from "../../imgs/banner.png";
 import axios from "../../api/axios";
 import { Link } from "react-router-dom";
+import { useQuery } from "react-query";
 
 function Centros() {
-  const [centros, setCentros] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data: response } = await axios.get("/centro/list");
-        setCentros(response.data);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
-    fetchData();
-  }, [setCentros]);
+  const { data } = useQuery(["getCentros"], async () => {
+    const { data: response } = await axios.get("/centro/list");
+    return response.data;
+  });
 
   return (
     <Box
@@ -40,28 +30,32 @@ function Centros() {
         sm: "repeat(2,1fr)",
       }}
     >
-      {centros.length > 0
-        ? centros.map((row) => (
-            <Card key={row.idcentro} sx={{ maxWidth: 345 }}>
-              <CardActionArea
-                sx={{ height: "100%" }}
-                component={Link}
-                to={"edit/" + row.idcentro}
-              >
-                <CardMedia
-                  component="img"
-                  image={centroViseu}
-                  alt={row.cidade}
-                />
-                <CardContent>
-                  <Typography variant="h5" textAlign="center" component="div">
-                    {row.nome}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          ))
-        : null}
+      {data &&
+        data.map((row) => (
+          <Card key={row.idcentro} sx={{ maxWidth: 345 }}>
+            <CardActionArea
+              sx={{ height: "100%" }}
+              component={Link}
+              to={"edit/" + row.idcentro}
+            >
+              <CardMedia
+                component="img"
+                image={
+                  (row.imagemConv &&
+                    "data:image/jpeg;base64, " + row.imagemConv) ||
+                  ava
+                }
+                sx={{ objectFit: "cover", height: 150 }}
+                alt={row.cidade}
+              />
+              <CardContent sx={{ p: 1 }}>
+                <Typography variant="h5" textAlign="center" component="div">
+                  {row.nome}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        ))}
       <Card sx={{ maxWidth: 345 }}>
         <CardActionArea component={Link} to={"add"} sx={{ height: "100%" }}>
           <CardContent

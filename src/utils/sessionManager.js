@@ -8,13 +8,17 @@ export const clearStorages = () => {
 export const getTokens = () => {
   let jwt = "";
   let rT = "";
+  let rem = "";
+
+  rem = localStorage.getItem("remember");
+
   jwt = localStorage.getItem("jwt");
   rT = localStorage.getItem("refreshToken");
   if (!jwt || !rT) {
     jwt = sessionStorage.getItem("jwt");
     rT = sessionStorage.getItem("refreshToken");
   }
-  return [jwt, rT];
+  return { jwt, rT, rem };
 };
 
 export const getLocalStorage = () => {

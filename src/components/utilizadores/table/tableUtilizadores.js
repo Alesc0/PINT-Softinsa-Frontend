@@ -17,6 +17,7 @@ import NewModal from "./modal";
 import EnhancedTableHead from "./tableHead";
 import UserTableRow from "./tableRow";
 import EnhancedTableToolbar from "./tableToolbar";
+import { useQueryClient, useMutation } from "react-query";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -37,15 +38,15 @@ function getComparator(order, orderBy) {
 export default function EnhancedTable(props) {
   const {
     users,
-    refetch,
     isLoading,
-    setLoading,
     page,
     setPage,
     rowsPerPage,
     setRowsPerPage,
     count,
   } = props;
+
+  const queryClient = useQueryClient();
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("nome");
@@ -79,7 +80,6 @@ export default function EnhancedTable(props) {
     anchorEl,
     handleCloseMenu,
     row: getRowFromID(),
-    refetch,
   };
 
   const handleRequestSort = (event, property) => {
@@ -136,29 +136,31 @@ export default function EnhancedTable(props) {
 
   const handleClose = () => setOpen(false);
 
+  const deleteMutation = useMutation(
+    async (id) => {
+      return await axios.delete("utilizador/" + id);
+    },
+    {
+      onSuccess: () => {
+        setPage(0);
+        queryClient.invalidateQueries("utilizadores");
+      },
+    }
+  );
+
   const handleClickModal = useCallback(async () => {
     handleClose();
-
-    const sendDelete = async (id) => {
-      try {
-        await axios.delete("utilizador/" + id);
-      } catch (error) {
-        toast.error(error);
-      }
-    };
 
     const promises = [];
 
     if (!selected) return;
     for (let row of selected) {
-      promises.push(sendDelete(row));
+      promises.push(deleteMutation.mutate(row));
     }
 
     if (promises.length > 0) {
       try {
-        setLoading(true);
         await Promise.all(promises);
-        refetch();
         toast.success("A operação foi bem sucedida!", {
           position: toast.POSITION.BOTTOM_LEFT,
         });
@@ -166,9 +168,8 @@ export default function EnhancedTable(props) {
         toast.error(error);
       }
       setSelected([]);
-      setLoading(false);
     }
-  }, [selected, refetch, setSelected, setLoading]);
+  }, [selected, deleteMutation, setSelected]);
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 

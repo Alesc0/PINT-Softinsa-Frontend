@@ -33,7 +33,7 @@ function UserTableRow(props) {
       </TableCell>
       <TableCell component="th" scope="row" padding="none">
         <Stack direction="row" spacing={1} alignItems="center">
-          <Avatar alt="Remy Sharp" src={sampleAvaImg} />
+          <Avatar alt="Remy Sharp" src={row.fotoConv || sampleAvaImg} />
           <Typography>{row.nome}</Typography>
         </Stack>
       </TableCell>

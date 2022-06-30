@@ -14,8 +14,10 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useState } from "react";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
+import axios from "../../api/axios";
 
 const validationSchema = yup.object({
   email: yup
@@ -42,23 +44,36 @@ const Copyright = (props) => {
   );
 };
 
-function LoginForm({ handleRequest, isLoading }) {
-  const [remember, setRemember] = useState(false);
+function LoginForm({ handleRequest }) {
+  const loginQuery = useMutation(
+    async () => {
+      let { data: response } = await axios.post("/utilizador/loginWeb", {
+        email: formik.values.email,
+        password: formik.values.password,
+      });
+      return response.data;
+    },
+    {
+      onSuccess: (data, variables) => {
+        handleRequest(data, variables);
+      },
+      onError: () => {
+        formik.setErrors({ email: "Combinação errada de email e password!" });
+      },
+    }
+  );
 
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
+      remember: false,
     },
     enableReinitialize: true,
     validationSchema: validationSchema,
 
     onSubmit: async (values) => {
-      let log = await handleRequest({ values, remember });
-
-      //if didnt redirect, show error
-      if (log === false)
-        formik.setErrors({ email: "Combinação errada de email e password!" });
+      await loginQuery.mutateAsync(values);
     },
   });
 
@@ -117,15 +132,20 @@ function LoginForm({ handleRequest, isLoading }) {
         <FormControlLabel
           control={
             <Checkbox
-              value={remember}
+              id="remember"
+              value={formik.values.remember}
               color="primary"
-              onChange={(e) => setRemember(e.target.checked)}
+              onChange={formik.handleChange}
             />
           }
           label="Lembrar-me"
         />
         <Stack spacing={1}>
-          <LoadingButton loading={isLoading} type="submit" variant="contained">
+          <LoadingButton
+            loading={loginQuery.isLoading}
+            type="submit"
+            variant="contained"
+          >
             Log In
           </LoadingButton>
           <Button

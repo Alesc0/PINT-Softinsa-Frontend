@@ -8,69 +8,84 @@ import {
   Badge,
   Button,
 } from "@mui/material";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ListNotificacoes from "../../dashboard/listNotificacoes";
+import { useMutation, useQueryClient } from "react-query";
+import axios from "../../../api/axios";
 
-function Notification({ notificacoes, loading, setNotificacoes }) {
+const paperProps = {
+  elevation: 0,
+  sx: {
+    overflow: "visible",
+    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+    mt: 1.5,
+    "& .MuiAvatar-root": {
+      width: 32,
+      height: 32,
+      ml: -1,
+      mr: 1.5,
+    },
+    "&:before": {
+      content: '""',
+      display: "block",
+      position: "absolute",
+      top: 0,
+      right: 14,
+      width: 10,
+      height: 10,
+      bgcolor: "background.paper",
+      transform: "translateY(-50%) rotate(45deg)",
+      zIndex: 0,
+    },
+  },
+};
+
+function NotificationBtn({ notificacoes, isLoading }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const queryClient = useQueryClient();
+
+  const readAll = useMutation(
+    (newTodo) => {
+      //TODO: ler notificaçoes
+      return axios.put("/todos", newTodo);
+    },
+    {
+      onSuccess: () => queryClient.invalidateQueries("notificationsData"),
+    }
+  );
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
-  };
-
-  const readAll = () => {
-    let a = [...notificacoes];
-    a.map((row) => (row.recebida = true));
-    setNotificacoes(a);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  var notRead = notificacoes.reduce((filtered, not) => {
-    if (!not.recebida) {
-      filtered.push(not);
-    }
-    return filtered;
-  }, []);
+  const filterNotifications = useMemo(() => {
+    if (!notificacoes) return [[], []];
 
-  let read = [...notificacoes];
-  read = notificacoes.filter((el) => !notRead.includes(el));
+    var notRead = notificacoes.reduce((filtered, not) => {
+      if (!not.recebida) {
+        filtered.push(not);
+      }
+      return filtered;
+    }, []);
+
+    let read = [...notificacoes];
+    read = notificacoes.filter((el) => !notRead.includes(el));
+
+    return [read, notRead];
+  }, [notificacoes]);
 
   const props = {
-    read,
-    notRead,
-    loading,
+    read: filterNotifications[0],
+    unRead: filterNotifications[1],
+    isLoading,
   };
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-
-  const paperProps = {
-    elevation: 0,
-    sx: {
-      overflow: "visible",
-      filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-      mt: 1.5,
-      "& .MuiAvatar-root": {
-        width: 32,
-        height: 32,
-        ml: -1,
-        mr: 1.5,
-      },
-      "&:before": {
-        content: '""',
-        display: "block",
-        position: "absolute",
-        top: 0,
-        right: 14,
-        width: 10,
-        height: 10,
-        bgcolor: "background.paper",
-        transform: "translateY(-50%) rotate(45deg)",
-        zIndex: 0,
-      },
-    },
-  };
 
   return (
     <>
@@ -79,8 +94,12 @@ function Notification({ notificacoes, loading, setNotificacoes }) {
         onClick={handleClick}
         sx={{ color: "primary.contrastText" }}
       >
-        <Badge badgeContent={notRead.length} color="error">
-          {notRead.length > 0 ? <Notifications /> : <NotificationsNone />}
+        <Badge badgeContent={filterNotifications[1].length} color="error">
+          {filterNotifications[1].length > 0 ? (
+            <Notifications />
+          ) : (
+            <NotificationsNone />
+          )}
         </Badge>
       </IconButton>
       <Popover
@@ -103,7 +122,7 @@ function Notification({ notificacoes, loading, setNotificacoes }) {
             <Typography variant="h5">Notificações</Typography>
             <Typography
               component={Button}
-              onClick={readAll}
+              onClick={() => readAll.mutate()}
               sx={{ ml: "auto", textDecoration: "underline" }}
               variant="caption"
             >
@@ -117,4 +136,4 @@ function Notification({ notificacoes, loading, setNotificacoes }) {
   );
 }
 
-export default Notification;
+export default NotificationBtn;

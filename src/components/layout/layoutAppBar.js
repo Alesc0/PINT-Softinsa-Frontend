@@ -1,4 +1,4 @@
-import { Menu, Settings } from "@mui/icons-material";
+import { Menu } from "@mui/icons-material";
 import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
 import { Link } from "react-router-dom";
 import navBar_logo from "../../imgs/logo-softinsa.png";
@@ -7,7 +7,7 @@ import UtilizadorMenu from "./menuUtilizador";
 
 function LayoutAppBar(props) {
   const {
-    loading,
+    isLoading,
     handleDrawerToggle,
     drawerWidth,
     notificacoes,
@@ -59,7 +59,7 @@ function LayoutAppBar(props) {
           }}
         >
           <Notification
-            loading={loading}
+            isLoading={isLoading}
             notificacoes={notificacoes}
             setNotificacoes={setNotificacoes}
           />

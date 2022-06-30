@@ -12,7 +12,6 @@ import LoginForm from "./form";
 
 const Login = () => {
   const { setAuth, auth } = useContext(UserContext);
-  const [isLoading, setLoading] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,35 +28,14 @@ const Login = () => {
     }
   }, [auth, goBack]);
 
-  const handleRequest = async (obj) => {
-    setLoading(true);
-    try {
-      const data = await axios.post("/utilizador/loginWeb", {
-        email: obj.values.email,
-        password: obj.values.password,
-      });
-
-      if (data.status === 200) {
-        if (obj.remember) {
-          setLocalStorage(
-            data.data.data.accessToken,
-            data.data.data.refreshToken
-          );
-        } else {
-          setSessionStorage(
-            data.data.data.accessToken,
-            data.data.data.refreshToken
-          );
-        }
-        localStorage.setItem("remember", obj.remember);
-
-        setAuth(true);
-      }
-    } catch (error) {
-      console.log(error);
-      return false;
+  const handleRequest = (data, values) => {
+    if (values.remember) {
+      setLocalStorage(data.accessToken, data.refreshToken);
+    } else {
+      setSessionStorage(data.accessToken, data.refreshToken);
     }
-    setLoading(false);
+    localStorage.setItem("remember", values.remember);
+    setAuth(true);
   };
 
   return (
@@ -105,7 +83,7 @@ const Login = () => {
           </Stack>
           <Contacts />
         </Box>
-        <LoginForm handleRequest={handleRequest} isLoading={isLoading} />
+        <LoginForm handleRequest={handleRequest} />
       </Box>
 
       <img

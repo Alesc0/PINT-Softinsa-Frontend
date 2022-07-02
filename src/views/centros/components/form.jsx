@@ -89,7 +89,7 @@ export default function CentroForm({ handleRequest, id = undefined }) {
       const { data: response } = await axios.get("/centro/" + id);
       return response.data;
     },
-    { enabled: !!id }
+    { enabled: false }
   );
 
   const formik = useFormik({
@@ -109,7 +109,7 @@ export default function CentroForm({ handleRequest, id = undefined }) {
   });
 
   useEffect(() => {
-    refetch();
+    if (id) refetch();
   }, [id, refetch]);
 
   const imgProps = {

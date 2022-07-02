@@ -14,7 +14,7 @@ import {
   Tab,
   Tabs,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useCallback, useEffect, useState } from "react";
@@ -119,7 +119,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
       const { data: response } = await axios.get("/utilizador/" + id);
       return response.data;
     },
-    { enabled: !!id }
+    { enabled: false }
   );
 
   const setExtraFields = useCallback((data) => {
@@ -131,7 +131,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
   }, []);
 
   useEffect(() => {
-    refetch();
+    if (id) refetch();
   }, [id, refetch]);
 
   useEffect(() => {
@@ -250,7 +250,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
                 <InputLabel id="label-select"> Centro </InputLabel>
                 <Select
                   sx={{ minWidth: 125 }}
-                  id="idcentro"
+                  name="idcentro"
                   label="Centro"
                   labelId="label-select"
                   value={formik.values.idcentro}

@@ -12,6 +12,11 @@ const instance = axios.create({
 instance.interceptors.request.use((config) => {
   const jwt = getTokens().jwt;
   if (jwt) config.headers.common["Authorization"] = "Bearer " + jwt;
+  const centro = localStorage.getItem("centro");
+  if (config.url.search("/list") !== -1 && config.url.search("centro") === -1)
+    console.log("list:", config);
+  //TODO
+  /* if (centro >= 0) config.params["centro"] = centro; */
   return config;
 });
 

@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import axios from "./api/axios";
 import Router from "./routes";
@@ -9,6 +9,7 @@ export const UserContext = createContext();
 function App() {
   const [user, setUser] = useState(undefined);
   const [auth, setAuth] = useState(false);
+  const [centro, setCentro] = useState(-1);
 
   const { isFetching, error, data } = useQuery(
     ["getUserByToken", auth],
@@ -29,7 +30,9 @@ function App() {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser, auth, setAuth }}>
+    <UserContext.Provider
+      value={{ user, setUser, auth, setAuth, centro, setCentro }}
+    >
       <ThemeProvider>{!isFetching && <Router />}</ThemeProvider>
     </UserContext.Provider>
   );

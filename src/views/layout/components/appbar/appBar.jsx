@@ -1,7 +1,7 @@
 import { Menu } from "@mui/icons-material";
 import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
-import { Link } from "react-router-dom";
 import navBar_logo from "imgs/logo-softinsa.png";
+import { Link } from "react-router-dom";
 import NotificationButton from "../drawer/notifications/notificationBtn";
 import UtilizadorMenu from "./menuUtilizador";
 
@@ -32,6 +32,7 @@ function LayoutAppBar(props) {
         >
           <Menu />
         </IconButton>
+
         <Box
           component={Link}
           to="/"

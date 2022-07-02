@@ -4,6 +4,7 @@ import {
   Dashboard,
   Group,
   QueryStats,
+  Soap,
   ViewModule,
 } from "@mui/icons-material/";
 import {
@@ -46,7 +47,11 @@ const pages = [
     link: "/stats",
     icon: <QueryStats sx={{ color: "white" }} />,
   },
-
+  {
+    name: "Limpezas",
+    link: "/limpezas",
+    icon: <Soap sx={{ color: "white" }} />,
+  },
   {
     name: "Reservas",
     link: "/reservas",

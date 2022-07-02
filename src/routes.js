@@ -50,6 +50,7 @@ export default function Router() {
             <Route path="reservas" element={<Reservas />} />
             <Route path="stats" element={<Stats />} />
             <Route path="perfil" element={<Perfil />} />
+            <Route path="limpezas" element={<Limpezas />} />
           </Route>
         </Route>
         <Route path="login" element={<Login />} />

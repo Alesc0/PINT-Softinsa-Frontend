@@ -1,36 +1,42 @@
-import axios from "../../api/axios";
+import axios from "api/axios";
+import { useMutation, useQueryClient } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import CentroForm from "../../components/centros/form";
-import { useParams } from "react-router-dom";
+import CentroForm from "./components/form";
 
 function AddCentros() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  const handleRequest = async (obj) => {
-    let formData = new FormData();
-    formData.append("nome", obj.nome);
-    formData.append("endereco", obj.endereco);
-    formData.append("descricao", obj.descricao);
-    formData.append("estado", obj.estado);
-    formData.append("cidade", obj.cidade);
-    formData.append("imagem", obj.files[0]);
+  const queryCliente = useQueryClient();
 
-    try {
-      //requests
-      const data = await axios.put("/centro/" + id, formData, {
+  const updateCentro = useMutation(
+    async (data) => {
+      let formData = new FormData();
+      formData.append("nome", data.nome);
+      formData.append("endereco", data.endereco);
+      formData.append("descricao", data.descricao);
+      formData.append("estado", data.estado);
+      formData.append("cidade", data.cidade);
+      formData.append("imagem", data.files[0]);
+
+      const { data: response } = await axios.put("/centro/" + id, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      toast.success(data.data);
-    } catch (error) {
-      for (const [key, value] of Object.entries(error.response.data)) {
-        toast.error(value, { toastId: key });
-      }
+      return response;
+    },
+    {
+      onSuccess: (data) => {
+        toast.success(data.data);
+        queryCliente.invalidateQueries("getCentros");
+        navigate(-1);
+      },
     }
-  };
+  );
 
-  const centroProps = { handleRequest, id };
+  const centroProps = { handleRequest: updateCentro.mutate, id };
 
   return <CentroForm {...centroProps} />;
 }

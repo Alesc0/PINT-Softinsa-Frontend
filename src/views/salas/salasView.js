@@ -1,10 +1,10 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Button, Stack, Typography } from "@mui/material";
+import { useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import axios from "../../api/axios";
-import SalasForm from "../../components/salas/form";
-import ListSalas from "../../components/salas/listSalas";
+import ListSalas from "./components/listSalas";
+import SalasForm from "./components/form";
 
 const limit = 4;
 
@@ -12,13 +12,12 @@ function SalasView() {
   const [selected, setSelected] = useState(0);
   const [offset, setOffset] = useState(0);
 
-  const { isLoading, data, error } = useQuery(
+  const { isFetching, data, error } = useQuery(
     ["getSalas", offset, limit],
     async () => {
       const { data: response } = await axios.get("/sala/list/", {
         params: { offset: offset, limit: limit },
       });
-      console.log(response);
       return response;
     },
     {
@@ -42,7 +41,7 @@ function SalasView() {
     setOffset,
     limit,
     count: data?.count || 0,
-    isLoading,
+    isLoading: isFetching,
   };
 
   return (

@@ -1,6 +1,6 @@
-import axios from "../../api/axios";
+import axios from "api/axios";
 import { toast } from "react-toastify";
-import CentroForm from "../../components/centros/form";
+import CentroForm from "./components/form";
 
 function AddCentros() {
   const handleRequest = async (e) => {

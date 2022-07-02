@@ -7,8 +7,8 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import ava from "../../imgs/banner.png";
-import axios from "../../api/axios";
+import ava from "imgs/banner.png";
+import axios from "api/axios";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 

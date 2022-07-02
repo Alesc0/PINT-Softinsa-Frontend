@@ -17,3 +17,11 @@ code {
   color: white;
   text-decoration: none;
 }
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}

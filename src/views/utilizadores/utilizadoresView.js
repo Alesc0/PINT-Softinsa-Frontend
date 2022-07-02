@@ -3,15 +3,9 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from "../../api/axios";
-import EnhancedTable from "../../components/utilizadores/table/tableUtilizadores";
-const fetchUtilizadores = async (page, rowsPerPage) =>
-  await axios.get("/utilizador/list", {
-    params: {
-      offset: page * rowsPerPage,
-      limit: rowsPerPage,
-    },
-  });
+import axios from "api/axios";
+import EnhancedTable from "./components/table/tableUtilizadores";
+
 function UtilizadoresView() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
@@ -19,7 +13,13 @@ function UtilizadoresView() {
   const { isFetching, error, data } = useQuery(
     ["getUtilizadores", page, rowsPerPage],
     async () => {
-      return (await fetchUtilizadores(page, rowsPerPage)).data;
+      let { data: response } = await axios.get("/utilizador/list", {
+        params: {
+          offset: page * rowsPerPage,
+          limit: rowsPerPage,
+        },
+      });
+      return response;
     },
     {
       keepPreviousData: true,

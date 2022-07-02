@@ -1,36 +1,45 @@
 import { Paper, Stack, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import axios from "../../api/axios";
+import axios from "api/axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import FileUploader from "../../components/fileUploader/fileUploader";
-import UtilizadorForm from "../../components/utilizadores/form";
+import FileUploader from "common/fileUploader/fileUploader";
+import UtilizadorForm from "./components/form";
+import { useMutation, useQueryClient } from "react-query";
 
 export default function AddUtilizadoresView() {
   const [files, setFiles] = useState(undefined);
   const [loading, setLoading] = useState(false);
 
+  const queryClient = useQueryClient();
+
   const fileUploadProps = {
     files,
     setFiles,
   };
-  const handleRequest = async (userObj) => {
-    try {
-      //requests
-      const data = await axios.post("/utilizador/add", userObj);
-      toast.success(data.data);
-    } catch (error) {
-      for (const [key, value] of Object.entries(error.response.data)) {
-        toast.error(value, { toastId: key });
-      }
+
+  const addUserMutation = useMutation(
+    async (obj) => {
+      const { data: response } = await axios.post("/utilizador/add", obj);
+      return response;
+    },
+    {
+      onSuccess: (data) => {
+        toast.success(data);
+        queryClient.invalidateQueries("getUtilizadores");
+      },
+      onError: (data) => {
+        toast.error("Erro ao inserir utilizador!");
+      },
     }
-  };
+  );
+
   const handleBulkInsert = () => {
     setLoading(true);
     setLoading(false);
   };
   const formProps = {
-    handleRequest,
+    handleRequest: addUserMutation.mutate,
   };
 
   return (

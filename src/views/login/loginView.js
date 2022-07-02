@@ -1,14 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "../../api/axios";
-import { UserContext } from "../../App";
-import login_banner from "../../imgs/banner-login.jpg";
-import logo_ibm from "../../imgs/ibm-logo.png";
-import logo from "../../imgs/logo-softinsa.png";
-import { setLocalStorage, setSessionStorage } from "../../utils/sessionManager";
-import Contacts from "./contacts";
-import LoginForm from "./form";
+import { UserContext } from "App";
+import login_banner from "imgs/banner-login.jpg";
+import logo_ibm from "imgs/ibm-logo.png";
+import logo from "imgs/logo-softinsa.png";
+import { setLocalStorage, setSessionStorage } from "utils/sessionManager";
+import Contacts from "./components/contacts";
+import LoginForm from "./components/form";
 
 const Login = () => {
   const { setAuth, auth } = useContext(UserContext);

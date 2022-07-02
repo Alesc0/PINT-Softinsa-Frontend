@@ -1,7 +1,7 @@
-import axios from "../../api/axios";
+import axios from "api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import UtilizadorForm from "../../components/utilizadores/form";
+import UtilizadorForm from "./components/form";
 import { useMutation, useQueryClient } from "react-query";
 
 export default function EditUtilizadoresView() {

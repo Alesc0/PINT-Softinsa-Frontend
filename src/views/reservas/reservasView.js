@@ -1,44 +1,37 @@
 import { Stack, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import axios from "../../api/axios";
-import TableReservas from "../../components/reservas/table/tableReservas";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import axios from "api/axios";
+import TableReservas from "./components/table/tableReservas";
 
 function ReservasView() {
-  const [reservas, setReservas] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get("reserva/list", {
-          params: {
-            offset: page * rowsPerPage,
-            limit: rowsPerPage,
-          },
-        });
-        console.log(response);
-        setReservas(response.data.data);
-        if (response.count) setCount(response.count);
-      } catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [setReservas, page, rowsPerPage]);
+  const { isFetching, data } = useQuery(
+    ["getReservas", page, rowsPerPage],
+    async () => {
+      const { data: response } = await axios.get("reserva/list", {
+        params: {
+          offset: page * rowsPerPage,
+          limit: rowsPerPage,
+        },
+      });
+      return response;
+    },
+    {
+      keepPreviousData: true,
+    }
+  );
 
   const tableProps = {
-    reservas,
-    loading,
+    reservas: data?.data,
+    loading: isFetching,
     page,
     setPage,
     rowsPerPage,
     setRowsPerPage,
-    count,
+    count: data?.count || 0,
   };
 
   return (

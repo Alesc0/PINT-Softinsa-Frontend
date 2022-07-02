@@ -22,6 +22,8 @@ import Utilizadores from "./views/utilizadores/utilizadoresView";
 import AddUtilizadores from "./views/utilizadores/addUtilizadores";
 import EditUtilizadores from "./views/utilizadores/editUtilizadores";
 
+import Limpezas from "./views/limpezas/limpezasView";
+
 import Perfil from "./views/perfil/perfil";
 
 // ----------------------------------------------------------------------

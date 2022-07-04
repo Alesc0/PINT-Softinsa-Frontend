@@ -1,4 +1,3 @@
-import ThemeProvider from "../../theme";
 import { ResponsiveTimeRange } from "@nivo/calendar";
 
 const data = [
@@ -429,17 +428,15 @@ const data = [
 ];
 
 const MyResponsiveTimeRange = () => (
-  <ThemeProvider>
-    <ResponsiveTimeRange
-      data={data}
-      from="2018-04-01"
-      to="2018-08-12"
-      emptyColor="#eeeeee"
-      colors={["#61cdbb", "#97e3d5", "#e8c1a0", "#f47560"]}
-      margin={{ top: 40 }}
-      dayBorderColor="text.primary"
-      daySpacing={2}
-    />
-  </ThemeProvider>
+  <ResponsiveTimeRange
+    data={data}
+    from="2018-04-01"
+    to="2018-08-12"
+    emptyColor="#eeeeee"
+    colors={["#61cdbb", "#97e3d5", "#e8c1a0", "#f47560"]}
+    margin={{ top: 40 }}
+    dayBorderColor="text.primary"
+    daySpacing={2}
+  />
 );
 export default MyResponsiveTimeRange;

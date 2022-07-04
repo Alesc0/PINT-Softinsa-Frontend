@@ -1,4 +1,4 @@
-import axios from "api/axios";
+import axios from "api/_axios";
 import { toast } from "react-toastify";
 import CentroForm from "./components/form";
 

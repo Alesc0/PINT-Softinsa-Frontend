@@ -12,7 +12,7 @@ import {
 import { useContext, useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
-import axios from "api/axios";
+import axios from "api/_axios";
 import { UserContext } from "App";
 import { clearStorages, getTokens } from "utils/sessionManager";
 

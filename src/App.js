@@ -1,6 +1,7 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import { useQuery } from "react-query";
-import axios from "./api/axios";
+import { getTokens } from "utils/sessionManager";
+import axios from "./api/_axios";
 import Router from "./routes";
 import ThemeProvider from "./theme";
 
@@ -16,13 +17,13 @@ function App() {
     async () => {
       return await axios.get("utilizador/getUserByToken");
     },
-    { enabled: !auth || (auth && !user) }
+    { enabled: (!auth || !user) && !!getTokens().rT }
   );
 
   if (data) {
     if (!user) {
       setUser(data.data.data);
-      setAuth(true);
+      if (!auth) setAuth(true);
     }
   }
   if (error) {

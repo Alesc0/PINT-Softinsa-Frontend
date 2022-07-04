@@ -7,8 +7,8 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import ava from "imgs/banner.png";
-import axios from "api/axios";
+import softinsaBanner from "imgs/banner.png";
+import axios from "api/_axios";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 
@@ -43,7 +43,7 @@ function Centros() {
                 image={
                   (row.imagemConv &&
                     "data:image/jpeg;base64, " + row.imagemConv) ||
-                  ava
+                  softinsaBanner
                 }
                 sx={{ objectFit: "cover", height: 150 }}
                 alt={row.cidade}

@@ -1,4 +1,4 @@
-import axios from "api/axios";
+import axios from "api/_axios";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";

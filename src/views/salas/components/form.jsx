@@ -20,7 +20,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { useQuery } from "react-query";
-import axios from "api/axios";
+import axios from "api/_axios";
 
 const loadSkeleton = () => {
   return (
@@ -147,7 +147,8 @@ function SalasForm({ data, handleRequest, handleDelete }) {
           gap: 2,
           paddingInline: 3,
           paddingBlock: 2,
-          flexGrow: 2,
+          flexGrow: 3,
+          height: "fit-content",
         }}
       >
         {loadingCentros ? (

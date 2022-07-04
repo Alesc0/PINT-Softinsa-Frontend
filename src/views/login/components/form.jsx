@@ -16,7 +16,7 @@ import { useFormik } from "formik";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import axios from "api/axios";
+import axios from "api/_axios";
 
 const validationSchema = yup.object({
   email: yup

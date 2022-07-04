@@ -5,7 +5,7 @@ import {
   NoPhotography,
 } from "@mui/icons-material";
 import { Divider, ListItemIcon, Menu, MenuItem } from "@mui/material";
-import axios from "api/axios";
+import axios from "api/_axios";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";

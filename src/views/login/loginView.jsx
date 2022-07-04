@@ -1,16 +1,16 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { useCallback, useContext, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "App";
 import login_banner from "imgs/banner-login.jpg";
 import logo_ibm from "imgs/ibm-logo.png";
 import logo from "imgs/logo-softinsa.png";
+import { useCallback, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { setLocalStorage, setSessionStorage } from "utils/sessionManager";
 import Contacts from "./components/contacts";
 import LoginForm from "./components/form";
 
 const Login = () => {
-  const { setAuth, auth } = useContext(UserContext);
+  const { setAuth } = useContext(UserContext);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -21,12 +21,6 @@ const Login = () => {
     } else navigate("/");
   }, [location.state?.from, navigate]);
 
-  useEffect(() => {
-    if (auth) {
-      goBack();
-    }
-  }, [auth, goBack]);
-
   const handleRequest = (data, values) => {
     if (values.remember) {
       setLocalStorage(data.accessToken, data.refreshToken);
@@ -34,6 +28,7 @@ const Login = () => {
       setSessionStorage(data.accessToken, data.refreshToken);
     }
     localStorage.setItem("remember", values.remember);
+    goBack();
     setAuth(true);
   };
 

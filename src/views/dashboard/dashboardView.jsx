@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, CardHeader } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axios from "api/axios";
+import axios from "api/_axios";
 import BoxNumbers from "./components/boxNumbers";
 import ListFeedbacks from "./components/feedbacks/listFeedbacks";
 

@@ -21,7 +21,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import axios from "api/axios";
+import axios from "api/_axios";
 import Modal from "./opcoesModal";
 
 const phoneRegex =

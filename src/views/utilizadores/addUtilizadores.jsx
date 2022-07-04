@@ -1,6 +1,6 @@
 import { Paper, Stack, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import axios from "api/axios";
+import axios from "api/_axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import FileUploader from "common/fileUploader/fileUploader";

@@ -1,58 +1,137 @@
 import {
-  Avatar, List,
+  Avatar,
+  Box,
+  Button,
+  Container,
+  List,
   ListItem,
   ListItemButton,
   ListItemText,
   Pagination,
   Paper,
   Skeleton,
+  Slide,
+  Slider,
   Stack,
-  Typography
+  TextField,
+  Typography,
 } from "@mui/material";
-import { useState } from "react";
+import MultipleAutocomplete from "common/multipleAutocomplete/multipleAutocomplete";
+import { useContext, useRef, useState } from "react";
+import axios from "api/_axios";
+import { useQuery } from "react-query";
+import { UserContext } from "App";
 
 export default function ListSalas(props) {
-  const { salas, selected, setSelected, setOffset, limit, count, isLoading } =
-    props;
+  const {
+    salas,
+    selected,
+    setSelected,
+    limit,
+    count,
+    isLoading,
+    handleChangePagination,
+    setCentro,
+    centro,
+    page,
+    slider,
+    setSlider,
+    pesquisa,
+    setPesquisa,
+  } = props;
+
+  const [filtro, setFiltro] = useState(false);
+  const { user } = useContext(UserContext);
+
+  const { data: dataCentros } = useQuery("getCentrosSalas", async () => {
+    const { data: response } = await axios.get("centro/list");
+    setCentro([response.data.find((val) => val.idcentro === user.idcentro)]);
+    return response.data;
+  });
+
+  const containerRef = useRef(null);
 
   const loadSkeleton = () => {
-    let list = [];
-    for (var i = 0; i < limit; i++) {
-      list.push(
-        <ListItem
-          key={i}
-          component={Paper}
-          elevation={4}
-          sx={{ mb: 2, bgcolor: "background.paper" }}
-        >
-          <Skeleton variant="circular" width={65} height={65} />
-          <ListItemText
-            sx={{ ml: 2 }}
-            primary={<Skeleton variant="text" width={150} height={50} />}
-            secondaryTypographyProps={{ display: "flex", gap: 1 }}
-            secondary={
-              <>
-                <Skeleton variant="text" width={100} />
-                <Skeleton variant="text" width={25} />
-              </>
-            }
-          />
-        </ListItem>
-      );
-    }
-    return list;
-  };
-  const [page, setPage] = useState(1);
-
-  const handleChangePagination = (event, value) => {
-    if (page === value) return;
-    setPage(value);
-    setSelected(0);
-    setOffset((value - 1) * limit);
+    return (
+      <ListItem
+        component={Paper}
+        elevation={4}
+        sx={{ mb: 2, bgcolor: "background.paper" }}
+      >
+        <Skeleton variant="circular" width={65} height={65} />
+        <ListItemText
+          sx={{ ml: 2 }}
+          primary={<Skeleton variant="text" width={150} height={50} />}
+          secondaryTypographyProps={{ display: "flex", gap: 1 }}
+          secondary={
+            <>
+              <Skeleton variant="text" width={100} />
+              <Skeleton variant="text" width={25} />
+            </>
+          }
+        />
+      </ListItem>
+    );
   };
 
+  const MutipleAutoCompleteProps = {
+    setter: setCentro,
+    getter: centro,
+    text: "Filtrar Centros",
+    data: dataCentros,
+  };
   return (
-    <Stack spacing={2} sx={{ flexGrow: 1 }}>
+    <Stack spacing={1} sx={{ flexGrow: 1, maxWidth: 300 }}>
+      <Button variant="outlined" onClick={() => setFiltro((prev) => !prev)}>
+        Filtros
+      </Button>
+      <Box
+        sx={{
+          overflow: "hidden",
+        }}
+        ref={containerRef}
+      >
+        <Slide
+          direction="down"
+          in={filtro}
+          container={containerRef.current}
+          timeout={1000}
+          mountOnEnter
+          unmountOnExit
+        >
+          <Stack className="center">
+            <MultipleAutocomplete
+              sx={{ width: "100%" }}
+              {...MutipleAutoCompleteProps}
+            />
+            <TextField
+              fullWidth
+              variant="standard"
+              value={pesquisa}
+              onChange={(e) => setPesquisa(e.target.value)}
+              label="Procurar Sala"
+            />
+            <Stack
+              sx={{
+                width: "100%",
+                mt: 1,
+                alignItems: "center",
+              }}
+            >
+              <Typography>Lotação</Typography>
+              <Slider
+                sx={{ width: "90%" }}
+                value={slider}
+                onChange={(e) => setSlider(e.target.value)}
+                size="small"
+                step={10}
+                marks
+                valueLabelDisplay="auto"
+              />
+            </Stack>
+          </Stack>
+        </Slide>
+      </Box>
       <List disablePadding sx={{ minHeight: 390 }}>
         {isLoading
           ? loadSkeleton()
@@ -86,6 +165,7 @@ export default function ListSalas(props) {
           bgcolor: "background.paper",
           borderRadius: 2,
         }}
+        page={page}
         count={Math.ceil(count / limit)}
         onChange={handleChangePagination}
       />

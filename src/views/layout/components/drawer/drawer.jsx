@@ -25,7 +25,7 @@ import { useQuery } from "react-query";
 import { Link, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "api/axios";
+import axios from "api/_axios";
 import { UserContext } from "App";
 import navBar_logo from "imgs/logo-softinsa.png";
 import { ColorModeContext } from "theme";

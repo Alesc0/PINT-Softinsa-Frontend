@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import axios from "api/axios";
+import axios from "api/_axios";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
 import BasicMenu from "../menuPopover/menuPopover";
@@ -44,6 +44,12 @@ export default function EnhancedTable(props) {
     rowsPerPage,
     setRowsPerPage,
     count,
+    pesquisa,
+    setPesquisa,
+    autoCentros,
+    setAutoCentros,
+    handleFiltros,
+    dataCentros,
   } = props;
 
   const queryClient = useQueryClient();
@@ -170,6 +176,17 @@ export default function EnhancedTable(props) {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
 
+  const toolbarProps = {
+    selected,
+    handleOpenModal,
+    pesquisa,
+    setPesquisa,
+    autoCentros,
+    setAutoCentros,
+    handleFiltros,
+    dataCentros,
+  };
+
   return (
     <>
       <Paper
@@ -177,10 +194,7 @@ export default function EnhancedTable(props) {
           mb: 2,
         }}
       >
-        <EnhancedTableToolbar
-          selected={selected}
-          handleOpenModal={handleOpenModal}
-        />
+        <EnhancedTableToolbar {...toolbarProps} />
         <TableContainer>
           <Table size="medium">
             <EnhancedTableHead

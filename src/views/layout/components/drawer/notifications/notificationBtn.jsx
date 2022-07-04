@@ -11,7 +11,7 @@ import {
 import { useMemo, useState } from "react";
 import ListNotificacoes from "./listNotificacoes";
 import { useMutation, useQueryClient } from "react-query";
-import axios from "api/axios";
+import axios from "api/_axios";
 
 const paperProps = {
   elevation: 0,

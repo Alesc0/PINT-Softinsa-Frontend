@@ -15,7 +15,7 @@ import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import axios from "api/axios";
+import axios from "api/_axios";
 import ImgUploader from "common/fileUploader/fileUploader";
 
 const loadSkeleton = () => {
@@ -155,17 +155,18 @@ export default function CentroForm({ handleRequest, id = undefined }) {
 
           <Autocomplete
             id="cidade"
-            options={cidades}
-            isOptionEqualToValue={() => true}
+            name="cidade"
+            options={cidades || []}
+            isOptionEqualToValue={(val, option) => val === option}
             value={formik.values.cidade}
             onChange={(event, value, reason) => {
-              formik.values.cidade = "";
-              if (reason === "clear") formik.values.cidade = "";
-              else formik.handleChange();
+              formik.setFieldValue("cidade", "");
+              if (reason === "clear") formik.setFieldValue("cidade", value);
+              else formik.setFieldValue("cidade", value);
             }}
             onInputChange={(event, value, reason) => {
               if (reason === "clear") {
-                formik.values.cidade = "";
+                formik.setFieldValue("cidade", "");
               }
             }}
             renderInput={(params) => <TextField {...params} label="Cidade" />}

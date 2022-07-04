@@ -1,22 +1,42 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { alpha, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
-import { useState } from "react";
-import SideBar from "./sideBar";
+import {
+  alpha,
+  Box,
+  Button,
+  IconButton,
+  Slide,
+  Stack,
+  TextField,
+  Toolbar,
+  Tooltip,
+} from "@mui/material";
+import axios from "api/_axios";
+import { UserContext } from "App";
+import MultipleAutocomplete from "common/multipleAutocomplete/multipleAutocomplete";
+import { useContext, useRef, useState } from "react";
+import { useQuery } from "react-query";
 
 const EnhancedTableToolbar = (props) => {
-  const { selected, handleOpenModal } = props;
-  const [sidebar, setSidebar] = useState(false);
+  const {
+    selected,
+    handleOpenModal,
+    autoCentros,
+    setAutoCentros,
+    pesquisa,
+    setPesquisa,
+    handleFiltros,
+    dataCentros,
+  } = props;
 
-  const handleSidebar = (open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
+  const [filtro, setFiltro] = useState(false);
+  const containerRef = useRef(null);
 
-    setSidebar(open);
+  const maCentrosProps = {
+    getter: autoCentros,
+    setter: setAutoCentros,
+    text: "Filtrar Centros",
+    data: dataCentros,
   };
 
   return (
@@ -36,11 +56,35 @@ const EnhancedTableToolbar = (props) => {
           }),
         }}
       >
-        {selected.length > 0 ? (
-          <Typography color="inherit" variant="subtitle1" component="div">
-            {selected.length} selected
-          </Typography>
-        ) : null}
+        <Box
+          sx={{ display: "flex", width: "100%", overflow: "hidden" }}
+          ref={containerRef}
+        >
+          <Slide
+            direction="left"
+            in={filtro}
+            container={containerRef.current}
+            timeout={1000}
+            mountOnEnter
+            unmountOnExit
+          >
+            <Stack direction="row" sx={{ ml: "auto" }} spacing={2}>
+              <TextField
+                variant="standard"
+                value={pesquisa}
+                onChange={(e) => setPesquisa(e.target.value)}
+                label="Pesquisar"
+              />
+              <MultipleAutocomplete
+                sx={{ minWidth: 150 }}
+                {...maCentrosProps}
+              />
+              <Button variant="contained" onClick={handleFiltros}>
+                Aplicar Filtros
+              </Button>
+            </Stack>
+          </Slide>
+        </Box>
         {selected.length > 0 ? (
           <Tooltip title="Delete" sx={{ ml: "auto" }}>
             <IconButton onClick={(event) => handleOpenModal(event, selected)}>
@@ -49,14 +93,12 @@ const EnhancedTableToolbar = (props) => {
           </Tooltip>
         ) : (
           <Tooltip title="Filter list" sx={{ ml: "auto" }}>
-            <IconButton onClick={handleSidebar(true)}>
+            <IconButton onClick={() => setFiltro((prev) => !prev)}>
               <FilterListIcon />
             </IconButton>
           </Tooltip>
         )}
       </Toolbar>
-
-      <SideBar anchor="right" handleSidebar={handleSidebar} state={sidebar} />
     </>
   );
 };

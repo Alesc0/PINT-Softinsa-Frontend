@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { useQuery } from "react-query";
-import axios from "api/axios";
+import axios from "api/_axios";
 import TableReservas from "./components/table/tableReservas";
 
 function ReservasView() {

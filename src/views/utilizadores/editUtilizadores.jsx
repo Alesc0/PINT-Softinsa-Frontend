@@ -1,4 +1,4 @@
-import axios from "api/axios";
+import axios from "api/_axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import UtilizadorForm from "./components/form";

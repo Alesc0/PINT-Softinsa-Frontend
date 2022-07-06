@@ -1,6 +1,6 @@
 import { Button, Stack, Typography } from "@mui/material";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import axios from "api/_axios";
 import ListSalas from "./components/listSalas";
@@ -15,6 +15,8 @@ function SalasView() {
   const [centro, setCentro] = useState([]);
   const [slider, setSlider] = useState([0, 70]);
   const [pesquisa, setPesquisa] = useState("");
+
+  const queryClient = useQueryClient();
 
   const { isFetching, data, error } = useQuery(
     ["getSalas", offset, limit, centro],
@@ -38,9 +40,43 @@ function SalasView() {
   if (error)
     toast.error("Ocorreu um erro, a página poderá não responder como esperado");
 
+  const updateMutation = useMutation(
+    async (obj) => {
+      const { status: response } = await axios.put(
+        `sala/${data.data[selected].idsala}`,
+        obj
+      );
+      return response;
+    },
+    {
+      onSuccess: () => {
+        toast.success("Sala atualizada!");
+        queryClient.invalidateQueries("getSalas");
+      },
+      onError: () => {
+        toast.error("Erro ao atualizar sala!");
+      },
+    }
+  );
+  const addMutation = useMutation(
+    async (obj) => {
+      const { status: response } = await axios.post(`sala/add`, obj);
+      return response;
+    },
+    {
+      onSuccess: () => {
+        toast.success("Sala adicionada!");
+        queryClient.invalidateQueries("getSalas");
+      },
+      onError: () => {
+        toast.error("Erro ao adicionar sala!");
+      },
+    }
+  );
   //TODO
   const handleRequest = (salaObj) => {
-    console.log(salaObj);
+    if (selected === -1) addMutation.mutate(salaObj);
+    else updateMutation.mutate(salaObj);
   };
 
   const handleDelete = () => {};

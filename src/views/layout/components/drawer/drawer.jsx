@@ -43,11 +43,6 @@ const pages = [
     icon: <Dashboard sx={{ color: "white" }} />,
   },
   {
-    name: "Estatisticas",
-    link: "/stats",
-    icon: <QueryStats sx={{ color: "white" }} />,
-  },
-  {
     name: "Limpezas",
     link: "/limpezas",
     icon: <Soap sx={{ color: "white" }} />,

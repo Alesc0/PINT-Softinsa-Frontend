@@ -31,17 +31,17 @@ const loadSkeleton = () => {
         height={50}
         sx={{ alignSelf: "center" }}
       />
-      <Skeleton variant="rectangular" width={450} height={50} />
-      <Skeleton variant="rectangular" width={450} height={50} />
+      <Skeleton variant="rectangular" height={50} />
+      <Skeleton variant="rectangular" height={50} />
       <Stack direction="row" spacing={2}>
         <Skeleton variant="rectangular" width={70} height={40} />
-        <Stack className="center">
-          <Skeleton variant="text" width={270} />
-          <Skeleton variant="text" width={150} />
+        <Stack className="center" sx={{ width: "100%" }}>
+          <Skeleton variant="text" width="100%" />
+          <Skeleton variant="text" width="100%" />
         </Stack>
         <Skeleton variant="rectangular" width={70} height={40} />
       </Stack>
-      <Skeleton variant="rectangular" width={450} height={40} />
+      <Skeleton variant="rectangular" height={40} />
       <Divider />
       <Skeleton
         variant="rectangular"
@@ -81,7 +81,6 @@ const validationSchema = yup.object({
 });
 
 function SalasForm({ data, handleRequest, handleDelete }) {
-  const [centro, setCentro] = useState(1);
   const [valSlider, setValSlider] = useState(70);
 
   const {
@@ -99,17 +98,13 @@ function SalasForm({ data, handleRequest, handleDelete }) {
 
   if (erroCentros) toast.error("Erro ao obter centros!");
 
-  const clearForm = useCallback(() => {
-    setCentro(dataCentros && dataCentros[0]);
-    setValSlider(70);
-  }, [dataCentros]);
-
   const formik = useFormik({
     initialValues: {
       nome: data?.nome || "",
       descricao: data?.descricao || "",
       lotacaoMax: data?.lotacaomax || 50,
       estado: data?.estado || false,
+      idcentro: data?.idcentro,
       justificacao: "",
     },
     enableReinitialize: true,
@@ -124,16 +119,21 @@ function SalasForm({ data, handleRequest, handleDelete }) {
     return Math.floor((formik.values.lotacaoMax * valSlider) / 100);
   }, [formik.values.lotacaoMax, valSlider]);
 
+  const clearForm = useCallback(() => {
+    formik.values.idcentro = dataCentros && dataCentros[0];
+    setValSlider(70);
+  }, [dataCentros, formik]);
+
   useEffect(() => {
     if (!data) {
       clearForm();
       return;
     }
-    setCentro(
-      dataCentros && dataCentros.find((val) => val.idcentro === data.idcentro)
-    );
+    formik.values.idcentro =
+      dataCentros && dataCentros.find((val) => val.idcentro === data.idcentro);
+
     setValSlider((100 * data.lotacao) / data.lotacaomax);
-  }, [data, clearForm, dataCentros]);
+  }, [data, clearForm, dataCentros, formik]);
 
   return (
     <>
@@ -231,16 +231,16 @@ function SalasForm({ data, handleRequest, handleDelete }) {
             </Stack>
             <Autocomplete
               options={dataCentros || []}
-              value={centro || ""}
-              isOptionEqualToValue={(op, val) => true}
+              value={formik.values.idcentro}
+              isOptionEqualToValue={(op, val) => op.idcentro === val.idcentro}
               getOptionLabel={(option) => option.cidade || ""}
               onChange={(event, value, reason) => {
                 if (reason === "clear") return;
-                else setCentro(value);
+                else formik.values.idcentro = value;
               }}
               onInputChange={(event, value, reason) => {
                 if (reason === "clear") {
-                  setCentro(value);
+                  formik.values.idcentro = value;
                 }
               }}
               renderInput={(params) => <TextField {...params} label="Cidade" />}

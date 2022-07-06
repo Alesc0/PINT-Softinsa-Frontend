@@ -8,7 +8,6 @@ import DashboardLayout from "./views/layout/dashboardLayout";
 import Login from "./views/login/loginView";
 import NotFound from "./views/notFoundView";
 import Dashboard from "./views/dashboard/dashboardView";
-import Stats from "./views/estatisticas/estatisticasView";
 
 import Centros from "./views/centros/centrosView";
 import AddCentros from "./views/centros/addCentros";
@@ -48,7 +47,6 @@ export default function Router() {
               element={<EditUtilizadores />}
             />
             <Route path="reservas" element={<Reservas />} />
-            <Route path="stats" element={<Stats />} />
             <Route path="perfil" element={<Perfil />} />
             <Route path="limpezas" element={<Limpezas />} />
           </Route>

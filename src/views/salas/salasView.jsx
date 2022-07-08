@@ -78,8 +78,23 @@ function SalasView() {
     if (selected === -1) addMutation.mutate(salaObj);
     else updateMutation.mutate(salaObj);
   };
-
-  const handleDelete = () => {};
+  const deleteMutation = useMutation(
+    async () => {
+      const { data: response } = await axios.delete(
+        `sala/${data.data[selected].idsala}`
+      );
+      return response;
+    },
+    {
+      onSuccess: () => {
+        toast.success("Sala eliminada!");
+        queryClient.invalidateQueries("getSalas");
+      },
+      onError: () => {
+        toast.error("Erro ao eliminar sala!");
+      },
+    }
+  );
 
   const handleChangePagination = (event, value) => {
     if (page === value) return;
@@ -128,7 +143,7 @@ function SalasView() {
         <SalasForm
           data={data && data.data[selected]}
           handleRequest={handleRequest}
-          handleDelete={handleDelete}
+          handleDelete={deleteMutation.mutate}
         />
       </Stack>
     </>

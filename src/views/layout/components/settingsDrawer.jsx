@@ -2,20 +2,11 @@ import { Close } from "@mui/icons-material";
 import {
   Button,
   ButtonGroup,
-  Divider,
-  FormControl,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
+  Divider, IconButton, Stack,
+  Typography
 } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
-import { UserContext } from "App";
-import { useContext, useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import axios from "api/_axios";
+import { useEffect, useState } from "react";
 
 export default function SettingsDrawer({ open, handleClose, handleColorMode }) {
   const [mode, setMode] = useState("");

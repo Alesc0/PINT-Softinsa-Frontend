@@ -56,12 +56,12 @@ const loadSkeleton = () => {
 const validationSchema = yup.object({
   nome: yup
     .string()
-    .min(3, "O nome deve ter pelo menos 5 caracteres.")
+    .min(3, "O nome deve ter pelo menos 3 caracteres.")
     .max(50, "O nome deve ter no máximo 50 caracteres.")
     .required("Este campo é obrigatório."),
   descricao: yup
     .string()
-    .min(5, "A descrição deve ter pelo menos 10 caracteres.")
+    .min(10, "A descrição deve ter pelo menos 10 caracteres.")
     .max(250, "A descrição só pode ter até 250 caracteres.")
     .required("Este campo é obrigatório."),
   lotacaoMax: yup
@@ -84,7 +84,7 @@ function SalasForm({ data, handleRequest, handleDelete }) {
   const [valSlider, setValSlider] = useState(70);
 
   const {
-    isLoading: loadingCentros,
+    isFetching: loadingCentros,
     data: dataCentros,
     error: erroCentros,
   } = useQuery(
@@ -104,7 +104,7 @@ function SalasForm({ data, handleRequest, handleDelete }) {
       descricao: data?.descricao || "",
       lotacaoMax: data?.lotacaomax || 50,
       estado: data?.estado || false,
-      idcentro: data?.idcentro,
+      idcentro: data?.centro || {},
       justificacao: "",
     },
     enableReinitialize: true,
@@ -120,20 +120,26 @@ function SalasForm({ data, handleRequest, handleDelete }) {
   }, [formik.values.lotacaoMax, valSlider]);
 
   const clearForm = useCallback(() => {
-    formik.values.idcentro = dataCentros && dataCentros[0];
+    formik.setFieldValue("idcentro", dataCentros && dataCentros[0]);
     setValSlider(70);
-  }, [dataCentros, formik]);
+  }, [dataCentros]);
 
   useEffect(() => {
+    if (loadingCentros) return;
+
     if (!data) {
       clearForm();
       return;
     }
-    formik.values.idcentro =
-      dataCentros && dataCentros.find((val) => val.idcentro === data.idcentro);
+
+    formik.setFieldValue(
+      "idcentro",
+      dataCentros &&
+        dataCentros.find((val) => val.idcentro === data.centro.idcentro)
+    );
 
     setValSlider((100 * data.lotacao) / data.lotacaomax);
-  }, [data, clearForm, dataCentros, formik]);
+  }, [data, clearForm, dataCentros, loadingCentros]);
 
   return (
     <>
@@ -236,11 +242,11 @@ function SalasForm({ data, handleRequest, handleDelete }) {
               getOptionLabel={(option) => option.cidade || ""}
               onChange={(event, value, reason) => {
                 if (reason === "clear") return;
-                else formik.values.idcentro = value;
+                else formik.setFieldValue("idcentro", value);
               }}
               onInputChange={(event, value, reason) => {
                 if (reason === "clear") {
-                  formik.values.idcentro = value;
+                  formik.setFieldValue("idcentro", value);
                 }
               }}
               renderInput={(params) => <TextField {...params} label="Cidade" />}

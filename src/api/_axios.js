@@ -6,8 +6,12 @@ import {
   setSessionStorage,
 } from "../utils/sessionManager";
 
+/* "https://pintbackendoriginal.herokuapp.com" */
+
+export const baseURL = "http://localhost:3000";
+
 const instance = axios.create({
-  baseURL: "https://pintbackendoriginal.herokuapp.com",
+  baseURL,
 });
 
 instance.interceptors.request.use((config) => {

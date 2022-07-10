@@ -1,22 +1,27 @@
-import { ResponsiveTimeRange } from "@nivo/calendar";
-import { useQuery } from "react-query";
-import axios from "api/_axios";
 import { Box } from "@mui/material";
+import { ResponsiveTimeRange } from "@nivo/calendar";
+import axios from "api/_axios";
+import { useQuery } from "react-query";
 
 const MyResponsiveTimeRange = ({ startDate, endDate }) => {
+  var date = new Date();
+  date.setDate(date.getDate() - 240);
+
   const { data } = useQuery(
     ["getReservasByRange", startDate, endDate],
     async () => {
       const { data: response } = await axios.get("reserva/range", {
         params: {
-          start: startDate.toLocaleDateString('en-CA'),
-          end: endDate.toLocaleDateString('en-CA'),
+          start: startDate.toLocaleDateString("en-CA"),
+          end: endDate.toLocaleDateString("en-CA"),
         },
       });
       console.log(response);
       return response.data;
-    }
+    },
+    { keepPreviousData: true }
   );
+
   return (
     <Box sx={{ height: "15em" }}>
       <ResponsiveTimeRange

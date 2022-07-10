@@ -10,10 +10,12 @@ import {
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "api/_axios";
+import socket from "api/_socket";
+import MyResponsiveBar from "common/nivoCharts/bars";
 import MyResponsivePie from "common/nivoCharts/pie";
 import MyResponsiveTimeRange from "common/nivoCharts/timeRange";
-import { useState } from "react";
-import { useQuery } from "react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "react-query";
 import BoxNumbers from "./components/boxNumbers";
 import ListFeedbacks from "./components/feedbacks/listFeedbacks";
 
@@ -28,39 +30,62 @@ const info = [
     val: 231,
     desc: "Reservas realizadas",
   },
-
-  {
-    id: 4,
-    val: 5,
-    desc: "Salas Disponiveis",
-  },
 ];
 
 export default function Dashboard() {
   var date = new Date();
   date.setDate(date.getDate() - 240);
 
+  const queryClient = useQueryClient();
   const [startDate, setStartDate] = useState(date);
   const [endDate, setEndDate] = useState(new Date());
 
+  const [page, setPage] = useState(1);
+
   const { isLoading: loadingCountUtilizadores, data: countUtilizadores } =
-    useQuery("getUtilizadores", async () => {
+    useQuery("getUtilizadoresCount", async () => {
       const { data: response } = await axios.get("utilizador/count");
       return response.data;
     });
 
-  const { isLoading: loadingFeedbacks, data: dataFeedBacks } = useQuery(
-    "getFeedbacks",
+  const { isLoading: loadingCountSalas, data: countSalas } = useQuery(
+    "getSalasCount",
     async () => {
-      const { data: response } = await axios.get("feedback/list");
+      const { data: response } = await axios.get("sala/list");
+      return response.data.length;
+    }
+  );
+  const { isLoading: loadingFeedbacks, data: dataFeedBacks } = useQuery(
+    ["getFeedbacks", page],
+    async () => {
+      const { data: response } = await axios.get("feedback/list", {
+        params: {
+          offset: (page - 1) * 4,
+          limit: 4,
+        },
+      });
       console.log(response);
-      return response.data;
+      return response;
     }
   );
 
+  useEffect(() => {
+    socket.on("newUser", () => {
+      queryClient.invalidateQueries("getUtilizadoresDashboard");
+    });
+    socket.on("newFeedback", () => {
+      queryClient.invalidateQueries("getFeedbacks");
+    });
+    return () => {
+      socket.off("newUser");
+      socket.off("newFeedback");
+    };
+  }, [queryClient]);
+
+  console.log(startDate);
+
   return (
     <Box
-      maxWidth="xl"
       display="grid"
       gridTemplateColumns={{ sm: "repeat(2, 1fr)", md: "repeat(4, 2fr)" }}
       gap={3}
@@ -73,26 +98,58 @@ export default function Dashboard() {
       {info.map((row) => (
         <BoxNumbers key={row.id} info={row.val} text={row.desc} />
       ))}
-      <Box gridColumn="span 2">
+
+      <BoxNumbers
+        loading={loadingCountSalas}
+        info={countSalas}
+        text={"Salas Totais"}
+      />
+      <Box
+        gridRow="span 2"
+        gridColumn="span 2"
+        sx={{ flex: 1, display: "flex" }}
+      >
         <Card>
           <CardHeader title="Feedbacks" />
-          <CardContent>
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "93%",
+              p: 0,
+            }}
+          >
             <ListFeedbacks
               loading={loadingFeedbacks}
-              feedbackList={dataFeedBacks}
+              feedbackList={dataFeedBacks?.data}
+              setPage={setPage}
+              page={page}
+              count={dataFeedBacks?.count}
             />
           </CardContent>
         </Card>
       </Box>
       <Box gridColumn="span 2">
         <Card>
-          <CardHeader title="Utilizadores" />
+          <CardHeader title="Alocação diária" />
           <CardContent>
+            <MyResponsiveBar />
+          </CardContent>
+        </Card>
+      </Box>
+      <Box gridColumn="span 2">
+        <Card>
+          <CardHeader title="Utilizadores" />
+          <CardContent
+            sx={{
+              p: 0,
+            }}
+          >
             <MyResponsivePie />
           </CardContent>
         </Card>
       </Box>
-      <Box gridColumn="span 4">
+      <Box gridColumn={{ sm: "span 2", md: "span 4" }}>
         <Card>
           <CardHeader
             title="Reservas"

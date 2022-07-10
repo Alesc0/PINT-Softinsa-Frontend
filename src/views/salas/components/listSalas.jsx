@@ -80,6 +80,7 @@ export default function ListSalas(props) {
     text: "Filtrar Centros",
     data: dataCentros,
   };
+
   return (
     <Stack spacing={1} sx={{ flexGrow: 1, maxWidth: 300 }}>
       <Button variant="outlined" onClick={() => setFiltro((prev) => !prev)}>

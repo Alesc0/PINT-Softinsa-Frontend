@@ -119,7 +119,7 @@ function MenuDrawer(props) {
     return response.data[0].notificacoes;
   });
 
-  if (error) toast.error(error);
+  if (error) toast.error("Erro ao obter notificações");
 
   const handleDrawerToggle = () => {
     setMobileOpen((mobileOpen) => !mobileOpen);

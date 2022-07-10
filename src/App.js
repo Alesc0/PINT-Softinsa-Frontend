@@ -15,14 +15,15 @@ function App() {
   const { isFetching, error, data } = useQuery(
     ["getUserByToken", auth],
     async () => {
-      return await axios.get("utilizador/getUserByToken");
+      const { data: response } = await axios.get("utilizador/getUserByToken");
+      return response.data;
     },
     { enabled: (!auth || !user) && !!getTokens().rT }
   );
 
   if (data) {
     if (!user) {
-      setUser(data.data.data);
+      setUser(data);
       if (!auth) setAuth(true);
     }
   }

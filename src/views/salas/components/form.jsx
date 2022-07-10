@@ -64,7 +64,7 @@ const validationSchema = yup.object({
     .min(10, "A descrição deve ter pelo menos 10 caracteres.")
     .max(250, "A descrição só pode ter até 250 caracteres.")
     .required("Este campo é obrigatório."),
-  lotacaoMax: yup
+  lotacaomax: yup
     .number()
     .min(10, "10-100")
     .max(100, "10-100.")
@@ -83,6 +83,8 @@ const validationSchema = yup.object({
 function SalasForm({ data, handleRequest, handleDelete }) {
   const [valSlider, setValSlider] = useState(70);
 
+  console.log(data);
+
   const {
     isFetching: loadingCentros,
     data: dataCentros,
@@ -90,7 +92,7 @@ function SalasForm({ data, handleRequest, handleDelete }) {
   } = useQuery(
     ["getCentros"],
     async () => {
-      const { data: response } = await axios.get("/centro/list");
+      const { data: response } = await axios.get("centro/list");
       return response.data;
     },
     { keepPreviousData: true }
@@ -102,25 +104,33 @@ function SalasForm({ data, handleRequest, handleDelete }) {
     initialValues: {
       nome: data?.nome || "",
       descricao: data?.descricao || "",
-      lotacaoMax: data?.lotacaomax || 50,
+      lotacaomax: data?.lotacaomax || 50,
       estado: data?.estado || false,
-      idcentro: data?.centro || {},
+      centro: data?.centro || {},
       justificacao: "",
     },
     enableReinitialize: true,
     validationSchema: validationSchema,
 
     onSubmit: async (values) => {
-      await handleRequest(values);
+      await handleRequest({
+        nome: values.nome,
+        descricao: values.descricao,
+        lotacaomax: values.lotacaomax,
+        lotacao: calcLotacaoFinal,
+        estado: values.estado,
+        idcentro: values.centro.idcentro,
+        ...(!values.estado && { justificacao: values.justificacao }),
+      });
     },
   });
 
   const calcLotacaoFinal = useMemo(() => {
-    return Math.floor((formik.values.lotacaoMax * valSlider) / 100);
-  }, [formik.values.lotacaoMax, valSlider]);
+    return Math.floor((formik.values.lotacaomax * valSlider) / 100);
+  }, [formik.values.lotacaomax, valSlider]);
 
   const clearForm = useCallback(() => {
-    formik.setFieldValue("idcentro", dataCentros && dataCentros[0]);
+    formik.setFieldValue("centro", dataCentros && dataCentros[0]);
     setValSlider(70);
   }, [dataCentros]);
 
@@ -133,7 +143,7 @@ function SalasForm({ data, handleRequest, handleDelete }) {
     }
 
     formik.setFieldValue(
-      "idcentro",
+      "centro",
       dataCentros &&
         dataCentros.find((val) => val.idcentro === data.centro.idcentro)
     );
@@ -191,26 +201,26 @@ function SalasForm({ data, handleRequest, handleDelete }) {
             <Stack direction="row" spacing={2} className="center">
               <FormControl
                 error={
-                  formik.touched.lotacaoMax && Boolean(formik.errors.lotacaoMax)
+                  formik.touched.lotacaomax && Boolean(formik.errors.lotacaomax)
                 }
               >
                 <InputLabel>Lotação</InputLabel>
                 <Input
-                  name="lotacaoMax"
+                  name="lotacaomax"
                   size="small"
-                  value={formik.values.lotacaoMax}
+                  value={formik.values.lotacaomax}
                   onChange={formik.handleChange}
                   inputProps={{
                     step: 10,
-                    min: { ...formik.values.lotacaoMax.min },
-                    max: { ...formik.values.lotacaoMax.max },
+                    min: { ...formik.values.lotacaomax.min },
+                    max: { ...formik.values.lotacaomax.max },
                     type: "number",
 
                     style: { textAlign: "center", width: "70px" },
                   }}
                 />
                 <FormHelperText>
-                  {formik.touched.lotacaoMax && formik.errors.lotacaoMax}
+                  {formik.touched.lotacaomax && formik.errors.lotacaomax}
                 </FormHelperText>
               </FormControl>
               <Stack sx={{ flexGrow: 1 }} className="center ">
@@ -237,16 +247,16 @@ function SalasForm({ data, handleRequest, handleDelete }) {
             </Stack>
             <Autocomplete
               options={dataCentros || []}
-              value={formik.values.idcentro}
+              value={formik.values.centro}
               isOptionEqualToValue={(op, val) => op.idcentro === val.idcentro}
               getOptionLabel={(option) => option.cidade || ""}
               onChange={(event, value, reason) => {
                 if (reason === "clear") return;
-                else formik.setFieldValue("idcentro", value);
+                else formik.setFieldValue("centro", value);
               }}
               onInputChange={(event, value, reason) => {
                 if (reason === "clear") {
-                  formik.setFieldValue("idcentro", value);
+                  formik.setFieldValue("centro", value);
                 }
               }}
               renderInput={(params) => <TextField {...params} label="Cidade" />}

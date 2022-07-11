@@ -26,6 +26,7 @@ function App() {
       if (!auth) setAuth(true);
     }
   }
+  console.log(auth);
 
   if (error && auth) setAuth(false);
 

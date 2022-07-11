@@ -63,7 +63,7 @@ export default function UtilizadorMenu({ handleOpen }) {
 
   const handleLogout = async () => {
     refetch();
-    socket.emit("disconnect");
+    /* socket.emit("disconnect"); */
     clearStorages();
     setAuth(false);
   };

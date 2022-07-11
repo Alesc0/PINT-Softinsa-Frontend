@@ -6,7 +6,6 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import React from "react";
 
 function BoxNumbers(props) {
   const { loading, info, text } = props;

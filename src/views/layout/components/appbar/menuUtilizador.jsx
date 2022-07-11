@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import axios from "api/_axios";
 import { UserContext } from "App";
 import { clearStorages, getTokens } from "utils/sessionManager";
+import socket from "api/_socket";
 
 const paperProps = {
   elevation: 0,
@@ -41,8 +42,6 @@ export default function UtilizadorMenu({ handleOpen }) {
   const { user, setAuth } = useContext(UserContext);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const theme = useTheme();
-
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -54,10 +53,9 @@ export default function UtilizadorMenu({ handleOpen }) {
   const { refetch } = useQuery(
     ["logout"],
     async () => {
-      return await axios.delete("utilizador/logout", {
-        data: {
-          refreshToken: getTokens().rT,
-        },
+      return await axios.post("utilizador/logout", {
+        refreshToken: getTokens().rT,
+        env: "web",
       });
     },
     { enabled: false }
@@ -65,6 +63,7 @@ export default function UtilizadorMenu({ handleOpen }) {
 
   const handleLogout = async () => {
     refetch();
+    socket.emit("disconnect");
     clearStorages();
     setAuth(false);
   };

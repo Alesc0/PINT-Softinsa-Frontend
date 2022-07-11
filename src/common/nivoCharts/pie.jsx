@@ -21,10 +21,10 @@ const data = [
 function MyResponsivePie() {
   const theme = useTheme();
   return (
-    <Box sx={{ height: "18em" }}>
+    <Box sx={{ height: "15em" }}>
       <ResponsivePie
         data={data}
-        margin={{ top: 20, bottom: 50 }}
+        margin={{ top: 30, bottom: 20 }}
         innerRadius={0.5}
         padAngle={0.7}
         cornerRadius={3}

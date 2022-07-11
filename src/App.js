@@ -10,30 +10,27 @@ export const UserContext = createContext();
 function App() {
   const [user, setUser] = useState(undefined);
   const [auth, setAuth] = useState(false);
-  const [centro, setCentro] = useState(-1);
 
   const { isFetching, error, data } = useQuery(
     ["getUserByToken", auth],
     async () => {
-      return await axios.get("utilizador/getUserByToken");
+      const { data: response } = await axios.get("utilizador/getUserByToken");
+      return response.data;
     },
     { enabled: (!auth || !user) && !!getTokens().rT }
   );
 
   if (data) {
     if (!user) {
-      setUser(data.data.data);
+      setUser(data);
       if (!auth) setAuth(true);
     }
   }
-  if (error) {
-    setAuth(false);
-  }
+
+  if (error && auth) setAuth(false);
 
   return (
-    <UserContext.Provider
-      value={{ user, setUser, auth, setAuth, centro, setCentro }}
-    >
+    <UserContext.Provider value={{ user, setUser, auth, setAuth }}>
       <ThemeProvider>{!isFetching && <Router />}</ThemeProvider>
     </UserContext.Provider>
   );

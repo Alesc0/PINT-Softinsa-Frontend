@@ -1,15 +1,20 @@
 import {
-  Avatar, Button,
-  Container, Paper,
+  Avatar,
+  Button,
+  Container,
+  Paper,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import { UserContext } from "App";
 import UpdateBadge from "./components/updateBadge";
+import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import { validationSchemaPerfil } from "utils/validations";
 
 function Perfil() {
   const inputRef = useRef(null);
@@ -17,13 +22,15 @@ function Perfil() {
   const { user } = useContext(UserContext);
   const [img, setImage] = useState([]);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setImage(user?.fotoConv);
   }, [user]);
   const handleClick = () => {
-    // 👇️ open file input box on click of other element
     inputRef.current.click();
   };
+
   const fotoMutation = useMutation(async () => {
     let formData = new FormData();
     formData.append("foto", img[0]);
@@ -35,11 +42,25 @@ function Perfil() {
     return response;
   });
 
+  const formik = useFormik({
+    initialValues: {
+      nome: user?.nome || "",
+      email: user?.email || "",
+      telefone: user?.telefone || "",
+    },
+    enableReinitialize: true,
+    validationSchema: validationSchemaPerfil,
+
+    onSubmit: async (values) => {},
+  });
+
   return (
     <>
       <Typography variant="h3">Perfil</Typography>
       <Paper
         className="flex flex-col"
+        component="form"
+        onSubmit={formik.handleSubmit}
         sx={{
           maxWidth: "sm",
           flexGrow: 1,
@@ -51,7 +72,9 @@ function Perfil() {
         <UpdateBadge handleUpdate={handleClick}>
           <Avatar
             sx={{ height: 150, width: 150 }}
-            src={"data:image/jpeg;base64, " + user.fotoConv}
+            src={
+              user.fotoConv ? "data:image/jpeg;base64, " + user.fotoConv : ""
+            }
             variant="rounded"
           >
             {user.nome}
@@ -68,6 +91,25 @@ function Perfil() {
         <Button variant="contained" onClick={() => console.log("hey")}>
           Alterar Password
         </Button>
+        <Stack direction="row" spacing={1} sx={{ ml: "auto" }}>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            Voltar
+          </Button>
+          <Button
+            type="submit"
+            color="info"
+            variant="contained"
+            sx={{ ml: "auto" }}
+          >
+            Salvar
+          </Button>
+        </Stack>
       </Paper>
     </>
   );

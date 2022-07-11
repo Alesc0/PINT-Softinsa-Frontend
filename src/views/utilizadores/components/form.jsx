@@ -23,24 +23,7 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import axios from "api/_axios";
 import Modal from "./opcoesModal";
-
-const phoneRegex =
-  "^(?:9[1-36][0-9]|2[12][0-9]|2[35][1-689]|24[1-59]|26[1-35689]|27[1-9]|28[1-69]|29[1256])[0-9]{6}$";
-
-const validationSchema = yup.object({
-  nome: yup
-    .string()
-    .min(5, "O nome deve ter pelo menos 5 caracteres.")
-    .required("Este campo é obrigatório."),
-  email: yup
-    .string()
-    .email("Email inválido.")
-    .required("Este campo é obrigatório."),
-  telemovel: yup
-    .string()
-    .matches(phoneRegex, "Contacto inválido.")
-    .required("Este campo é obrigatório."),
-});
+import { validationSchemaUtilizadores } from "utils/validations";
 
 const options = [
   {
@@ -164,7 +147,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
       idcentro: dataUtilizador?.idcentro || 1,
     },
     enableReinitialize: true,
-    validationSchema: validationSchema,
+    validationSchema: validationSchemaUtilizadores,
 
     onSubmit: async (values) => {
       let res = await handleRequest({

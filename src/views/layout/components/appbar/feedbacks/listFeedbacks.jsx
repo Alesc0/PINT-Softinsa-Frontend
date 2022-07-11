@@ -5,7 +5,6 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Pagination,
   Rating,
   Stack,
   Typography,
@@ -35,20 +34,15 @@ const getColor = (classificacao) => {
   return color;
 };
 
-function ListFeedbacks({ feedbackList, loading, setPage, page, count }) {
-  const handleChangePagination = (event, value) => {
-    if (page === value) return;
-    setPage(value);
-  };
-
-  return loading ? (
-    <CircularProgress />
+function ListFeedbacks({ feedbacks, isLoading }) {
+  return isLoading ? (
+    <CircularProgress sx={{ alignSelf: "center" }} />
   ) : (
     <>
-      <List sx={{ width: "100%" }}>
-        {feedbackList.map((row, i) => {
+      <List>
+        {feedbacks.map((row, i) => {
           return (
-            <ListItem key={row.idfeedback} alignItems="flex-start" button dense>
+            <ListItem key={row.idfeedback} alignItems="flex-start" dense>
               <ListItemAvatar>
                 <Avatar alt="Remy Sharp" src={ava} />
               </ListItemAvatar>
@@ -99,17 +93,6 @@ function ListFeedbacks({ feedbackList, loading, setPage, page, count }) {
           );
         })}
       </List>
-      <Pagination
-        sx={{
-          alignSelf: "flex-end",
-          mt: "auto",
-          bgcolor: "background.paper",
-          borderRadius: 2,
-        }}
-        page={page}
-        count={Math.ceil(count / 4)}
-        onChange={handleChangePagination}
-      />
     </>
   );
 }

@@ -83,8 +83,6 @@ const validationSchema = yup.object({
 function SalasForm({ data, handleRequest, handleDelete }) {
   const [valSlider, setValSlider] = useState(70);
 
-  console.log(data);
-
   const {
     isFetching: loadingCentros,
     data: dataCentros,

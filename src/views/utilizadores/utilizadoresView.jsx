@@ -42,7 +42,7 @@ function UtilizadoresView() {
   );
 
   if (error)
-    toast.error("Erro a obter utilizadores!", { toastId: "getUserError" });
+    toast.error("Erro ao obter utilizadores!", { toastId: "getUserError" });
 
   const tableProps = {
     isLoading: isFetching,

@@ -8,7 +8,7 @@ import {
 
 /* "https://pintbackendoriginal.herokuapp.com" */
 
-export const baseURL = "http://localhost:3000";
+export const baseURL = "https://pint-backend-dev.herokuapp.com/";
 
 const instance = axios.create({
   baseURL,
@@ -21,8 +21,10 @@ instance.interceptors.request.use((config) => {
 });
 
 instance.interceptors.response.use(null, async (error) => {
+  console.log(error.response.data);
   if (error.response.data.data === "Invalid refresh token") {
     clearStorages();
+    if (window.location !== "/login") window.location = "/login";
   }
   if (getTokens().rT) {
     const originalRequest = error.config;

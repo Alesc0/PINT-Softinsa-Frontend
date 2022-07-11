@@ -74,6 +74,8 @@ export default function ListSalas(props) {
     );
   };
 
+  if (!salas && !isLoading) return;
+
   const MutipleAutoCompleteProps = {
     setter: setCentro,
     getter: centro,
@@ -145,7 +147,13 @@ export default function ListSalas(props) {
                 selected={selected === i}
                 onClick={() => setSelected(i)}
               >
-                <Avatar sx={{ height: 50, width: 50, bgcolor: "primary.main" }}>
+                <Avatar
+                  sx={{
+                    height: 50,
+                    width: 50,
+                    bgcolor: row.estado ? "primary.main" : "error.main",
+                  }}
+                >
                   {row.nome[0]}
                 </Avatar>
                 <ListItemText

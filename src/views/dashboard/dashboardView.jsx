@@ -10,14 +10,12 @@ import {
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "api/_axios";
-import socket from "api/_socket";
 import MyResponsiveBar from "common/nivoCharts/bars";
 import MyResponsivePie from "common/nivoCharts/pie";
 import MyResponsiveTimeRange from "common/nivoCharts/timeRange";
-import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import { useState } from "react";
+import { useQuery } from "react-query";
 import BoxNumbers from "./components/boxNumbers";
-import ListFeedbacks from "./components/feedbacks/listFeedbacks";
 
 const info = [
   {
@@ -36,11 +34,8 @@ export default function Dashboard() {
   var date = new Date();
   date.setDate(date.getDate() - 240);
 
-  const queryClient = useQueryClient();
   const [startDate, setStartDate] = useState(date);
   const [endDate, setEndDate] = useState(new Date());
-
-  const [page, setPage] = useState(1);
 
   const { isLoading: loadingCountUtilizadores, data: countUtilizadores } =
     useQuery("getUtilizadoresCount", async () => {
@@ -55,34 +50,6 @@ export default function Dashboard() {
       return response.data.length;
     }
   );
-  const { isLoading: loadingFeedbacks, data: dataFeedBacks } = useQuery(
-    ["getFeedbacks", page],
-    async () => {
-      const { data: response } = await axios.get("feedback/list", {
-        params: {
-          offset: (page - 1) * 4,
-          limit: 4,
-        },
-      });
-      console.log(response);
-      return response;
-    }
-  );
-
-  useEffect(() => {
-    socket.on("newUser", () => {
-      queryClient.invalidateQueries("getUtilizadoresDashboard");
-    });
-    socket.on("newFeedback", () => {
-      queryClient.invalidateQueries("getFeedbacks");
-    });
-    return () => {
-      socket.off("newUser");
-      socket.off("newFeedback");
-    };
-  }, [queryClient]);
-
-  console.log(startDate);
 
   return (
     <Box
@@ -95,6 +62,7 @@ export default function Dashboard() {
         info={countUtilizadores}
         text={"Utilizadores Registados"}
       />
+
       {info.map((row) => (
         <BoxNumbers key={row.id} info={row.val} text={row.desc} />
       ))}
@@ -104,31 +72,7 @@ export default function Dashboard() {
         info={countSalas}
         text={"Salas Totais"}
       />
-      <Box
-        gridRow="span 2"
-        gridColumn="span 2"
-        sx={{ flex: 1, display: "flex" }}
-      >
-        <Card>
-          <CardHeader title="Feedbacks" />
-          <CardContent
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              height: "93%",
-              p: 0,
-            }}
-          >
-            <ListFeedbacks
-              loading={loadingFeedbacks}
-              feedbackList={dataFeedBacks?.data}
-              setPage={setPage}
-              page={page}
-              count={dataFeedBacks?.count}
-            />
-          </CardContent>
-        </Card>
-      </Box>
+
       <Box gridColumn="span 2">
         <Card>
           <CardHeader title="Alocação diária" />
@@ -140,11 +84,7 @@ export default function Dashboard() {
       <Box gridColumn="span 2">
         <Card>
           <CardHeader title="Utilizadores" />
-          <CardContent
-            sx={{
-              p: 0,
-            }}
-          >
+          <CardContent>
             <MyResponsivePie />
           </CardContent>
         </Card>

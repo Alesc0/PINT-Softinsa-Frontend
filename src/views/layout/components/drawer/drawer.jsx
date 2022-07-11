@@ -93,7 +93,6 @@ function MenuDrawer(props) {
   const { handleColorMode } = useContext(ColorModeContext);
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState(false);
-  const { user } = useContext(UserContext);
 
   let location = useLocation();
 
@@ -111,15 +110,6 @@ function MenuDrawer(props) {
     let page = pages.filter((el) => location.pathname.includes(el.link));
     setActive(pages.indexOf(page[page.length - 1]));
   }, [location]);
-
-  const { isLoading, error, data } = useQuery("notificationsData", async () => {
-    let { data: response } = await axios.get(
-      "/notificacao/utilizador/" + user.idutilizador
-    );
-    return response.data[0].notificacoes;
-  });
-
-  if (error) toast.error("Erro ao obter notificações");
 
   const handleDrawerToggle = () => {
     setMobileOpen((mobileOpen) => !mobileOpen);
@@ -158,10 +148,8 @@ function MenuDrawer(props) {
     </>
   );
   const appBarProps = {
-    isLoading,
     handleDrawerToggle,
     drawerWidth,
-    notificacoes: data,
     handleOpen,
   };
 

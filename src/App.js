@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 import { useQuery } from "react-query";
-import { clearStorages, getTokens } from "utils/sessionManager";
+import { getTokens } from "utils/sessionManager";
 import axios from "./api/_axios";
 import Router from "./routes";
 import ThemeProvider from "./theme";
@@ -11,7 +11,7 @@ function App() {
   const [user, setUser] = useState(undefined);
   const [auth, setAuth] = useState(false);
 
-  const { isFetching, data } = useQuery(
+  const { isFetching, error, data } = useQuery(
     ["getUserByToken", auth],
     async () => {
       const { data: response } = await axios.get("utilizador/getUserByToken");
@@ -26,7 +26,9 @@ function App() {
       if (!auth) setAuth(true);
     }
   }
-  console.log(auth);
+
+  if (error && auth) setAuth(false);
+
   return (
     <UserContext.Provider value={{ user, setUser, auth, setAuth }}>
       <ThemeProvider>{!isFetching && <Router />}</ThemeProvider>

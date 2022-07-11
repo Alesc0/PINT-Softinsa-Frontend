@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
@@ -9,7 +9,7 @@ import SalasForm from "./components/form";
 const limit = 4;
 
 function SalasView() {
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(-1);
   const [offset, setOffset] = useState(0);
   const [page, setPage] = useState(1);
   const [centro, setCentro] = useState([]);
@@ -18,10 +18,10 @@ function SalasView() {
 
   const queryClient = useQueryClient();
 
-  const { isFetching, data, error } = useQuery(
+  const { isLoading, data, error } = useQuery(
     ["getSalas", offset, limit, centro],
     async () => {
-      const { data: response } = await axios.get("sala/list/", {
+      const { data: response } = await axios.get("sala/list", {
         params: {
           offset: offset,
           limit: limit,
@@ -38,7 +38,10 @@ function SalasView() {
   );
 
   if (error)
-    toast.error("Ocorreu um erro, a página poderá não responder como esperado");
+    toast.error(
+      "Ocorreu um erro, a página poderá não responder como esperado",
+      { toastId: "getSalasError" }
+    );
 
   const updateMutation = useMutation(
     async (obj) => {
@@ -52,12 +55,14 @@ function SalasView() {
       onSuccess: () => {
         toast.success("Sala atualizada!");
         queryClient.invalidateQueries("getSalas");
+        setSelected(-1);
       },
       onError: () => {
         toast.error("Erro ao atualizar sala!");
       },
     }
   );
+
   const addMutation = useMutation(
     async (obj) => {
       const { status: response } = await axios.post(`sala/add`, obj);
@@ -67,17 +72,14 @@ function SalasView() {
       onSuccess: () => {
         toast.success("Sala adicionada!");
         queryClient.invalidateQueries("getSalas");
+        setSelected(-1);
       },
       onError: () => {
         toast.error("Erro ao adicionar sala!");
       },
     }
   );
-  //TODO
-  const handleRequest = (salaObj) => {
-    if (selected === -1) addMutation.mutate(salaObj);
-    else updateMutation.mutate(salaObj);
-  };
+
   const deleteMutation = useMutation(
     async () => {
       const { data: response } = await axios.delete(
@@ -96,6 +98,11 @@ function SalasView() {
     }
   );
 
+  const handleRequest = (salaObj) => {
+    if (selected === -1) addMutation.mutate(salaObj);
+    else updateMutation.mutate(salaObj);
+  };
+
   const handleChangePagination = (event, value) => {
     if (page === value) return;
     setPage(value);
@@ -110,7 +117,7 @@ function SalasView() {
     setOffset,
     limit,
     count: data?.count || 0,
-    isLoading: isFetching,
+    isLoading: isLoading,
     handleChangePagination,
     centro,
     setCentro,
@@ -122,7 +129,14 @@ function SalasView() {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        m: "0 auto",
+        maxWidth: "md",
+      }}
+    >
       <Stack direction="row" sx={{ mb: 2 }}>
         <Typography variant="h3">Gerir Salas</Typography>
         <Button
@@ -134,11 +148,7 @@ function SalasView() {
           Criar nova sala
         </Button>
       </Stack>
-      <Stack
-        spacing={3}
-        direction={{ xs: "column", sm: "row" }}
-        sx={{ m: "0 auto", maxWidth: "md" }}
-      >
+      <Stack spacing={3} direction={{ xs: "column", sm: "row" }}>
         <ListSalas {...listSalasProps} />
         <SalasForm
           data={data && data.data[selected]}
@@ -146,7 +156,7 @@ function SalasView() {
           handleDelete={deleteMutation.mutate}
         />
       </Stack>
-    </>
+    </Box>
   );
 }
 export default SalasView;

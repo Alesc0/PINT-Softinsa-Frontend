@@ -96,7 +96,8 @@ function SalasForm({ data, handleRequest, handleDelete }) {
     { keepPreviousData: true }
   );
 
-  if (erroCentros) toast.error("Erro ao obter centros!");
+  if (erroCentros)
+    toast.error("Erro ao obter centros!", { toastId: "get_centros_error" });
 
   const formik = useFormik({
     initialValues: {

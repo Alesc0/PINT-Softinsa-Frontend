@@ -20,45 +20,46 @@ instance.interceptors.request.use((config) => {
   return config;
 });
 
-instance.interceptors.response.use(null, async (error) => {
-  console.log(error.response.data);
-  if (error.response.data.data === "Invalid refresh token") {
-    clearStorages();
-    if (window.location !== "/login") window.location = "/login";
-  }
-  if (getTokens().rT) {
-    const originalRequest = error.config;
-
-    if (
-      (error.response.status === 401 || error.response.status === 403) &&
-      !originalRequest._retry
-    ) {
-      let refresh = await refreshToken();
-      if (refresh) {
-        originalRequest._retry = true;
-        originalRequest.headers["Authorization"] = "Bearer " + getTokens().jwt;
-        return instance(originalRequest);
+let refreshing_token = null;
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const config = error.config;
+    if (error.response && error.response.status === 401 && !config._retry) {
+      config._retry = true;
+      if (getTokens().rT) {
+        try {
+          refreshing_token = refreshing_token
+            ? refreshing_token
+            : refreshToken();
+          let res = await refreshing_token;
+          refreshing_token = null;
+          if (res.accessToken) {
+            if (JSON.parse(getTokens().rem)) {
+              setLocalStorage(res.accessToken, res.refreshToken);
+            } else setSessionStorage(res.accessToken, res.refreshToken);
+            config.headers["Authorization"] = "Bearer " + res.accessToken;
+            return instance(config);
+          }
+          return instance(config);
+        } catch (err) {
+          clearStorages();
+          Promise.reject(error);
+        }
       }
     }
+    return Promise.reject(error);
   }
-});
+);
 
-export const refreshToken = async () => {
-  let { rT, rem } = getTokens();
-
-  try {
-    const { data: response } = await instance.post("utilizador/refreshToken", {
-      refreshToken: rT,
-      env: "web",
-    });
-    if (rem)
-      setLocalStorage(response.data.accessToken, response.data.refreshToken);
-    else
-      setSessionStorage(response.data.accessToken, response.data.refreshToken);
-    return true;
-  } catch {
-    return false;
-  }
+const refreshToken = async () => {
+  const { data: response } = await instance.post("utilizador/refreshToken", {
+    refreshToken: getTokens().rT,
+    env: "web",
+  });
+  return response.data;
 };
 
 export default instance;

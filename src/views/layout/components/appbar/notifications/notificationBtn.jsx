@@ -120,14 +120,16 @@ function NotificationBtn({ notificacoes, isLoading }) {
         <Container disableGutters sx={{ py: 1, minWidth: "300px" }}>
           <Stack direction="row" className="center" sx={{ px: 2, py: 1 }}>
             <Typography variant="h5">Notificações</Typography>
-            <Typography
-              component={Button}
-              onClick={() => readAll.mutate()}
-              sx={{ ml: "auto", textDecoration: "underline" }}
-              variant="caption"
-            >
-              Marcar como lido
-            </Typography>
+            {filterNotifications[1].length > 0 && (
+              <Typography
+                component={Button}
+                onClick={() => readAll.mutate()}
+                sx={{ ml: "auto", textDecoration: "underline" }}
+                variant="caption"
+              >
+                Marcar como lido
+              </Typography>
+            )}
           </Stack>
           <ListNotificacoes {...props} />
         </Container>

@@ -1,6 +1,7 @@
 import { Feedback } from "@mui/icons-material";
 import { Box, IconButton, Popover, Stack, Typography } from "@mui/material";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import ListFeedbacks from "./listFeedbacks";
 
 const paperProps = {
@@ -73,7 +74,16 @@ function Feedbacks({ feedbacks, isLoading }) {
       >
         <Box sx={{ py: 1, maxWidth: "450px" }}>
           <Stack direction="row" className="center" sx={{ px: 2, py: 1 }}>
-            <Typography variant="h5">Feedbacks</Typography>
+            <Typography
+              variant="h5"
+              component={Link}
+              to="feedbacks"
+              onClick={handleClose}
+              color="primary.dark"
+              sx={{ textDecoration: "none" }}
+            >
+              Feedbacks
+            </Typography>
           </Stack>
           <ListFeedbacks {...props} />
         </Box>

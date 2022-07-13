@@ -12,6 +12,7 @@ import { useMemo, useState } from "react";
 import ListNotificacoes from "./listNotificacoes";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "api/_axios";
+import { Link } from "react-router-dom";
 
 const paperProps = {
   elevation: 0,
@@ -50,7 +51,7 @@ function NotificationBtn({ notificacoes, isLoading }) {
       return axios.put("/todos", newTodo);
     },
     {
-      onSuccess: () => queryClient.invalidateQueries("notificationsData"),
+      onSuccess: () => queryClient.invalidateQueries("getNotifications"),
     }
   );
 
@@ -119,7 +120,16 @@ function NotificationBtn({ notificacoes, isLoading }) {
       >
         <Container disableGutters sx={{ py: 1, minWidth: "300px" }}>
           <Stack direction="row" className="center" sx={{ px: 2, py: 1 }}>
-            <Typography variant="h5">Notificações</Typography>
+            <Typography
+              variant="h5"
+              component={Link}
+              to="notificacoes"
+              onClick={handleClose}
+              color="primary.dark"
+              sx={{ textDecoration: "none" }}
+            >
+              Notificações
+            </Typography>
             {filterNotifications[1].length > 0 && (
               <Typography
                 component={Button}

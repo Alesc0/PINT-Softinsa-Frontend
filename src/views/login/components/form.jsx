@@ -43,27 +43,7 @@ const Copyright = (props) => {
   );
 };
 
-function LoginForm({ handleRequest }) {
-  const loginQuery = useMutation(
-    async () => {
-      let { data: response } = await axios.post("/utilizador/loginWeb", {
-        email: formik.values.email,
-        password: formik.values.password,
-      });
-      return response.data;
-    },
-    {
-      onSuccess: (data, variables) => {
-        handleRequest(data, variables);
-      },
-      onError: () => {
-        formik.setErrors({
-          password: "Combinação errada de email e password!",
-        });
-      },
-    }
-  );
-
+function LoginForm({ handleRequest, isLoading }) {
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -74,7 +54,14 @@ function LoginForm({ handleRequest }) {
     validationSchema: validationSchema,
 
     onSubmit: async (values) => {
-      await loginQuery.mutateAsync(values);
+      try {
+        await handleRequest(values);
+      } catch (error) {
+        formik.setFieldError(
+          "password",
+          "Combinação errada de email e password!"
+        );
+      }
     },
   });
 
@@ -142,11 +129,7 @@ function LoginForm({ handleRequest }) {
           label="Lembrar-me"
         />
         <Stack spacing={1}>
-          <LoadingButton
-            loading={loginQuery.isLoading}
-            type="submit"
-            variant="contained"
-          >
+          <LoadingButton loading={isLoading} type="submit" variant="contained">
             Log In
           </LoadingButton>
           <Button

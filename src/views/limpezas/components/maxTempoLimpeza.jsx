@@ -1,5 +1,5 @@
 import { LocalizationProvider, MobileTimePicker } from "@mui/lab";
-import { Paper, TextField, Typography } from "@mui/material";
+import { Paper, Stack, TextField, Typography } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useState } from "react";
 
@@ -18,26 +18,30 @@ function MaxTempoLimpeza() {
       }}
     >
       <Typography variant="h4">Tempo máximo de limpeza</Typography>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <MobileTimePicker
-          value={tempMax}
-          views={["minutes", "seconds"]}
-          inputFormat="mm:ss"
-          mask="__:__"
-          onChange={(newValue) => {
-            setTempMax(newValue);
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              sx={{
-                width: "fit-content",
-                alignSelf: "center",
-              }}
-            />
-          )}
-        />
-      </LocalizationProvider>
+      <Stack direction="row" className="center" spacing={2}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <MobileTimePicker
+            value={tempMax}
+            views={["minutes", "seconds"]}
+            inputFormat="mm:ss"
+            mask="__:__"
+            onChange={(newValue) => {
+              setTempMax(newValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                sx={{
+                  width: "50px",
+                  alignSelf: "center",
+                }}
+                variant="standard"
+              />
+            )}
+          />
+        </LocalizationProvider>
+        <Typography variant="body1">minutos</Typography>
+      </Stack>
     </Paper>
   );
 }

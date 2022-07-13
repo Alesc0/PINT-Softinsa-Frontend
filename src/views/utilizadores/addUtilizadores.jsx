@@ -1,45 +1,48 @@
-import { Paper, Stack, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { Paper, Stack, Typography } from "@mui/material";
 import axios from "api/_axios";
-import { useState } from "react";
-import { toast } from "react-toastify";
 import FileUploader from "common/fileUploader/fileUploader";
+import { useState } from "react";
+import { useMutation } from "react-query";
 import UtilizadorForm from "./components/form";
-import { useMutation, useQueryClient } from "react-query";
 
 export default function AddUtilizadoresView() {
   const [files, setFiles] = useState(undefined);
   const [loading, setLoading] = useState(false);
-
-  const queryClient = useQueryClient();
 
   const fileUploadProps = {
     files,
     setFiles,
   };
 
-  const addUserMutation = useMutation(
-    async (obj) => {
-      const { data: response } = await axios.post("/utilizador/add", obj);
-      return response;
-    },
-    {
-      onSuccess: (data) => {
-        toast.success(data);
-        queryClient.invalidateQueries("getUtilizadores");
-      },
-      onError: (data) => {
-        toast.error("Erro ao inserir utilizador!");
-      },
+  const addUserMutation = useMutation(async (obj) => {
+    let limpeza = false;
+
+    if (obj.role === "Administrador") {
+      obj.admin = true;
+    } else obj.admin = false;
+
+    if (obj.role === "Limpeza") {
+      limpeza = true;
     }
-  );
+
+    delete obj.conf_password;
+    delete obj.role;
+    delete obj.add;
+
+    if (limpeza) {
+      await axios.post("/empregadoLimpeza/add", obj);
+    } else {
+      await axios.post("/utilizador/add", obj);
+    }
+  });
 
   const handleBulkInsert = () => {
     setLoading(true);
     setLoading(false);
   };
   const formProps = {
-    handleRequest: addUserMutation.mutate,
+    handleRequest: addUserMutation.mutateAsync,
   };
 
   return (

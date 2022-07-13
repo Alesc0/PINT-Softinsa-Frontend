@@ -15,12 +15,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import ModalDelete from "common/modalDelete/modal";
 import { useFormik } from "formik";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { useQuery } from "react-query";
-import axios from "api/_axios";
 
 const loadSkeleton = () => {
   return (
@@ -80,47 +80,62 @@ const validationSchema = yup.object({
     }),
 });
 
-function SalasForm({ data, handleRequest, handleDelete }) {
+function SalasForm({
+  data,
+  handleRequest,
+  handleDelete,
+  loading,
+  dataCentros,
+}) {
   const [valSlider, setValSlider] = useState(70);
 
-  const {
-    isFetching: loadingCentros,
-    data: dataCentros,
-    error: erroCentros,
-  } = useQuery(
-    ["getCentros"],
-    async () => {
-      const { data: response } = await axios.get("centro/list");
-      return response.data;
-    },
-    { keepPreviousData: true }
-  );
+  const [open, setOpen] = useState(false);
 
-  if (erroCentros)
-    toast.error("Erro ao obter centros!", { toastId: "get_centros_error" });
+  const queryClient = useQueryClient();
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleClickModal = () => {
+    try {
+      handleDelete();
+    } catch (error) {
+      toast.error("Erro ao eliminar sala!");
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
       nome: data?.nome || "",
       descricao: data?.descricao || "",
       lotacaomax: data?.lotacaomax || 50,
-      estado: data?.estado || false,
-      centro: data?.centro || {},
-      justificacao: "",
+      estado: data ? data.estado : true,
+      centro: data?.centro || null,
+      justificacao: data?.justificacao || "",
     },
     enableReinitialize: true,
     validationSchema: validationSchema,
 
     onSubmit: async (values) => {
-      await handleRequest({
-        nome: values.nome,
-        descricao: values.descricao,
-        lotacaomax: values.lotacaomax,
-        lotacao: calcLotacaoFinal,
-        estado: values.estado,
-        idcentro: values.centro.idcentro,
-        ...(!values.estado && { justificacao: values.justificacao }),
-      });
+      try {
+        await handleRequest({
+          nome: values.nome,
+          descricao: values.descricao,
+          lotacaomax: values.lotacaomax,
+          lotacao: calcLotacaoFinal,
+          estado: values.estado,
+          idcentro: values.centro.idcentro,
+          ...(!values.estado && { justificacao: values.justificacao }),
+        });
+
+        !data
+          ? toast.success("Sala adicionada!")
+          : toast.success("Sala atualizada!");
+        queryClient.invalidateQueries("getSalas");
+      } catch (error) {
+        toast.error(`Erro ao ${!data ? "adicionar" : "atualizar"} sala`);
+      }
     },
   });
 
@@ -134,8 +149,6 @@ function SalasForm({ data, handleRequest, handleDelete }) {
   }, [dataCentros]);
 
   useEffect(() => {
-    if (loadingCentros) return;
-
     if (!data) {
       clearForm();
       return;
@@ -148,7 +161,7 @@ function SalasForm({ data, handleRequest, handleDelete }) {
     );
 
     setValSlider((100 * data.lotacao) / data.lotacaomax);
-  }, [data, clearForm, dataCentros, loadingCentros]);
+  }, [data, clearForm, dataCentros, loading]);
 
   return (
     <>
@@ -166,7 +179,7 @@ function SalasForm({ data, handleRequest, handleDelete }) {
           height: "fit-content",
         }}
       >
-        {loadingCentros ? (
+        {loading ? (
           loadSkeleton()
         ) : (
           <>
@@ -248,7 +261,9 @@ function SalasForm({ data, handleRequest, handleDelete }) {
               options={dataCentros || []}
               value={formik.values.centro}
               isOptionEqualToValue={(op, val) => op.idcentro === val.idcentro}
-              getOptionLabel={(option) => option.cidade || ""}
+              getOptionLabel={(option) =>
+                `${option.nome} - ${option.cidade}` || ""
+              }
               onChange={(event, value, reason) => {
                 if (reason === "clear") return;
                 else formik.setFieldValue("centro", value);
@@ -258,7 +273,7 @@ function SalasForm({ data, handleRequest, handleDelete }) {
                   formik.setFieldValue("centro", value);
                 }
               }}
-              renderInput={(params) => <TextField {...params} label="Cidade" />}
+              renderInput={(params) => <TextField {...params} label="Centro" />}
             />
             <Stack direction="row" className="center">
               <Typography>Indisponivel</Typography>
@@ -289,9 +304,15 @@ function SalasForm({ data, handleRequest, handleDelete }) {
             </Collapse>
             <Divider />
             <Stack direction="row">
-              <Button color="error" variant="contained" onClick={handleDelete}>
-                Apagar
-              </Button>
+              {data && (
+                <Button
+                  color="error"
+                  variant="contained"
+                  onClick={() => setOpen(true)}
+                >
+                  Apagar
+                </Button>
+              )}
               <Button
                 type="submit"
                 color="info"
@@ -304,6 +325,11 @@ function SalasForm({ data, handleRequest, handleDelete }) {
           </>
         )}
       </Paper>
+      <ModalDelete
+        handleClickModal={handleClickModal}
+        open={open}
+        handleClose={handleClose}
+      />
     </>
   );
 }

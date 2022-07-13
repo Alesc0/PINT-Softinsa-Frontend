@@ -1,42 +1,36 @@
 import axios from "api/_axios";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useMutation } from "react-query";
+import { useParams } from "react-router-dom";
 import UtilizadorForm from "./components/form";
-import { useMutation, useQueryClient } from "react-query";
 
 export default function EditUtilizadoresView() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
+  const updateUtilizador = useMutation(async (userObj) => {
+    let limpeza = false;
 
-  const updateUtilizador = useMutation(
-    async (userObj) => {
-      if (userObj.role === "Administrador") {
-        userObj.admin = true;
-      } else userObj.admin = false;
+    if (userObj.role === "Administrador") {
+      userObj.admin = true;
+    } else userObj.admin = false;
 
-      delete userObj.role;
-
-      let formData = new FormData();
-      for (var [key, value] of Object.entries(userObj)) {
-        formData.append(key, value);
-      }
-
-      const data = await axios.put("/utilizador/" + id, userObj);
-      return data;
-    },
-    {
-      onSuccess: () => {
-        toast.success("Utilizador atualizado!");
-        navigate("/utilizadores");
-        queryClient.invalidateQueries("getUtilizadores");
-      },
+    //TODO
+    if (userObj.role === "Limpeza") {
+      limpeza = true;
     }
-  );
+    if (userObj.password === "") delete userObj.password;
+    delete userObj.conf_password;
+    delete userObj.role;
+    delete userObj.add;
+
+    if (limpeza) {
+      await axios.put("/empregadoLimpeza/" + id, userObj);
+    } else {
+      await axios.put("/utilizador/" + id, userObj);
+    }
+  });
 
   const formProps = {
-    handleRequest: updateUtilizador.mutate,
+    handleRequest: updateUtilizador.mutateAsync,
     id,
   };
 

@@ -2,7 +2,6 @@ import {
   Avatar,
   Box,
   Button,
-  Container,
   List,
   ListItem,
   ListItemButton,
@@ -16,11 +15,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import axios from "api/_axios";
+import { UserContext } from "App";
 import MultipleAutocomplete from "common/multipleAutocomplete/multipleAutocomplete";
 import { useContext, useRef, useState } from "react";
-import axios from "api/_axios";
 import { useQuery } from "react-query";
-import { UserContext } from "App";
 
 export default function ListSalas(props) {
   const {
@@ -38,6 +37,7 @@ export default function ListSalas(props) {
     setSlider,
     pesquisa,
     setPesquisa,
+    refetch,
   } = props;
 
   const [filtro, setFiltro] = useState(false);
@@ -132,6 +132,9 @@ export default function ListSalas(props) {
                 valueLabelDisplay="auto"
               />
             </Stack>
+            <Button variant="contained" onClick={refetch}>
+              Aplicar Filtro
+            </Button>
           </Stack>
         </Slide>
       </Box>

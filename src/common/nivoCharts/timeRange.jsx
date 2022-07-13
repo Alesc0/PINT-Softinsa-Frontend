@@ -16,7 +16,6 @@ const MyResponsiveTimeRange = ({ startDate, endDate }) => {
           end: endDate.toLocaleDateString("en-CA"),
         },
       });
-      console.log(response);
       return response.data;
     },
     { keepPreviousData: true }

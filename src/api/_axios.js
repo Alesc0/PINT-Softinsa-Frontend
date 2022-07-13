@@ -27,6 +27,8 @@ instance.interceptors.response.use(
   },
   async (error) => {
     const config = error.config;
+    if (error.response.data.data === "Invalid refresh token") clearStorages();
+
     if (error.response && error.response.status === 401 && !config._retry) {
       config._retry = true;
       if (getTokens().rT) {
@@ -43,9 +45,7 @@ instance.interceptors.response.use(
             config.headers["Authorization"] = "Bearer " + res.accessToken;
             return instance(config);
           }
-          return instance(config);
         } catch (err) {
-          clearStorages();
           Promise.reject(error);
         }
       }

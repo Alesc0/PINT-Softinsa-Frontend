@@ -3,14 +3,16 @@ import { UserContext } from "App";
 import login_banner from "imgs/banner-login.jpg";
 import logo_ibm from "imgs/ibm-logo.png";
 import logo from "imgs/logo-softinsa.png";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useEffect } from "react";
+import { useMutation } from "react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { setLocalStorage, setSessionStorage } from "utils/sessionManager";
 import Contacts from "./components/contacts";
 import LoginForm from "./components/form";
+import axios from "api/_axios";
 
 const Login = () => {
-  const { setAuth } = useContext(UserContext);
+  const { setAuth, auth, setUser } = useContext(UserContext);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -21,6 +23,25 @@ const Login = () => {
     } else navigate("/");
   }, [location.state?.from, navigate]);
 
+  useEffect(() => {
+    if (auth) goBack();
+  }, [auth, goBack]);
+
+  const loginQuery = useMutation(
+    async (values) => {
+      let { data: response } = await axios.post("/utilizador/loginWeb", {
+        email: values.email,
+        password: values.password,
+      });
+      return response.data;
+    },
+    {
+      onSuccess: (data, variables) => {
+        handleRequest(data, variables);
+      },
+    }
+  );
+
   const handleRequest = (data, values) => {
     if (values.remember) {
       setLocalStorage(data.accessToken, data.refreshToken);
@@ -29,6 +50,7 @@ const Login = () => {
     }
     localStorage.setItem("remember", values.remember);
     goBack();
+    setUser(null);
     setAuth(true);
   };
 
@@ -77,7 +99,10 @@ const Login = () => {
           </Stack>
           <Contacts />
         </Box>
-        <LoginForm handleRequest={handleRequest} />
+        <LoginForm
+          handleRequest={loginQuery.mutateAsync}
+          isLoading={loginQuery.isLoading}
+        />
       </Box>
 
       <img

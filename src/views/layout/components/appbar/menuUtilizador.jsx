@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useContext, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { Link } from "react-router-dom";
 import axios from "api/_axios";
 import { UserContext } from "App";
@@ -61,9 +61,9 @@ export default function UtilizadorMenu({ handleOpen }) {
     { enabled: false }
   );
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     refetch();
-    /* socket.emit("disconnect"); */
+    socket.emit("setOffline");
     clearStorages();
     setAuth(false);
   };
@@ -96,10 +96,14 @@ export default function UtilizadorMenu({ handleOpen }) {
         </Box>
         <Divider />
         <Stack sx={{ p: 1 }}>
-          <MenuItem component={Link} to={"/"}>
+          <MenuItem component={Link} to={"/"} onClick={() => handleClose()}>
             Home
           </MenuItem>
-          <MenuItem component={Link} to={"/perfil"}>
+          <MenuItem
+            component={Link}
+            to={"/perfil"}
+            onClick={() => handleClose()}
+          >
             Perfil
           </MenuItem>
           <MenuItem

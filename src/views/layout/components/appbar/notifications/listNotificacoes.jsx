@@ -19,40 +19,38 @@ function ListNotificacoes({ isLoading, read, unRead }) {
           Sem Notificações.
         </Typography>
       );
-    return rows.map((row, i) => {
-      return (
-        <ListItem key={i} alignItems="flex-start" disableGutters disablePadding>
-          <ListItemButton sx={{ px: 3 }}>
-            <Avatar
-              alt={row.utilizador?.nome || "S"}
-              src={
-                (row.utilizador &&
-                  "data:image/jpeg;base64, " + row.utilizador.fotoConv) ||
-                icon
-              }
-              style={{ height: 50, width: 50 }}
-            />
-            <ListItemText
-              primary={
-                <>
-                  {!row.utilizador ? "Sistema" : row.utilizador.nome}
-                  <Typography
-                    sx={{ display: "inline" }}
-                    component="span"
-                    variant="body2"
-                    color="secondary.main"
-                  >
-                    {" - "}
-                    {row.titulo}
-                  </Typography>
-                </>
-              }
-              secondary={row.descricao}
-            />
-          </ListItemButton>
-        </ListItem>
-      );
-    });
+    return rows.map((row, i) => (
+      <ListItem key={i} alignItems="flex-start" disableGutters disablePadding>
+        <ListItemButton sx={{ px: 3 }}>
+          <Avatar
+            alt={row.utilizador?.nome || "S"}
+            src={
+              row.utilizador && row.fotoConv
+                ? "data:image/jpeg;base64, " + row.utilizador.fotoConv
+                : icon
+            }
+            style={{ height: 50, width: 50 }}
+          />
+          <ListItemText
+            primary={
+              <>
+                {!row.utilizador ? "Sistema" : row.utilizador.nome}
+                <Typography
+                  sx={{ display: "inline" }}
+                  component="span"
+                  variant="body2"
+                  color="secondary.main"
+                >
+                  {" - "}
+                  {row.titulo}
+                </Typography>
+              </>
+            }
+            secondary={row.descricao}
+          />
+        </ListItemButton>
+      </ListItem>
+    ));
   };
 
   return isLoading ? (

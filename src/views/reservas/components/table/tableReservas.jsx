@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import axios from "axios";
+import axios from "api/_axios";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
@@ -47,6 +47,12 @@ export default function TableReservas(props) {
     rowsPerPage,
     setRowsPerPage,
     count,
+    pesquisa,
+    setPesquisa,
+    autoCentros,
+    setAutoCentros,
+    handleFiltros,
+    dataCentros,
   } = props;
 
   const queryClient = useQueryClient();
@@ -54,18 +60,17 @@ export default function TableReservas(props) {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("nome");
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState();
 
   const handleClose = () => {
     setOpen(false);
   };
-  const handleOpen = () => {
-    setOpen(true);
-  };
+
   const handleRowClick = (id) => {
     setSelected(id);
-    handleOpen();
+    setOpen(true);
   };
+
   const deleteMutation = useMutation(
     async (id) => {
       const { data: response } = await axios.delete(`reserva/${id}`);
@@ -78,6 +83,16 @@ export default function TableReservas(props) {
       },
     }
   );
+
+  const handleClickModal = async (id) => {
+    try {
+      await deleteMutation.mutateAsync(id);
+    } catch (error) {
+      console.log(error.response);
+      toast.error("Erro ao eliminar reserva!");
+    }
+    setOpen(false);
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -101,14 +116,23 @@ export default function TableReservas(props) {
   const modalProps = {
     open,
     handleClose,
+    handleClickModal,
     info: selected,
-    handleClickModal: deleteMutation.mutate,
+  };
+
+  const toolbarProps = {
+    pesquisa,
+    setPesquisa,
+    autoCentros,
+    setAutoCentros,
+    handleFiltros,
+    dataCentros,
   };
 
   return (
     <>
       <Paper sx={{ mb: 2 }}>
-        <EnhancedTableToolbar />
+        <EnhancedTableToolbar {...toolbarProps} />
         <TableContainer>
           <Table size="medium">
             <EnhancedTableHead
@@ -133,7 +157,7 @@ export default function TableReservas(props) {
                       <ReservaTableRow
                         key={index}
                         row={row}
-                        handleOpen={handleOpen}
+                        handleOpen={handleRowClick}
                       />
                     );
                   })

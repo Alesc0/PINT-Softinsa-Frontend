@@ -6,9 +6,7 @@ import {
   setSessionStorage,
 } from "../utils/sessionManager";
 
-/* "https://pintbackendoriginal.herokuapp.com" */
-
-export const baseURL = "https://pint-backend-dev.herokuapp.com/";
+export const baseURL = "https://pintbackendoriginal.herokuapp.com";
 
 const instance = axios.create({
   baseURL,

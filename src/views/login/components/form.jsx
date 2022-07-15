@@ -57,6 +57,7 @@ function LoginForm({ handleRequest, isLoading }) {
       try {
         await handleRequest(values);
       } catch (error) {
+        console.log(error.response);
         formik.setFieldError(
           "password",
           "Combinação errada de email e password!"

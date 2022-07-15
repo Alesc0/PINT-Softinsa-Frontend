@@ -16,7 +16,7 @@ const MyResponsiveTimeRange = ({ startDate, endDate }) => {
           end: endDate.toLocaleDateString("en-CA"),
         },
       });
-      return response.data;
+      return response.data.map((val) => ({ day: val.data, value: val.count }));
     },
     { keepPreviousData: true }
   );

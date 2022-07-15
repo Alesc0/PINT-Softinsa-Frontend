@@ -20,18 +20,17 @@ function AddCentros() {
       formData.append("cidade", data.cidade);
       formData.append("imagem", data.files[0]);
 
-      const { data: response } = await axios.put("/centro/" + id, formData, {
+      await axios.put("/centro/" + id, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      return response;
     },
     {
-      onSuccess: (data) => {
-        toast.success(data.data);
+      onSuccess: () => {
+        toast.success("Centro editado!");
         queryCliente.invalidateQueries("getCentros");
-        navigate(-1);
+        navigate("/centros");
       },
     }
   );

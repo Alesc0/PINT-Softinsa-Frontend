@@ -1,4 +1,3 @@
-import { useTheme } from "@emotion/react";
 import {
   Avatar,
   Box,
@@ -9,13 +8,13 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useContext, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
-import { Link } from "react-router-dom";
 import axios from "api/_axios";
-import { UserContext } from "App";
-import { clearStorages, getTokens } from "utils/sessionManager";
 import socket from "api/_socket";
+import { UserContext } from "App";
+import { useContext, useState } from "react";
+import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
+import { clearStorages, getTokens } from "utils/sessionManager";
 
 const paperProps = {
   elevation: 0,
@@ -60,11 +59,10 @@ export default function UtilizadorMenu({ handleOpen }) {
     },
     { enabled: false }
   );
-
   const handleLogout = () => {
     refetch();
-    socket.emit("setOffline");
     clearStorages();
+    socket.disconnect();
     setAuth(false);
   };
 

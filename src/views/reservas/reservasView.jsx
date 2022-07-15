@@ -20,7 +20,7 @@ function ReservasView() {
     return response.data;
   });
 
-  const { refetch, isFetching, data } = useQuery(
+  const { refetch, isLoading, data } = useQuery(
     ["getReservas", page, rowsPerPage, dataCentros],
     async () => {
       const { data: response } = await axios.get("reserva/list", {
@@ -31,7 +31,6 @@ function ReservasView() {
           pesquisa: pesquisa,
         },
       });
-      console.log("hey");
       return response;
     },
     {
@@ -42,7 +41,7 @@ function ReservasView() {
 
   const tableProps = {
     reservas: data?.data,
-    loading: isFetching,
+    loading: isLoading,
     page,
     setPage,
     rowsPerPage,

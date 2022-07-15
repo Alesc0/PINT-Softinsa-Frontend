@@ -1,4 +1,6 @@
+import { DateRange } from "@mui/icons-material";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import { MobileDatePicker } from "@mui/lab";
 import {
   Box,
   Button,
@@ -21,8 +23,9 @@ const EnhancedTableToolbar = ({
   handleFiltros,
 }) => {
   const [filtro, setFiltro] = useState(false);
-  const containerRef = useRef(null);
+  const [date, setDate] = useState(new Date());
 
+  const containerRef = useRef(null);
   const maCentrosProps = {
     getter: autoCentros,
     setter: setAutoCentros,
@@ -62,6 +65,13 @@ const EnhancedTableToolbar = ({
               <MultipleAutocomplete
                 sx={{ minWidth: 150 }}
                 {...maCentrosProps}
+              />
+              <MobileDatePicker
+                label="Inicio"
+                inputFormat="dd/MM/yyyy"
+                value={date}
+                onChange={(e) => setDate(e)}
+                renderInput={(params) => <TextField {...params} />}
               />
               <Button variant="contained" onClick={handleFiltros}>
                 Aplicar Filtros

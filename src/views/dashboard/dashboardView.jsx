@@ -1,6 +1,7 @@
-import { DesktopDatePicker } from "@mui/lab";
+import { DesktopDatePicker, MobileDatePicker } from "@mui/lab";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -10,6 +11,7 @@ import {
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "api/_axios";
+import socket from "api/_socket";
 import MyResponsiveBar from "common/nivoCharts/bars";
 import MyResponsivePie from "common/nivoCharts/pie";
 import MyResponsiveTimeRange from "common/nivoCharts/timeRange";
@@ -39,7 +41,13 @@ export default function Dashboard() {
 
   const { isLoading: loadingCountUtilizadores, data: countUtilizadores } =
     useQuery("getUtilizadoresCount", async () => {
-      const { data: response } = await axios.get("utilizador/count");
+      const { data: response } = await axios.get("utilizador/list");
+      return response.count;
+    });
+
+  const { isLoading: loadingTipoUtilizadores, data: dataTipoUtilizadores } =
+    useQuery("getUtilizadoresTipoCount", async () => {
+      const { data: response } = await axios.get("utilizador/tipoCount");
       return response.data;
     });
 
@@ -85,7 +93,10 @@ export default function Dashboard() {
         <Card>
           <CardHeader title="Utilizadores" />
           <CardContent>
-            <MyResponsivePie />
+            <MyResponsivePie
+              data={dataTipoUtilizadores}
+              loading={loadingTipoUtilizadores}
+            />
           </CardContent>
         </Card>
       </Box>
@@ -96,19 +107,23 @@ export default function Dashboard() {
             action={
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Stack direction="row" spacing={1}>
-                  <DesktopDatePicker
+                  <MobileDatePicker
                     label="Inicio"
                     inputFormat="dd/MM/yyyy"
                     value={startDate}
                     onChange={(e) => setStartDate(e)}
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => (
+                      <TextField  {...params} />
+                    )}
                   />
-                  <DesktopDatePicker
+                  <MobileDatePicker
                     label="Fim"
                     inputFormat="dd/MM/yyyy"
                     value={endDate}
                     onChange={(e) => setEndDate(e)}
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => (
+                      <TextField  {...params} />
+                    )}
                   />
                 </Stack>
               </LocalizationProvider>
@@ -118,6 +133,7 @@ export default function Dashboard() {
             <MyResponsiveTimeRange startDate={startDate} endDate={endDate} />
           </CardContent>
         </Card>
+        <Button onClick={() => socket.emit("nmrSockets")}>ping</Button>
       </Box>
     </Box>
   );

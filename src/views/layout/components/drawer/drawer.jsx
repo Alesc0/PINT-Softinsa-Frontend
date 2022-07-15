@@ -3,7 +3,6 @@ import {
   Assignment,
   Dashboard,
   Group,
-  QueryStats,
   Soap,
   ViewModule,
 } from "@mui/icons-material/";
@@ -19,15 +18,12 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import navBar_logo from "imgs/logo-softinsa.png";
 import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
-import { useQuery } from "react-query";
 import { Link, useLocation } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "api/_axios";
-import { UserContext } from "App";
-import navBar_logo from "imgs/logo-softinsa.png";
 import { ColorModeContext } from "theme";
 import LayoutAppBar from "../appbar/appBar";
 import SettingsDrawer from "../settingsDrawer";

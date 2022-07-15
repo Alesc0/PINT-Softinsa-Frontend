@@ -97,14 +97,14 @@ export default function CentroForm({ handleRequest, id = undefined }) {
       nome: dataCentro?.nome || "",
       endereco: dataCentro?.endereco || "",
       descricao: dataCentro?.descricao || "",
-      estado: dataCentro?.estado || false,
-      cidade: dataCentro?.cidade || "",
+      estado: dataCentro ? dataCentro?.estado : true,
+      cidade: dataCentro?.cidade || null,
     },
     enableReinitialize: true,
     validationSchema: validationSchema,
 
     onSubmit: async (values) => {
-      handleRequest({ ...values, files });
+      handleRequest({ ...values, imagem: files[0] });
     },
   });
 
@@ -161,12 +161,12 @@ export default function CentroForm({ handleRequest, id = undefined }) {
             value={formik.values.cidade}
             onChange={(event, value, reason) => {
               formik.setFieldValue("cidade", "");
-              if (reason === "clear") formik.setFieldValue("cidade", value);
+              if (reason === "clear") formik.setFieldValue("cidade", null);
               else formik.setFieldValue("cidade", value);
             }}
             onInputChange={(event, value, reason) => {
               if (reason === "clear") {
-                formik.setFieldValue("cidade", "");
+                formik.setFieldValue("cidade", null);
               }
             }}
             renderInput={(params) => <TextField {...params} label="Cidade" />}

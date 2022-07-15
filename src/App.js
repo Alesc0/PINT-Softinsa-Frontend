@@ -2,7 +2,7 @@ import socket from "api/_socket";
 import { createContext, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { getTokens } from "utils/sessionManager";
-import axios from "./api/_axios";
+import axios, { refreshToken } from "./api/_axios";
 import Router from "./routes";
 import ThemeProvider from "./theme";
 
@@ -26,6 +26,8 @@ function App() {
   if (data && !user) {
     setUser(data);
     if (!auth) setAuth(true);
+    socket.io.opts.query.token = getTokens().jwt;
+    socket.connect();
     queryClient.clear();
   }
 
@@ -33,21 +35,57 @@ function App() {
 
   //sockets
   useEffect(() => {
-    socket.on("newUser", () => {
+    socket.on("connect", () => console.log("connected"));
+    socket.on("disconnect", () => console.log("disconnected"));
+
+    socket.on("updateUser", () => {
       queryClient.invalidateQueries("getUtilizadoresDashboard");
       queryClient.invalidateQueries("getUtilizadores");
+      queryClient.invalidateQueries("getUtilizadoresTipoCount");
     });
-    socket.on("newFeedback", () => {
+
+    socket.on("updateFeedback", () => {
       queryClient.invalidateQueries("getFeedbacks");
     });
-    socket.on("newNotificacao", () => {
+
+    socket.on("nmrSockets", (array) => {
+      console.log(array);
+    });
+
+    socket.on("updateNotificacao", () => {
+      console.log("Notificacao socket");
       queryClient.invalidateQueries("getNotifications");
       queryClient.invalidateQueries("getNotificationsFull");
     });
+
+    socket.on("requestRefresh", async () => {
+      try {
+        console.log("refreshing");
+        await refreshToken(axios);
+        socket.disconnect();
+        socket.io.opts.query.token = getTokens().jwt;
+        socket.connect();
+        console.log("token refreshed");
+      } catch (error) {
+        console.log(error.response);
+        console.log("error refreshing token");
+      }
+    });
+    socket.on("connect_error", (error) => {
+      console.log(error);
+      console.log("socket error connection");
+    });
+
     return () => {
-      socket.off("newUser");
-      socket.off("newFeedback");
-      socket.off("newNotificacao");
+      socket.off("connect");
+      socket.off("disconnect");
+
+      socket.off("requestRefresh");
+      socket.off("connect_error");
+
+      socket.off("updateUser");
+      socket.off("updateFeedback");
+      socket.off("updateNotificacao");
     };
   }, [queryClient]);
 

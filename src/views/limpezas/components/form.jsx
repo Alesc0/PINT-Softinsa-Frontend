@@ -131,22 +131,24 @@ export default function FormLimpezas() {
         value={formik.values.observacoes}
         onChange={formik.handleChange}
       />
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <TimePicker
-          label="Hora Limite"
-          value={horaLim}
-          onChange={(e) => setHoraLim(e)}
-          renderInput={(params) => <TextField {...params} />}
-        />
-      </LocalizationProvider>
-      <Stack direction="row" className="center">
-        <Typography>Urgente</Typography>
-        <Switch
-          id="urgente"
-          checked={formik.values.urgente}
-          onChange={formik.handleChange}
-        />
-        <Typography>Disponível</Typography>
+      <Stack direction="row" spacing={6}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <TimePicker
+            label="Hora Limite"
+            value={horaLim}
+            onChange={(e) => setHoraLim(e)}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+        <Stack direction="row" className="center">
+          <Typography>Urgente</Typography>
+          <Switch
+            id="urgente"
+            checked={formik.values.urgente}
+            onChange={formik.handleChange}
+          />
+          <Typography>Disponível</Typography>
+        </Stack>
       </Stack>
       <Divider />
       <Button

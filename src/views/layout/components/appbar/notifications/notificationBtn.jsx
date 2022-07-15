@@ -46,9 +46,8 @@ function NotificationBtn({ notificacoes, isLoading }) {
   const queryClient = useQueryClient();
 
   const readAll = useMutation(
-    (newTodo) => {
-      //TODO: ler notificaçoes
-      return axios.put("/todos", newTodo);
+    async () => {
+      await axios.post("notificacao/allReceived");
     },
     {
       onSuccess: () => queryClient.invalidateQueries("getNotifications"),
@@ -67,7 +66,7 @@ function NotificationBtn({ notificacoes, isLoading }) {
     if (!notificacoes) return [[], []];
 
     var notRead = notificacoes.reduce((filtered, not) => {
-      if (!not.recebida) {
+      if (!not.utilizadores_notificacoes.recebida) {
         filtered.push(not);
       }
       return filtered;
@@ -133,7 +132,7 @@ function NotificationBtn({ notificacoes, isLoading }) {
             {filterNotifications[1].length > 0 && (
               <Typography
                 component={Button}
-                onClick={() => readAll.mutate()}
+                onClick={() => readAll.mutateAsync()}
                 sx={{ ml: "auto", textDecoration: "underline" }}
                 variant="caption"
               >

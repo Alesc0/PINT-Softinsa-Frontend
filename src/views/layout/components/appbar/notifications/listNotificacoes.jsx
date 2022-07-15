@@ -70,17 +70,15 @@ function ListNotificacoes({ isLoading, read, unRead }) {
       <List disablePadding>{renderList(unRead)}</List>
       {read.length > 0 && (
         <>
-          <Divider component="li" />
-          <li>
-            <Typography
-              sx={{ mt: 0.5, ml: 2 }}
-              color="text.secondary"
-              display="block"
-              variant="caption"
-            >
-              Lidas
-            </Typography>
-          </li>
+          <Divider />
+          <Typography
+            sx={{ mt: 0.5, ml: 2 }}
+            color="text.secondary"
+            display="block"
+            variant="caption"
+          >
+            Lidas
+          </Typography>
           <List disablePadding dense>
             {renderList(read)}
           </List>

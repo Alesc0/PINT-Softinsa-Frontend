@@ -3,15 +3,23 @@ import { toast } from "react-toastify";
 import CentroForm from "./components/form";
 
 function AddCentros() {
-  const handleRequest = async (e) => {
+  const handleRequest = async (data) => {
     try {
-      //requests
-      const data = await axios.post("/centro", {});
-      toast.success(data.data);
+      console.log(data);
+
+      let formData = new FormData();
+      formData.append("nome", data.nome);
+      formData.append("endereco", data.endereco);
+      formData.append("descricao", data.descricao);
+      formData.append("estado", data.estado);
+      formData.append("cidade", data.cidade);
+      formData.append("imagem", data.imagem);
+
+      await axios.post("centro/add", { formData });
+      toast.success("Novo centro adicionado!");
     } catch (error) {
-      for (const [key, value] of Object.entries(error.response.data)) {
-        toast.error(value, { toastId: key });
-      }
+      console.log(error.response);
+      toast.error("Erro a adicionar centro!");
     }
   };
 

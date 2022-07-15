@@ -13,7 +13,6 @@ export default function EditUtilizadoresView() {
       userObj.admin = true;
     } else userObj.admin = false;
 
-    //TODO
     if (userObj.role === "Limpeza") {
       limpeza = true;
     }

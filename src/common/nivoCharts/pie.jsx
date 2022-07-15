@@ -1,29 +1,29 @@
 import { useTheme } from "@emotion/react";
 import { Box } from "@mui/material";
 import { ResponsivePie } from "@nivo/pie";
-const data = [
-  {
-    id: "Regular",
-    value: 563,
-    color: "hsl(235, 70%, 50%)",
-  },
-  {
-    id: "Limpeza",
-    value: 185,
-    color: "hsl(348, 70%, 50%)",
-  },
-  {
-    id: "Admin",
-    value: 50,
-  },
-];
 
-function MyResponsivePie() {
+function MyResponsivePie(props) {
+  const { data } = props;
+
+  const formatData = () => {
+    let formatedData = [];
+    if (data) {
+      for (const [key, value] of Object.entries(data)) {
+        if (key === "U") formatedData[0] = { id: "Utilizadores", value };
+        if (key === "L")
+          formatedData[1] = { id: "Empregados de Limpeza", value: value };
+        if (key === "admin")
+          formatedData[2] = { id: "Administradores", value: value };
+      }
+    }
+    return formatedData;
+  };
+
   const theme = useTheme();
   return (
     <Box sx={{ height: "15em" }}>
       <ResponsivePie
-        data={data}
+        data={formatData()}
         margin={{ top: 30, bottom: 20 }}
         innerRadius={0.5}
         padAngle={0.7}

@@ -1,5 +1,6 @@
 import { Settings } from "@mui/icons-material";
 import {
+  Autocomplete,
   Box,
   Button,
   Divider,
@@ -16,14 +17,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import axios from "api/_axios";
 import { useFormik } from "formik";
 import { useCallback, useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
-import * as yup from "yup";
-import axios from "api/_axios";
-import Modal from "./opcoesModal";
+import { toast } from "react-toastify";
 import { validationSchemaUtilizadores } from "utils/validations";
+import Modal from "./opcoesModal";
 
 const options = [
   {
@@ -73,6 +74,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
   const [permissionTab, setPermissionTab] = useState(0);
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   //MODAL
   const [openModal, setOpenModal] = useState(false);
@@ -106,21 +108,26 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
   );
 
   const setExtraFields = useCallback((data) => {
-    if (!data) return;
-    if (data.admin) setPermissionTab(1);
-    if (data.role === "U") setPermissionTab(perms.indexOf("Regular"));
-    else if (data.role === "L") setPermissionTab(perms.indexOf("Limpeza"));
-    setAddOptions(data);
+    if (!data) {
+      setPermissionTab(0);
+      setAddOptions(null);
+    } else {
+      if (data.admin) setPermissionTab(perms.indexOf("Administrador"));
+      else if (data.role === "U") setPermissionTab(perms.indexOf("Regular"));
+      else if (data.role === "L") setPermissionTab(perms.indexOf("Limpeza"));
+      setAddOptions(data);
+    }
   }, []);
 
   useEffect(() => {
     if (id) refetch();
-  }, [id, refetch]);
+    else setExtraFields(null);
+  }, [id, refetch, setExtraFields]);
 
   useEffect(() => {
-    if (!dataUtilizador) return;
+    if (!dataUtilizador || !id) return;
     setExtraFields(dataUtilizador);
-  }, [dataUtilizador, setExtraFields]);
+  }, [dataUtilizador, setExtraFields, id]);
 
   const handleToggle = (value) => () => {
     const newChecked = [...checked];
@@ -129,7 +136,8 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
   };
 
   const setAddOptions = (data) => {
-    setChecked(options.map((row) => data[row.name]));
+    if (!data) setChecked(options.map((row, i) => row.default));
+    else setChecked(options.map((row) => data[row.name]));
   };
 
   const opObj = () => {
@@ -140,22 +148,40 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
 
   const formik = useFormik({
     initialValues: {
+      add: !id,
       nome: dataUtilizador?.nome || "",
       telemovel: dataUtilizador?.telemovel || "",
       email: dataUtilizador?.email || "",
-      estado: dataUtilizador?.estado || false,
-      idcentro: dataUtilizador?.idcentro || 1,
+      password: "",
+      conf_password: "",
+      estado: dataUtilizador ? dataUtilizador?.estado : true,
+      idcentro:
+        dataCentros?.find((val) => val.idcentro === dataUtilizador?.idcentro) ||
+        null,
     },
     enableReinitialize: true,
     validationSchema: validationSchemaUtilizadores,
 
     onSubmit: async (values) => {
-      let res = await handleRequest({
-        ...values,
-        ...opObj(),
-        role: perms[permissionTab],
-      });
-      if (res) navigate(-1);
+      try {
+        await handleRequest({
+          ...values,
+          idcentro: values.idcentro.idcentro,
+          ...opObj(),
+          role: perms[permissionTab],
+        });
+
+        queryClient.invalidateQueries("getUtilizadores");
+        toast.success("Novo utilizador adicionado!");
+        navigate("/utilizadores");
+      } catch (error) {
+        console.log(error.response);
+        if (error.response.status === 409)
+          formik.setFieldError(
+            "email",
+            "Já se encontra registado um utilizador com este email!"
+          );
+      }
     },
   });
 
@@ -177,7 +203,6 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
         component="form"
         onSubmit={formik.handleSubmit}
         elevation={2}
-        maxwidth="sm"
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -185,8 +210,8 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
           paddingInline: 3,
           paddingBlock: 2,
           margin: "1em auto",
-          width: "fit-content",
           position: "relative",
+          maxWidth: "sm",
         }}
       >
         {loadingCentros || loadingUtilizador ? (
@@ -216,51 +241,83 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
             />
-            <TextField
-              id="telemovel"
-              label="Contacto"
-              autoComplete="off"
-              variant="outlined"
-              value={formik.values.telemovel}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.telemovel && Boolean(formik.errors.telemovel)
-              }
-              helperText={formik.touched.telemovel && formik.errors.telemovel}
-            />
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-              <FormControl>
-                <InputLabel id="label-select"> Centro </InputLabel>
-                <Select
-                  sx={{ minWidth: 125 }}
-                  name="idcentro"
-                  label="Centro"
-                  labelId="label-select"
-                  value={formik.values.idcentro}
-                  onChange={formik.handleChange}
-                >
-                  {dataCentros?.length > 0 ? (
-                    dataCentros?.map((row) => (
-                      <MenuItem key={row.idcentro} value={row.idcentro}>
-                        {row.cidade}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem value={1}>
-                      {" "}
-                      {"Sem centros disponíveis!"}{" "}
-                    </MenuItem>
-                  )}
-                </Select>
-              </FormControl>
-              <Box>
-                <Tabs value={permissionTab} onChange={handleChange}>
-                  {perms.map((row, i) => (
-                    <Tab key={i} label={row} value={i} />
-                  ))}
-                </Tabs>
-              </Box>
+            <Stack direction="row" spacing={2}>
+              <TextField
+                id="password"
+                label="Password"
+                variant="outlined"
+                autoComplete="off"
+                type="password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
+                helperText={formik.touched.password && formik.errors.password}
+                sx={{ flexGrow: 1 }}
+              />
+              <TextField
+                id="conf_password"
+                label="Confirmar Password"
+                variant="outlined"
+                autoComplete="off"
+                type="password"
+                value={formik.values.conf_password}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.conf_password &&
+                  Boolean(formik.errors.conf_password)
+                }
+                helperText={
+                  formik.touched.conf_password && formik.errors.conf_password
+                }
+                sx={{ flexGrow: 1 }}
+              />
             </Stack>
+
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+              <TextField
+                id="telemovel"
+                label="Contacto"
+                sx={{ flexGrow: 1 }}
+                autoComplete="off"
+                variant="outlined"
+                value={formik.values.telemovel}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.telemovel && Boolean(formik.errors.telemovel)
+                }
+                helperText={formik.touched.telemovel && formik.errors.telemovel}
+              />
+              <Autocomplete
+                sx={{ flexGrow: 3 }}
+                options={dataCentros || []}
+                value={formik.values.idcentro}
+                isOptionEqualToValue={(op, val) => op.idcentro === val.idcentro}
+                getOptionLabel={(option) =>
+                  `${option.nome} - ${option.cidade}` || null
+                }
+                onChange={(event, value, reason) => {
+                  if (reason === "clear") return;
+                  else formik.setFieldValue("idcentro", value);
+                }}
+                onInputChange={(event, value, reason) => {
+                  if (reason === "clear") {
+                    formik.setFieldValue("idcentro", null);
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Centro" />
+                )}
+              />
+            </Stack>
+            <Box sx={{ m: "0 auto" }}>
+              <Tabs value={permissionTab} onChange={handleChange}>
+                {perms.map((row, i) => (
+                  <Tab key={i} label={row} value={i} />
+                ))}
+              </Tabs>
+            </Box>
             <Divider />
             <Stack direction="row" spacing={2} sx={{ alignSelf: "flex-end" }}>
               <Button

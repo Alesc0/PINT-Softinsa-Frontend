@@ -22,7 +22,8 @@ import AddUtilizadores from "./views/utilizadores/addUtilizadores";
 import EditUtilizadores from "./views/utilizadores/editUtilizadores";
 
 import Limpezas from "./views/limpezas/limpezasView";
-
+import Notificacoes from "views/notificacoes/notificacoesView";
+import Feedbacks from "views/feedbacks/feedbacksView";
 import Perfil from "./views/perfil/perfil";
 
 // ----------------------------------------------------------------------
@@ -49,6 +50,8 @@ export default function Router() {
             <Route path="reservas" element={<Reservas />} />
             <Route path="perfil" element={<Perfil />} />
             <Route path="limpezas" element={<Limpezas />} />
+            <Route path="notificacoes" element={<Notificacoes />} />
+            <Route path="feedbacks" element={<Feedbacks />} />
           </Route>
         </Route>
         <Route path="login" element={<Login />} />

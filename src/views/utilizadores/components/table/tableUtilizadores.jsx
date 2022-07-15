@@ -13,7 +13,7 @@ import axios from "api/_axios";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
 import BasicMenu from "../menuPopover/menuPopover";
-import NewModal from "./modal";
+import ModalDelete from "common/modalDelete/modal";
 import EnhancedTableHead from "./tableHead";
 import UserTableRow from "./tableRow";
 import EnhancedTableToolbar from "./tableToolbar";
@@ -153,19 +153,19 @@ export default function EnhancedTable(props) {
 
     if (!selected) return;
     for (let row of selected) {
-      promises.push(deleteMutation.mutate(row));
+      promises.push(deleteMutation.mutateAsync(row));
     }
 
     if (promises.length > 0) {
       try {
         await Promise.all(promises);
-        toast.success("A operação foi bem sucedida!", {
-          position: toast.POSITION.BOTTOM_LEFT,
-        });
-        queryClient.invalidateQueries("utilizadores");
+        toast.success(
+          `Utilizador${selected > 1 && "es"} eliminado${selected > 1 && "s"}!`
+        );
       } catch (error) {
-        toast.error(error);
+        toast.error(`Erro a eliminar utilizador${selected > 1 && "es"}`);
       }
+      queryClient.invalidateQueries("getUtilizadores");
       setSelected([]);
     }
   }, [selected, deleteMutation, setSelected, queryClient]);
@@ -257,7 +257,7 @@ export default function EnhancedTable(props) {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <NewModal
+      <ModalDelete
         info={selected}
         handleClickModal={handleClickModal}
         open={open}

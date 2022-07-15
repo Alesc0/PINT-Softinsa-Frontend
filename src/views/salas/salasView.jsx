@@ -10,7 +10,6 @@ const limit = 4;
 
 function SalasView() {
   const [selected, setSelected] = useState(-1);
-  const [offset, setOffset] = useState(0);
   const [page, setPage] = useState(1);
   const [centro, setCentro] = useState([]);
   const [slider, setSlider] = useState([0, 70]);
@@ -18,24 +17,42 @@ function SalasView() {
 
   const queryClient = useQueryClient();
 
-  const { isLoading, data, error } = useQuery(
-    ["getSalas", offset, limit, centro],
+  const {
+    isFetching: loadingCentros,
+    data: dataCentros,
+    error: erroCentros,
+  } = useQuery(
+    ["getCentros"],
+    async () => {
+      const { data: response } = await axios.get("centro/list");
+      return response.data;
+    },
+    { keepPreviousData: true }
+  );
+
+  const { refetch, isLoading, data, error } = useQuery(
+    ["getSalas", page],
     async () => {
       const { data: response } = await axios.get("sala/list", {
         params: {
-          offset: offset,
+          offset: (page - 1) * limit,
           limit: limit,
           centros: centro.map((val) => val.idcentro),
           pesquisa: pesquisa,
           lotacao: [...slider],
         },
       });
+      setSelected(0);
       return response;
     },
     {
+      enabled: !!dataCentros,
       keepPreviousData: true,
     }
   );
+
+  if (erroCentros)
+    toast.error("Erro ao obter centros!", { toastId: "get_centros_error" });
 
   if (error)
     toast.error(
@@ -57,28 +74,13 @@ function SalasView() {
         queryClient.invalidateQueries("getSalas");
         setSelected(-1);
       },
-      onError: () => {
-        toast.error("Erro ao atualizar sala!");
-      },
     }
   );
 
-  const addMutation = useMutation(
-    async (obj) => {
-      const { status: response } = await axios.post(`sala/add`, obj);
-      return response;
-    },
-    {
-      onSuccess: () => {
-        toast.success("Sala adicionada!");
-        queryClient.invalidateQueries("getSalas");
-        setSelected(-1);
-      },
-      onError: () => {
-        toast.error("Erro ao adicionar sala!");
-      },
-    }
-  );
+  const addMutation = useMutation(async (obj) => {
+    const { status: response } = await axios.post(`sala/add`, obj);
+    return response;
+  });
 
   const deleteMutation = useMutation(
     async () => {
@@ -98,23 +100,15 @@ function SalasView() {
     }
   );
 
-  const handleRequest = (salaObj) => {
-    if (selected === -1) addMutation.mutate(salaObj);
-    else updateMutation.mutate(salaObj);
-  };
-
   const handleChangePagination = (event, value) => {
     if (page === value) return;
     setPage(value);
-    setSelected(0);
-    setOffset((value - 1) * limit);
   };
 
   const listSalasProps = {
     salas: data?.data,
     selected,
     setSelected,
-    setOffset,
     limit,
     count: data?.count || 0,
     isLoading: isLoading,
@@ -126,6 +120,8 @@ function SalasView() {
     setSlider,
     pesquisa,
     setPesquisa,
+    refetch,
+    dataCentros,
   };
 
   return (
@@ -152,8 +148,14 @@ function SalasView() {
         <ListSalas {...listSalasProps} />
         <SalasForm
           data={data && data.data[selected]}
-          handleRequest={handleRequest}
-          handleDelete={deleteMutation.mutate}
+          dataCentros={dataCentros}
+          loading={loadingCentros || isLoading}
+          handleRequest={
+            selected === -1
+              ? addMutation.mutateAsync
+              : updateMutation.mutateAsync
+          }
+          handleDelete={deleteMutation.mutateAsync}
         />
       </Stack>
     </Box>

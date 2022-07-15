@@ -1,15 +1,15 @@
 import { Menu } from "@mui/icons-material";
 import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
+import axios from "api/_axios";
 import { UserContext } from "App";
 import navBar_logo from "imgs/logo-softinsa.png";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import Feedbacks from "./feedbacks/feedbacks";
 import UtilizadorMenu from "./menuUtilizador";
 import NotificationButton from "./notifications/notificationBtn";
-import axios from "api/_axios";
-import { toast } from "react-toastify";
 
 function LayoutAppBar(props) {
   const { handleDrawerToggle, drawerWidth, handleOpen } = props;
@@ -23,9 +23,15 @@ function LayoutAppBar(props) {
     "getNotifications",
     async () => {
       const { data: response } = await axios.get(
-        "notificacao/utilizador/" + user.idutilizador
+        "notificacao/utilizador/" + user.idutilizador,
+        {
+          params: {
+            offset: 0,
+            limit: 5,
+          },
+        }
       );
-      return response.data[0]?.notificacoes;
+      return response.data;
     },
     { keepPreviousData: true }
   );

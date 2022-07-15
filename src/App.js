@@ -1,7 +1,8 @@
-import { createContext, useState } from "react";
-import { useQuery } from "react-query";
+import socket from "api/_socket";
+import { createContext, useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "react-query";
 import { getTokens } from "utils/sessionManager";
-import axios from "./api/_axios";
+import axios, { refreshToken } from "./api/_axios";
 import Router from "./routes";
 import ThemeProvider from "./theme";
 
@@ -11,24 +12,82 @@ function App() {
   const [user, setUser] = useState(undefined);
   const [auth, setAuth] = useState(false);
 
+  const queryClient = useQueryClient();
+
   const { isFetching, error, data } = useQuery(
-    ["getUserByToken", auth],
+    ["getUserByToken", auth, user],
     async () => {
       const { data: response } = await axios.get("utilizador/getUserByToken");
       return response.data;
     },
-    { enabled: (!auth || !user) && !!getTokens().rT }
+    { enabled: !!getTokens().rT }
   );
 
-  if (data) {
-    if (!user) {
-      setUser(data);
-      if (!auth) setAuth(true);
-    }
+  if (data && !user) {
+    setUser(data);
+    if (!auth) setAuth(true);
+    socket.io.opts.query.token = getTokens().jwt;
+    socket.connect();
+    queryClient.clear();
   }
-  console.log(auth);
 
   if (error && auth) setAuth(false);
+
+  //sockets
+  useEffect(() => {
+    socket.on("connect", () => console.log("connected"));
+    socket.on("disconnect", () => console.log("disconnected"));
+
+    socket.on("updateUser", () => {
+      queryClient.invalidateQueries("getUtilizadoresDashboard");
+      queryClient.invalidateQueries("getUtilizadores");
+      queryClient.invalidateQueries("getUtilizadoresTipoCount");
+    });
+
+    socket.on("updateFeedback", () => {
+      queryClient.invalidateQueries("getFeedbacks");
+    });
+
+    socket.on("nmrSockets", (array) => {
+      console.log(array);
+    });
+
+    socket.on("updateNotificacao", () => {
+      console.log("Notificacao socket");
+      queryClient.invalidateQueries("getNotifications");
+      queryClient.invalidateQueries("getNotificationsFull");
+    });
+
+    socket.on("requestRefresh", async () => {
+      try {
+        console.log("refreshing");
+        await refreshToken(axios);
+        socket.disconnect();
+        socket.io.opts.query.token = getTokens().jwt;
+        socket.connect();
+        console.log("token refreshed");
+      } catch (error) {
+        console.log(error.response);
+        console.log("error refreshing token");
+      }
+    });
+    socket.on("connect_error", (error) => {
+      console.log(error);
+      console.log("socket error connection");
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+
+      socket.off("requestRefresh");
+      socket.off("connect_error");
+
+      socket.off("updateUser");
+      socket.off("updateFeedback");
+      socket.off("updateNotificacao");
+    };
+  }, [queryClient]);
 
   return (
     <UserContext.Provider value={{ user, setUser, auth, setAuth }}>

@@ -12,6 +12,7 @@ import { useMemo, useState } from "react";
 import ListNotificacoes from "./listNotificacoes";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "api/_axios";
+import { Link } from "react-router-dom";
 
 const paperProps = {
   elevation: 0,
@@ -45,12 +46,11 @@ function NotificationBtn({ notificacoes, isLoading }) {
   const queryClient = useQueryClient();
 
   const readAll = useMutation(
-    (newTodo) => {
-      //TODO: ler notificaçoes
-      return axios.put("/todos", newTodo);
+    async () => {
+      await axios.post("notificacao/allReceived");
     },
     {
-      onSuccess: () => queryClient.invalidateQueries("notificationsData"),
+      onSuccess: () => queryClient.invalidateQueries("getNotifications"),
     }
   );
 
@@ -66,7 +66,7 @@ function NotificationBtn({ notificacoes, isLoading }) {
     if (!notificacoes) return [[], []];
 
     var notRead = notificacoes.reduce((filtered, not) => {
-      if (!not.recebida) {
+      if (!not.utilizadores_notificacoes.recebida) {
         filtered.push(not);
       }
       return filtered;
@@ -119,11 +119,20 @@ function NotificationBtn({ notificacoes, isLoading }) {
       >
         <Container disableGutters sx={{ py: 1, minWidth: "300px" }}>
           <Stack direction="row" className="center" sx={{ px: 2, py: 1 }}>
-            <Typography variant="h5">Notificações</Typography>
+            <Typography
+              variant="h5"
+              component={Link}
+              to="notificacoes"
+              onClick={handleClose}
+              color="primary.dark"
+              sx={{ textDecoration: "none" }}
+            >
+              Notificações
+            </Typography>
             {filterNotifications[1].length > 0 && (
               <Typography
                 component={Button}
-                onClick={() => readAll.mutate()}
+                onClick={() => readAll.mutateAsync()}
                 sx={{ ml: "auto", textDecoration: "underline" }}
                 variant="caption"
               >

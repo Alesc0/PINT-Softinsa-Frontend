@@ -11,8 +11,8 @@ const style = {
   borderRadius: 3,
 };
 
-export default function NewModal(props) {
-  const { open, handleClose, info, handleClickModal } = props;
+export default function ModalDelete(props) {
+  const { open, handleClose, info = null, handleClickModal } = props;
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
@@ -22,15 +22,26 @@ export default function NewModal(props) {
           </Typography>
           <Divider />
           <Typography variant="body1">
-            Está prestes a eliminar {info.length}{" "}
-            {info.length > 1 ? "elementos" : "elemento"} pretende continuar?
+            Está prestes a eliminar
+            {info && info.length > 1
+              ? ` ${info.length} elementos `
+              : " 1 elemento "}
+            pretende continuar?
+          </Typography>
+          <Typography color="error" variant="subtitle2">
+            Esta ação é irreversivel! Considere alterar o estado em vez de
+            remover por completo este elemento!
           </Typography>
           <Divider />
           <Box sx={{ display: "flex", ml: "auto", gap: 1 }}>
             <Button onClick={handleClose} color="warning" variant="contained">
               Voltar
             </Button>
-            <Button onClick={handleClickModal} color="error" variant="contained">
+            <Button
+              onClick={handleClickModal}
+              color="error"
+              variant="contained"
+            >
               Eliminar
             </Button>
           </Box>

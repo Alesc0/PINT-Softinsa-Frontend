@@ -6,9 +6,7 @@ import {
   setSessionStorage,
 } from "../utils/sessionManager";
 
-/* "https://pintbackendoriginal.herokuapp.com" */
-
-export const baseURL = "https://pint-backend-dev.herokuapp.com/";
+export const baseURL = process.env.REACT_APP_DEV;
 
 const instance = axios.create({
   baseURL,
@@ -27,6 +25,8 @@ instance.interceptors.response.use(
   },
   async (error) => {
     const config = error.config;
+    if (error.response.data.data === "Invalid refresh token") clearStorages();
+
     if (error.response && error.response.status === 401 && !config._retry) {
       config._retry = true;
       if (getTokens().rT) {
@@ -36,16 +36,11 @@ instance.interceptors.response.use(
             : refreshToken();
           let res = await refreshing_token;
           refreshing_token = null;
-          if (res.accessToken) {
-            if (JSON.parse(getTokens().rem)) {
-              setLocalStorage(res.accessToken, res.refreshToken);
-            } else setSessionStorage(res.accessToken, res.refreshToken);
-            config.headers["Authorization"] = "Bearer " + res.accessToken;
+          if (res) {
+            config.headers["Authorization"] = "Bearer " + getTokens().jwt;
             return instance(config);
           }
-          return instance(config);
         } catch (err) {
-          clearStorages();
           Promise.reject(error);
         }
       }
@@ -54,12 +49,20 @@ instance.interceptors.response.use(
   }
 );
 
-const refreshToken = async () => {
-  const { data: response } = await instance.post("utilizador/refreshToken", {
+export const refreshToken = async (axios = null) => {
+  let inst = instance;
+  if (axios) inst = axios;
+  const { data: response } = await inst.post("utilizador/refreshToken", {
     refreshToken: getTokens().rT,
     env: "web",
   });
-  return response.data;
+
+  if (JSON.parse(getTokens().rem)) {
+    setLocalStorage(response.data.accessToken, response.data.refreshToken);
+  } else
+    setSessionStorage(response.data.accessToken, response.data.refreshToken);
+
+  return true;
 };
 
 export default instance;

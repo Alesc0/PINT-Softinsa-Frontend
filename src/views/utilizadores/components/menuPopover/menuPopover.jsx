@@ -47,6 +47,10 @@ export default function BasicMenu(props) {
         handleCloseMenu();
         queryClient.invalidateQueries("getUtilizadores");
       },
+      onError: () => {
+        toast.error("Utilizador não tem foto!");
+        handleCloseMenu();
+      },
     }
   );
 

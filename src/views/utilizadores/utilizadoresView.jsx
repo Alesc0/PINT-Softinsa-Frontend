@@ -22,7 +22,7 @@ function UtilizadoresView() {
     return response.data;
   });
 
-  const { refetch, isFetching, error, data } = useQuery(
+  const { refetch, isLoading, error, data } = useQuery(
     ["getUtilizadores", page, rowsPerPage, dataCentros],
     async () => {
       let { data: response } = await axios.get("utilizador/list", {
@@ -45,7 +45,7 @@ function UtilizadoresView() {
     toast.error("Erro ao obter utilizadores!", { toastId: "getUserError" });
 
   const tableProps = {
-    isLoading: isFetching,
+    isLoading: isLoading,
     users: data?.data || [],
     rowsPerPage,
     setRowsPerPage,

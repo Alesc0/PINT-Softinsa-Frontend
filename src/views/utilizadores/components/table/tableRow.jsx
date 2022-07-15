@@ -12,11 +12,19 @@ import sampleAvaImg from "imgs/avatar.jpg";
 import Label from "common/label/label";
 
 const admin = "rgba(218, 165, 32, 0.1)";
-const limpeza = "rgba(171, 215, 125, 0.1)";
 
 function UserTableRow(props) {
   const { handleClick, handleClickMenu, handleOpenModal, isItemSelected, row } =
     props;
+
+  const returnRoleName = (row) => {
+    if (row.admin) {
+      return "(Admin)";
+    }
+    if (row.role === "L") {
+      return "(Limpeza)";
+    }
+  };
   return (
     <TableRow
       hover
@@ -39,7 +47,9 @@ function UserTableRow(props) {
               sampleAvaImg
             }
           />
-          <Typography>{row.nome}</Typography>
+          <Typography>
+            {row.nome} {returnRoleName(row)}
+          </Typography>
         </Stack>
       </TableCell>
       <TableCell align="left">

@@ -11,6 +11,7 @@ const paperProps = {
     filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
     mt: 1.5,
     px: 2,
+    maxWidth: "450px",
     "& .MuiAvatar-root": {
       width: 50,
       height: 50,

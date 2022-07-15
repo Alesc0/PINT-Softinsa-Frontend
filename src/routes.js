@@ -22,9 +22,12 @@ import AddUtilizadores from "./views/utilizadores/addUtilizadores";
 import EditUtilizadores from "./views/utilizadores/editUtilizadores";
 
 import Limpezas from "./views/limpezas/limpezasView";
+
 import Notificacoes from "views/notificacoes/notificacoesView";
 import Feedbacks from "views/feedbacks/feedbacksView";
 import Perfil from "./views/perfil/perfil";
+
+import LandingPage from "./views/landingPage/landingPage";
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +57,8 @@ export default function Router() {
             <Route path="feedbacks" element={<Feedbacks />} />
           </Route>
         </Route>
+
+        <Route path="home" element={<LandingPage />} />
         <Route path="login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

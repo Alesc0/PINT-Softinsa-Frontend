@@ -22,7 +22,7 @@ function SalasView() {
     data: dataCentros,
     error: erroCentros,
   } = useQuery(
-    ["getCentros"],
+    ["getCentrosSalas"],
     async () => {
       const { data: response } = await axios.get("centro/list");
       return response.data;
@@ -31,7 +31,7 @@ function SalasView() {
   );
 
   const { refetch, isLoading, data, error } = useQuery(
-    ["getSalas", page],
+    ["getSalasView", page],
     async () => {
       const { data: response } = await axios.get("sala/list", {
         params: {
@@ -60,45 +60,25 @@ function SalasView() {
       { toastId: "getSalasError" }
     );
 
-  const updateMutation = useMutation(
-    async (obj) => {
-      const { status: response } = await axios.put(
-        `sala/${data.data[selected].idsala}`,
-        obj
-      );
-      return response;
-    },
-    {
-      onSuccess: () => {
-        toast.success("Sala atualizada!");
-        queryClient.invalidateQueries("getSalas");
-        setSelected(-1);
-      },
-    }
-  );
+  const updateMutation = useMutation(async (obj) => {
+    const { status: response } = await axios.put(
+      `sala/${data.data[selected].idsala}`,
+      obj
+    );
+    return response;
+  });
 
   const addMutation = useMutation(async (obj) => {
     const { status: response } = await axios.post(`sala/add`, obj);
     return response;
   });
 
-  const deleteMutation = useMutation(
-    async () => {
-      const { data: response } = await axios.delete(
-        `sala/${data.data[selected].idsala}`
-      );
-      return response;
-    },
-    {
-      onSuccess: () => {
-        toast.success("Sala eliminada!");
-        queryClient.invalidateQueries("getSalas");
-      },
-      onError: () => {
-        toast.error("Erro ao eliminar sala!");
-      },
-    }
-  );
+  const deleteMutation = useMutation(async () => {
+    const { data: response } = await axios.delete(
+      `sala/${data.data[selected].idsala}`
+    );
+    return response;
+  });
 
   const handleChangePagination = (event, value) => {
     if (page === value) return;

@@ -15,6 +15,7 @@ import { useContext, useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { clearStorages, getTokens } from "utils/sessionManager";
+import PerfilDrawer from "../perfil/drawer";
 
 const paperProps = {
   elevation: 0,
@@ -39,7 +40,12 @@ const paperProps = {
 
 export default function UtilizadorMenu({ handleOpen }) {
   const { user, setAuth } = useContext(UserContext);
+  const [perfilOpen, setPerfilOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleOpenPerfil = () => {
+    setPerfilOpen(true);
+  };
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -98,9 +104,10 @@ export default function UtilizadorMenu({ handleOpen }) {
             Home
           </MenuItem>
           <MenuItem
-            component={Link}
-            to={"/perfil"}
-            onClick={() => handleClose()}
+            onClick={() => {
+              handleClose();
+              handleOpenPerfil();
+            }}
           >
             Perfil
           </MenuItem>
@@ -116,6 +123,10 @@ export default function UtilizadorMenu({ handleOpen }) {
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Stack>
       </Menu>
+      <PerfilDrawer
+        open={perfilOpen}
+        handleClose={() => setPerfilOpen(false)}
+      />
     </>
   );
 }

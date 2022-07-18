@@ -10,13 +10,11 @@ import {
   Paper,
   Stack,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useFormik } from "formik";
-import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import axios from "api/_axios";
 
 const validationSchema = yup.object({
   email: yup
@@ -57,7 +55,7 @@ function LoginForm({ handleRequest, isLoading }) {
       try {
         await handleRequest(values);
       } catch (error) {
-        console.log(error.response)
+        console.log(error.response);
         formik.setFieldError(
           "password",
           "Combinação errada de email e password!"

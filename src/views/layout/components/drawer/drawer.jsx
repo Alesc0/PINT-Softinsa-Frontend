@@ -39,11 +39,6 @@ const pages = [
     icon: <Dashboard sx={{ color: "white" }} />,
   },
   {
-    name: "Limpezas",
-    link: "/limpezas",
-    icon: <Soap sx={{ color: "white" }} />,
-  },
-  {
     name: "Reservas",
     link: "/reservas",
     icon: <Assignment sx={{ color: "white" }} />,

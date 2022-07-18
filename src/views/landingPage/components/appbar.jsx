@@ -31,7 +31,7 @@ const LandingAppBar = () => {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box
             sx={{

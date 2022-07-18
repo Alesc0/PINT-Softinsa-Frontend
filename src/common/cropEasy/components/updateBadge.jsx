@@ -6,6 +6,7 @@ function UpdateBadge(props) {
   return (
     <Badge
       sx={{ width: "fit-content" }}
+      overlap="circular"
       badgeContent={
         <IconButton
           sx={{
@@ -15,7 +16,7 @@ function UpdateBadge(props) {
               backgroundColor: "primary.darker",
             },
           }}
-          onClick={props.handleUpdate}
+          {...props}
         >
           <Edit sx={{ fontSize: 19 }} />
         </IconButton>

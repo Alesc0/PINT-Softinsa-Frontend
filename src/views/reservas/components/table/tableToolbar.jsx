@@ -1,6 +1,6 @@
-import { DateRange } from "@mui/icons-material";
+import { Clear, Search } from "@mui/icons-material";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { MobileDatePicker } from "@mui/lab";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 import {
   Box,
   Button,
@@ -11,6 +11,7 @@ import {
   Toolbar,
   Tooltip,
 } from "@mui/material";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import MultipleAutocomplete from "common/multipleAutocomplete/multipleAutocomplete";
 import { useRef, useState } from "react";
 
@@ -21,9 +22,10 @@ const EnhancedTableToolbar = ({
   setPesquisa,
   pesquisa,
   handleFiltros,
+  setSearchData,
+  searchData,
 }) => {
   const [filtro, setFiltro] = useState(false);
-  const [date, setDate] = useState(new Date());
 
   const containerRef = useRef(null);
   const maCentrosProps = {
@@ -44,7 +46,7 @@ const EnhancedTableToolbar = ({
         }}
       >
         <Box
-          sx={{ display: "flex", width: "100%", overflow: "hidden" }}
+          sx={{ display: "flex", width: "100%", overflow: "hidden", mr: 1 }}
           ref={containerRef}
         >
           <Slide
@@ -55,34 +57,50 @@ const EnhancedTableToolbar = ({
             mountOnEnter
             unmountOnExit
           >
-            <Stack direction="row" sx={{ ml: "auto" }} spacing={2}>
+            <Stack direction="row" sx={{ ml: "auto", mt: 1 }} spacing={2}>
+              <Stack direction="row">
+                <Tooltip title="Limpar Filtros">
+                  <IconButton onClick={() => handleFiltros(false)}>
+                    <Clear />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Pesquisar">
+                  <IconButton onClick={() => handleFiltros(true)}>
+                    <Search />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
               <TextField
                 variant="standard"
                 value={pesquisa}
                 onChange={(e) => setPesquisa(e.target.value)}
-                label="Pesquisar"
+                label="Ncolab, Nome, Sala"
               />
               <MultipleAutocomplete
                 sx={{ minWidth: 150 }}
                 {...maCentrosProps}
               />
-              <MobileDatePicker
-                label="Inicio"
-                inputFormat="dd/MM/yyyy"
-                value={date}
-                onChange={(e) => setDate(e)}
-                renderInput={(params) => <TextField {...params} />}
-              />
-              <Button variant="contained" onClick={handleFiltros}>
-                Aplicar Filtros
-              </Button>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DesktopDatePicker
+                  label="Data"
+                  inputFormat="dd/MM/yyyy"
+                  value={searchData}
+                  onChange={(e) => setSearchData(e)}
+                  renderInput={(params) => (
+                    <TextField variant="standard" {...params} />
+                  )}
+                />
+              </LocalizationProvider>
             </Stack>
           </Slide>
         </Box>
         <Tooltip title="Filtro" sx={{ ml: "auto" }}>
-          <IconButton onClick={() => setFiltro((prev) => !prev)}>
+          <Button
+            variant={filtro ? "contained" : "outlined"}
+            onClick={() => setFiltro((prev) => !prev)}
+          >
             <FilterListIcon />
-          </IconButton>
+          </Button>
         </Tooltip>
       </Toolbar>
     </>

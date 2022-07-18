@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import icon from "imgs/icon.png";
+import { getDateRelativeToNow } from "utils/dateCalculations";
 
 function ListNotificacoes({ isLoading, read, unRead }) {
   const renderList = (rows) => {
@@ -46,7 +47,18 @@ function ListNotificacoes({ isLoading, read, unRead }) {
                 </Typography>
               </>
             }
-            secondary={row.descricao}
+            secondary={
+              <>
+                {row.descricao}
+                <span
+                  style={{
+                    float: "right",
+                  }}
+                >
+                  {getDateRelativeToNow(row.hora)}
+                </span>
+              </>
+            }
           />
         </ListItemButton>
       </ListItem>

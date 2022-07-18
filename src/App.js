@@ -14,7 +14,7 @@ function App() {
 
   const queryClient = useQueryClient();
 
-  const { isFetching, error, data } = useQuery(
+  const { isLoading, error, data } = useQuery(
     ["getUserByToken", auth, user],
     async () => {
       const { data: response } = await axios.get("utilizador/getUserByToken");
@@ -30,7 +30,7 @@ function App() {
     socket.connect();
     queryClient.clear();
   }
-
+  if (error) console.log(error.response);
   if (error && auth) setAuth(false);
 
   //sockets
@@ -91,7 +91,7 @@ function App() {
 
   return (
     <UserContext.Provider value={{ user, setUser, auth, setAuth }}>
-      <ThemeProvider>{!isFetching && <Router />}</ThemeProvider>
+      <ThemeProvider>{!isLoading && <Router />}</ThemeProvider>
     </UserContext.Provider>
   );
 }

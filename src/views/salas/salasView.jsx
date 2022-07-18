@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import axios from "api/_axios";
 import ListSalas from "./components/listSalas";
 import SalasForm from "./components/form";
+import MaxTempoLimpeza from "./components/maxTempoLimpeza";
 
 const limit = 4;
 
@@ -115,6 +116,7 @@ function SalasView() {
     >
       <Stack direction="row" sx={{ mb: 2 }}>
         <Typography variant="h3">Gerir Salas</Typography>
+
         <Button
           color="info"
           variant="outlined"
@@ -124,6 +126,7 @@ function SalasView() {
           Criar nova sala
         </Button>
       </Stack>
+      <MaxTempoLimpeza />
       <Stack spacing={3} direction={{ xs: "column", sm: "row" }}>
         <ListSalas {...listSalasProps} />
         <SalasForm

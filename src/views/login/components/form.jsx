@@ -10,7 +10,7 @@ import {
   Paper,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
@@ -56,10 +56,13 @@ function LoginForm({ handleRequest, isLoading }) {
         await handleRequest(values);
       } catch (error) {
         console.log(error.response);
-        formik.setFieldError(
-          "password",
-          "Combinação errada de email e password!"
-        );
+        if (error.response.data.data === "Confirm email first.") {
+          formik.setFieldError("password", "Verifique o seu email!");
+        } else
+          formik.setFieldError(
+            "password",
+            "Combinação errada de email e password!"
+          );
       }
     },
   });

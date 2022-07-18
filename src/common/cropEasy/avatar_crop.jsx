@@ -41,8 +41,9 @@ function AvatarCrop({ file, setFile }) {
           <Avatar
             src={photoURL}
             sx={{
-              width: 250,
-              height: 250,
+              width: 200,
+              height: 200,
+              mb: 1,
               cursor: "pointer",
             }}
             onClick={() => setOpenCrop(true)}

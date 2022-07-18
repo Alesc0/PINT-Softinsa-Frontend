@@ -34,13 +34,33 @@ export const validationSchemaUtilizadores = yup.object({
 });
 
 export const validationSchemaPerfil = yup.object({
+  nome: yup
+    .string()
+    .min(5, "O nome deve ter pelo menos 5 caracteres.")
+    .required("Este campo é obrigatório."),
+  email: yup
+    .string()
+    .email("Email inválido.")
+    .required("Este campo é obrigatório."),
   telemovel: yup
     .string()
     .matches(phoneRegex, "Contacto inválido.")
     .required("Este campo é obrigatório."),
-  password: yup
+  password_atual: yup.string(),
+  new_password: yup
     .string()
-    .min(5, "A password deverá ter pelo menos 5 caracteres."),
+    .min(5, "A password deve ter pelo menos 5 caracteres.")
+    .when("password_atual", {
+      is: (val) => (val && val.length > 0 ? true : false),
+      then: yup.string().required("Este campo é obrigatório."),
+    }),
+  conf_password: yup.string().when("new_password", {
+    is: (val) => (val && val.length > 0 ? true : false),
+    then: yup
+      .string()
+      .oneOf([yup.ref("new_password")], "As password não coincidem.")
+      .required("As password não coincidem."),
+  }),
 });
 
 export const validationSchemaLimpeza = yup.object({

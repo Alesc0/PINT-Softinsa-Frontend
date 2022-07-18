@@ -24,6 +24,8 @@ import EditUtilizadores from "./views/utilizadores/editUtilizadores";
 import Notificacoes from "views/notificacoes/notificacoesView";
 import Feedbacks from "views/feedbacks/feedbacksView";
 
+import Verify from "views/verify/verifyView";
+
 import LandingPage from "./views/landingPage/landingPage";
 
 // ----------------------------------------------------------------------
@@ -52,7 +54,7 @@ export default function Router() {
             <Route path="feedbacks" element={<Feedbacks />} />
           </Route>
         </Route>
-
+        <Route path="verify/:token" element={<Verify />} />
         <Route path="home" element={<LandingPage />} />
         <Route path="login" element={<Login />} />
         <Route path="*" element={<NotFound />} />

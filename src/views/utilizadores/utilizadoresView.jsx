@@ -1,7 +1,7 @@
 import { Button, Stack, Typography } from "@mui/material";
 import axios from "api/_axios";
 import { UserContext } from "App";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -18,17 +18,24 @@ function UtilizadoresView() {
     pesquisa: pesquisa,
   });
 
-  const { data: dataCentros } = useQuery(["getCentros"], async () => {
-    const { data: response } = await axios.get("centro/list");
-    const getUserCentro = response.data.find(
-      (val) => val.idcentro === user.idcentro
-    );
-    setAutoCentros([getUserCentro]);
-    setParams({ centro: [getUserCentro.idcentro] });
-    return response.data;
-  });
+  const { isFetching: fetchingCentros, data: dataCentros } = useQuery(
+    ["getCentros"],
+    async () => {
+      const { data: response } = await axios.get("centro/list");
+      const getUserCentro = response.data.find(
+        (val) => val.idcentro === user.idcentro
+      );
+      setAutoCentros([getUserCentro]);
+      setParams({ centro: [getUserCentro.idcentro] });
+      return response.data;
+    }
+  );
 
-  const { isFetching, error, data } = useQuery(
+  const {
+    isLoading: loadingUtilizadores,
+    error,
+    data,
+  } = useQuery(
     ["getUtilizadores", page, rowsPerPage, params],
     async () => {
       let { data: response } = await axios.get("utilizador/list", {
@@ -60,10 +67,11 @@ function UtilizadoresView() {
       setAutoCentros([]);
       setParams({});
     }
+    setPage(0);
   };
 
   const tableProps = {
-    isLoading: isFetching,
+    isLoading: fetchingCentros || loadingUtilizadores,
     users: data?.data || [],
     rowsPerPage,
     setRowsPerPage,

@@ -30,6 +30,7 @@ function App() {
     socket.connect();
     queryClient.clear();
   }
+
   if (error) console.log(error.response);
   if (error && auth) setAuth(false);
 
@@ -88,10 +89,9 @@ function App() {
       socket.off("updateNotificacao");
     };
   }, [queryClient]);
-
   return (
     <UserContext.Provider value={{ user, setUser, auth, setAuth }}>
-      <ThemeProvider>{!isLoading && <Router />}</ThemeProvider>
+      <ThemeProvider>{!isLoading ? <Router /> : null}</ThemeProvider>
     </UserContext.Provider>
   );
 }

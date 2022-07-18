@@ -1,3 +1,4 @@
+import { Clear, Search } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import {
@@ -9,7 +10,7 @@ import {
   Stack,
   TextField,
   Toolbar,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 import MultipleAutocomplete from "common/multipleAutocomplete/multipleAutocomplete";
 import { useRef, useState } from "react";
@@ -54,7 +55,7 @@ const EnhancedTableToolbar = (props) => {
         }}
       >
         <Box
-          sx={{ display: "flex", width: "100%", overflow: "hidden" }}
+          sx={{ display: "flex", width: "100%", overflow: "hidden", mr: 1 }}
           ref={containerRef}
         >
           <Slide
@@ -66,6 +67,16 @@ const EnhancedTableToolbar = (props) => {
             unmountOnExit
           >
             <Stack direction="row" sx={{ ml: "auto" }} spacing={2}>
+              <Tooltip title="Limpar Filtros">
+                <IconButton onClick={() => handleFiltros(false)}>
+                  <Clear />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Pesquisar">
+                <IconButton onClick={() => handleFiltros(true)}>
+                  <Search />
+                </IconButton>
+              </Tooltip>
               <TextField
                 variant="standard"
                 value={pesquisa}
@@ -76,9 +87,6 @@ const EnhancedTableToolbar = (props) => {
                 sx={{ minWidth: 150 }}
                 {...maCentrosProps}
               />
-              <Button variant="contained" onClick={handleFiltros}>
-                Aplicar Filtros
-              </Button>
             </Stack>
           </Slide>
         </Box>
@@ -90,9 +98,12 @@ const EnhancedTableToolbar = (props) => {
           </Tooltip>
         ) : (
           <Tooltip title="Filter list" sx={{ ml: "auto" }}>
-            <IconButton onClick={() => setFiltro((prev) => !prev)}>
+            <Button
+              variant={filtro ? "contained" : "outlined"}
+              onClick={() => setFiltro((prev) => !prev)}
+            >
               <FilterListIcon />
-            </IconButton>
+            </Button>
           </Tooltip>
         )}
       </Toolbar>

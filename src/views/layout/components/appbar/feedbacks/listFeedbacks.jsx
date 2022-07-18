@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import ava from "imgs/avatar.jpg";
+import { getDateRelativeToNow } from "utils/dateCalculations";
 import { getColor } from "utils/getColorRating";
 
 function ListFeedbacks({ feedbacks, isLoading }) {
@@ -62,7 +63,7 @@ function ListFeedbacks({ feedbacks, isLoading }) {
                         float: "right",
                       }}
                     >
-                      {row.criado_em.split("T")[0]}
+                      {getDateRelativeToNow(row.criado_em)}
                     </span>
                   </>
                 }

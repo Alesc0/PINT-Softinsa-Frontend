@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  CircularProgress,
   List,
   ListItem,
   ListItemButton,
@@ -15,6 +16,7 @@ import icon from "imgs/icon.png";
 import { useContext, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
+import { getDateRelativeToNow } from "utils/dateCalculations";
 
 function NotificacoesView() {
   const { user } = useContext(UserContext);
@@ -65,7 +67,9 @@ function NotificacoesView() {
       }}
     >
       <Typography variant="h3">Notificações</Typography>
-      {!data && !isLoading ? (
+      {isLoading ? (
+        <CircularProgress sx={{ alignSelf: "center" }} />
+      ) : !data && !isLoading ? (
         <Typography textAlign="center" sx={{ marginBlock: 2 }}>
           Sem Notificações.
         </Typography>
@@ -105,7 +109,18 @@ function NotificacoesView() {
                         </Typography>
                       </>
                     }
-                    secondary={row.descricao}
+                    secondary={
+                      <>
+                        {row.descricao}
+                        <span
+                          style={{
+                            float: "right",
+                          }}
+                        >
+                          {getDateRelativeToNow(row.hora)}
+                        </span>
+                      </>
+                    }
                   />
                 </ListItemButton>
               </ListItem>

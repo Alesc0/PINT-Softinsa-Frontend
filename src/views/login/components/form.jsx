@@ -13,10 +13,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
-import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import axios from "api/_axios";
 
 const validationSchema = yup.object({
   email: yup
@@ -58,10 +56,13 @@ function LoginForm({ handleRequest, isLoading }) {
         await handleRequest(values);
       } catch (error) {
         console.log(error.response);
-        formik.setFieldError(
-          "password",
-          "Combinação errada de email e password!"
-        );
+        if (error.response.data.data === "Confirm email first.") {
+          formik.setFieldError("password", "Verifique o seu email!");
+        } else
+          formik.setFieldError(
+            "password",
+            "Combinação errada de email e password!"
+          );
       }
     },
   });

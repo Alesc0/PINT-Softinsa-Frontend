@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  CircularProgress,
   List,
   ListItem,
   ListItemButton,
@@ -16,6 +17,7 @@ import icon from "imgs/icon.png";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
+import { getDateRelativeToNow } from "utils/dateCalculations";
 import { getColor } from "utils/getColorRating";
 
 function NotificacoesView() {
@@ -63,7 +65,9 @@ function NotificacoesView() {
       }}
     >
       <Typography variant="h3">Feedbacks</Typography>
-      {!data && !isLoading ? (
+      {isLoading ? (
+        <CircularProgress sx={{ alignSelf: "center" }} />
+      ) : !data && !isLoading ? (
         <Typography textAlign="center" sx={{ marginBlock: 2 }}>
           Sem Feedbacks.
         </Typography>
@@ -126,7 +130,7 @@ function NotificacoesView() {
                             float: "right",
                           }}
                         >
-                          {row.criado_em.split("T")[0]}
+                          {getDateRelativeToNow(row.criado_em)}
                         </span>
                       </>
                     }

@@ -53,6 +53,8 @@ export default function TableReservas(props) {
     setAutoCentros,
     handleFiltros,
     dataCentros,
+    setSearchData,
+    searchData,
   } = props;
 
   const queryClient = useQueryClient();
@@ -127,6 +129,8 @@ export default function TableReservas(props) {
     setAutoCentros,
     handleFiltros,
     dataCentros,
+    setSearchData,
+    searchData,
   };
 
   return (

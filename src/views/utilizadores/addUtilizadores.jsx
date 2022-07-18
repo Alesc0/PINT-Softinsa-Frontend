@@ -4,11 +4,11 @@ import axios from "api/_axios";
 import FileUploader from "common/fileUploader/fileUploader";
 import { useState } from "react";
 import { useMutation } from "react-query";
+import { toast } from "react-toastify";
 import UtilizadorForm from "./components/form";
 
 export default function AddUtilizadoresView() {
   const [files, setFiles] = useState(undefined);
-  const [loading, setLoading] = useState(false);
 
   const fileUploadProps = {
     files,
@@ -37,10 +37,22 @@ export default function AddUtilizadoresView() {
     }
   });
 
-  const handleBulkInsert = () => {
-    setLoading(true);
-    setLoading(false);
+  const bulkInsertMutation = useMutation(async () => {
+    let formData = new FormData();
+    formData.append("excel", files[0]);
+    await axios.post("utilizador/bulkAdd", formData);
+  });
+
+  const handleBulkInsert = async () => {
+    try {
+      await bulkInsertMutation.mutateAsync();
+      toast.success("Utilizadores inseridos com sucesso!");
+    } catch (err) {
+      console.log(err.response);
+      toast.error("Erro ao inserir utilizadores!");
+    }
   };
+
   const formProps = {
     handleRequest: addUserMutation.mutateAsync,
   };
@@ -60,7 +72,7 @@ export default function AddUtilizadoresView() {
         </Typography>
         <FileUploader {...fileUploadProps} />
         <LoadingButton
-          loading={loading}
+          loading={bulkInsertMutation.isLoading}
           onClick={handleBulkInsert}
           variant="contained"
         >

@@ -132,7 +132,7 @@ function SalasForm({
         !data
           ? toast.success("Sala adicionada!")
           : toast.success("Sala atualizada!");
-        queryClient.invalidateQueries("getSalas");
+        queryClient.invalidateQueries("getSalasView");
       } catch (error) {
         toast.error(`Erro ao ${!data ? "adicionar" : "atualizar"} sala`);
       }

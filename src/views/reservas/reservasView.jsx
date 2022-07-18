@@ -10,25 +10,30 @@ function ReservasView() {
   const [page, setPage] = useState(0);
   const [autoCentros, setAutoCentros] = useState([]);
   const [pesquisa, setPesquisa] = useState("");
+  const [searchData, setSearchData] = useState(null);
+  const [params, setParams] = useState({});
   const { user } = useContext(UserContext);
 
   const { data: dataCentros } = useQuery(["getCentros"], async () => {
     const { data: response } = await axios.get("centro/list");
-    setAutoCentros([
-      response.data.find((val) => val.idcentro === user.idcentro),
-    ]);
+    const getUserCentro = response.data.find(
+      (val) => val.idcentro === user.idcentro
+    );
+    setAutoCentros([getUserCentro]);
+    setParams({
+      centros: [getUserCentro?.idcentro],
+    });
     return response.data;
   });
 
-  const { refetch, isLoading, data } = useQuery(
-    ["getReservas", page, rowsPerPage, dataCentros],
+  const { isLoading, data } = useQuery(
+    ["getReservas", page, rowsPerPage, dataCentros, params],
     async () => {
       const { data: response } = await axios.get("reserva/list", {
         params: {
           offset: page * rowsPerPage,
           limit: rowsPerPage,
-          centro: autoCentros.map((val) => val.idcentro),
-          pesquisa: pesquisa,
+          ...params,
         },
       });
       return response;
@@ -38,6 +43,23 @@ function ReservasView() {
       keepPreviousData: true,
     }
   );
+
+  const handleFiltros = (check) => {
+    if (check) {
+      setParams({
+        ...(autoCentros.length > 0 && {
+          centros: autoCentros.map((val) => val.idcentro),
+        }),
+        ...(pesquisa && { pesquisa }),
+        ...(data && { data: searchData.toLocaleDateString("en-CA") }),
+      });
+    } else {
+      setAutoCentros([]);
+      setPesquisa("");
+      setSearchData(null);
+      setParams({});
+    }
+  };
 
   const tableProps = {
     reservas: data?.data,
@@ -51,8 +73,10 @@ function ReservasView() {
     setPesquisa,
     autoCentros,
     setAutoCentros,
-    handleFiltros: refetch,
+    handleFiltros: handleFiltros,
     dataCentros,
+    searchData,
+    setSearchData,
   };
 
   return (

@@ -13,24 +13,36 @@ function UtilizadoresView() {
   const { user } = useContext(UserContext);
   const [autoCentros, setAutoCentros] = useState([]);
   const [pesquisa, setPesquisa] = useState("");
-
-  const { data: dataCentros } = useQuery(["getCentros"], async () => {
-    const { data: response } = await axios.get("centro/list");
-    setAutoCentros([
-      response.data.find((val) => val.idcentro === user.idcentro),
-    ]);
-    return response.data;
+  const [params, setParams] = useState({
+    centros: autoCentros.map((val) => val.idcentro),
+    pesquisa: pesquisa,
   });
 
-  const { refetch, isLoading, error, data } = useQuery(
-    ["getUtilizadores", page, rowsPerPage, dataCentros],
+  const { isFetching: fetchingCentros, data: dataCentros } = useQuery(
+    ["getCentros"],
+    async () => {
+      const { data: response } = await axios.get("centro/list");
+      const getUserCentro = response.data.find(
+        (val) => val.idcentro === user.idcentro
+      );
+      setAutoCentros([getUserCentro]);
+      setParams({ centro: [getUserCentro.idcentro] });
+      return response.data;
+    }
+  );
+
+  const {
+    isLoading: loadingUtilizadores,
+    error,
+    data,
+  } = useQuery(
+    ["getUtilizadores", page, rowsPerPage, params],
     async () => {
       let { data: response } = await axios.get("utilizador/list", {
         params: {
           offset: page * rowsPerPage,
           limit: rowsPerPage,
-          centro: autoCentros.map((val) => val.idcentro),
-          pesquisa: pesquisa,
+          ...params,
         },
       });
       return response;
@@ -44,8 +56,22 @@ function UtilizadoresView() {
   if (error)
     toast.error("Erro ao obter utilizadores!", { toastId: "getUserError" });
 
+  const handleFiltros = (check) => {
+    if (check) {
+      setParams({
+        centros: autoCentros.map((val) => val.idcentro),
+        pesquisa: pesquisa,
+      });
+    } else {
+      setPesquisa("");
+      setAutoCentros([]);
+      setParams({});
+    }
+    setPage(0);
+  };
+
   const tableProps = {
-    isLoading: isLoading,
+    isLoading: fetchingCentros || loadingUtilizadores,
     users: data?.data || [],
     rowsPerPage,
     setRowsPerPage,
@@ -56,7 +82,7 @@ function UtilizadoresView() {
     setPesquisa,
     autoCentros,
     setAutoCentros,
-    handleFiltros: refetch,
+    handleFiltros: handleFiltros,
     dataCentros,
   };
 

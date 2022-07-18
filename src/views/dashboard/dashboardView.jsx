@@ -1,4 +1,4 @@
-import { DesktopDatePicker, MobileDatePicker } from "@mui/lab";
+import { MobileDatePicker } from "@mui/lab";
 import {
   Box,
   Button,
@@ -14,6 +14,7 @@ import axios from "api/_axios";
 import socket from "api/_socket";
 import MyResponsiveBar from "common/nivoCharts/bars";
 import MyResponsivePie from "common/nivoCharts/pie";
+import Tesatebar from "common/nivoCharts/teste";
 import MyResponsiveTimeRange from "common/nivoCharts/timeRange";
 import { useState } from "react";
 import { useQuery } from "react-query";
@@ -89,6 +90,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </Box>
+
       <Box gridColumn="span 2">
         <Card>
           <CardHeader title="Utilizadores" />
@@ -100,7 +102,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </Box>
-      <Box gridColumn={{ sm: "span 2", md: "span 4" }}>
+      <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
         <Card>
           <CardHeader
             title="Reservas"
@@ -112,18 +114,14 @@ export default function Dashboard() {
                     inputFormat="dd/MM/yyyy"
                     value={startDate}
                     onChange={(e) => setStartDate(e)}
-                    renderInput={(params) => (
-                      <TextField  {...params} />
-                    )}
+                    renderInput={(params) => <TextField {...params} />}
                   />
                   <MobileDatePicker
                     label="Fim"
                     inputFormat="dd/MM/yyyy"
                     value={endDate}
                     onChange={(e) => setEndDate(e)}
-                    renderInput={(params) => (
-                      <TextField  {...params} />
-                    )}
+                    renderInput={(params) => <TextField {...params} />}
                   />
                 </Stack>
               </LocalizationProvider>
@@ -134,6 +132,14 @@ export default function Dashboard() {
           </CardContent>
         </Card>
         <Button onClick={() => socket.emit("nmrSockets")}>ping</Button>
+      </Box>
+      <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
+        <Card>
+          <CardHeader title="Teste" />
+          <CardContent>
+            <Tesatebar />
+          </CardContent>
+        </Card>
       </Box>
     </Box>
   );

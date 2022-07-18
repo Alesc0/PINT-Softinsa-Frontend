@@ -21,10 +21,12 @@ import Utilizadores from "./views/utilizadores/utilizadoresView";
 import AddUtilizadores from "./views/utilizadores/addUtilizadores";
 import EditUtilizadores from "./views/utilizadores/editUtilizadores";
 
-import Limpezas from "./views/limpezas/limpezasView";
 import Notificacoes from "views/notificacoes/notificacoesView";
 import Feedbacks from "views/feedbacks/feedbacksView";
-import Perfil from "./views/perfil/perfil";
+
+import Verify from "views/verify/verifyView";
+
+import LandingPage from "./views/landingPage/landingPage";
 
 // ----------------------------------------------------------------------
 
@@ -48,12 +50,12 @@ export default function Router() {
               element={<EditUtilizadores />}
             />
             <Route path="reservas" element={<Reservas />} />
-            <Route path="perfil" element={<Perfil />} />
-            <Route path="limpezas" element={<Limpezas />} />
             <Route path="notificacoes" element={<Notificacoes />} />
             <Route path="feedbacks" element={<Feedbacks />} />
           </Route>
         </Route>
+        <Route path="verify/:token" element={<Verify />} />
+        <Route path="home" element={<LandingPage />} />
         <Route path="login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

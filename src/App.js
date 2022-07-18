@@ -59,6 +59,11 @@ function App() {
       queryClient.invalidateQueries("getNotificationsFull");
     });
 
+    socket.on("updateSala", () => {
+      queryClient.invalidateQueries("getSalas");
+      queryClient.invalidateQueries("getSalasView");
+    });
+    
     socket.on("requestRefresh", async () => {
       try {
         console.log("refreshing");
@@ -87,6 +92,8 @@ function App() {
       socket.off("updateUser");
       socket.off("updateFeedback");
       socket.off("updateNotificacao");
+
+      socket.off("updateSala");
     };
   }, [queryClient]);
   return (

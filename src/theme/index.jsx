@@ -1,18 +1,18 @@
 // material
-import { CssBaseline, useMediaQuery } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 import {
   createTheme,
   StyledEngineProvider,
   ThemeProvider as MUIThemeProvider,
 } from "@mui/material/styles";
 import PropTypes from "prop-types";
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import componentsOverride from "./overrides";
 //
 import { paletteDark, paletteDefault } from "./palette";
 import shadowsLight, {
-  customShadowsLight,
   customShadowsDark,
+  customShadowsLight,
   shadowsDark,
 } from "./shadows";
 import typography from "./typography";
@@ -28,23 +28,19 @@ export const ColorModeContext = createContext(null);
 export default function ThemeProvider({ children }) {
   const [mode, setMode] = useState("light");
 
-  const systemPrefersDark = useMediaQuery("(prefers-color-scheme: dark)");
-
-  const handleColorMode = useCallback(
-    (mode) => {
-      if (mode === "dark" || mode === "light") setMode(mode);
-      else systemPrefersDark ? setMode("dark") : setMode("light");
-
-      localStorage.setItem("mode", mode);
-    },
-    [setMode, systemPrefersDark]
-  );
+  const handleColorMode = () => {
+    if (mode === "dark") setMode("light");
+    else setMode("dark");
+  };
 
   useEffect(() => {
     const local = localStorage.getItem("mode");
-    if (local) handleColorMode(local);
-    else handleColorMode("light");
-  }, [handleColorMode]);
+    if (local) setMode(local);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("mode", mode);
+  }, [mode]);
 
   const palette = mode === "light" ? paletteDefault : paletteDark;
   const shadows = mode === "light" ? shadowsLight : shadowsDark;
@@ -64,7 +60,7 @@ export default function ThemeProvider({ children }) {
   theme.components = componentsOverride(theme);
 
   return (
-    <ColorModeContext.Provider value={{ handleColorMode }}>
+    <ColorModeContext.Provider value={{ handleColorMode, mode }}>
       <StyledEngineProvider injectFirst>
         <MUIThemeProvider theme={theme}>
           <CssBaseline />

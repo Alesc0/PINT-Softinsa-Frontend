@@ -120,11 +120,6 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
     else setExtraFields(null);
   }, [id, refetch, setExtraFields]);
 
-  useEffect(() => {
-    if (!dataUtilizador || !id) return;
-    setExtraFields(dataUtilizador);
-  }, [dataUtilizador, setExtraFields, id]);
-
   const handleToggle = (value) => () => {
     const newChecked = [...checked];
     newChecked[value] = !checked[value];
@@ -165,10 +160,12 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
           idcentro: values.idcentro.idcentro,
           ...opObj(),
           role: perms[permissionTab],
+          ...(dataUtilizador && { swap: checkDiferentRole() }),
         });
 
         queryClient.invalidateQueries("getUtilizadores");
-        toast.success("Novo utilizador adicionado!");
+        if (id) toast.success("Utilizador atualizado!");
+        else toast.success("Utilizador criado!");
         navigate("/utilizadores");
       } catch (error) {
         console.log(error.response);
@@ -177,9 +174,27 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
             "email",
             "Já se encontra registado um utilizador com este email!"
           );
+        else if (id) toast.error("Erro a atualizar utilizador!");
+        else toast.error("Erro a criar utilizador!");
       }
     },
   });
+
+  const checkDiferentRole = () => {
+    if (dataUtilizador?.role === "U" && perms[permissionTab] === "Limpeza") {
+      return true;
+    } else if (
+      dataUtilizador?.role === "L" &&
+      perms[permissionTab] === "Regular"
+    )
+      return true;
+    else return false;
+  };
+
+  useEffect(() => {
+    if (!id) queryClient.clear("getUtilizadorByID");
+    setExtraFields(dataUtilizador);
+  }, [dataUtilizador, setExtraFields, id]);
 
   const handleChange = (event, newValue) => setPermissionTab(newValue);
 

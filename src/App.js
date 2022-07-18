@@ -63,7 +63,7 @@ function App() {
       queryClient.invalidateQueries("getSalas");
       queryClient.invalidateQueries("getSalasView");
     });
-    
+
     socket.on("requestRefresh", async () => {
       try {
         console.log("refreshing");
@@ -77,9 +77,13 @@ function App() {
         console.log("error refreshing token");
       }
     });
-    socket.on("connect_error", (error) => {
-      console.log(error);
+    socket.on("connect_error", () => {
       console.log("socket error connection");
+      if (auth) {
+        socket.disconnect();
+        socket.io.opts.query.token = getTokens().jwt;
+        socket.connect();
+      }
     });
 
     return () => {

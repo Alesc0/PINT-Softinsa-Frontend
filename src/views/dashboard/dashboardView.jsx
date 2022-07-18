@@ -61,86 +61,88 @@ export default function Dashboard() {
   );
 
   return (
-    <Box
-      display="grid"
-      gridTemplateColumns={{ sm: "repeat(2, 1fr)", md: "repeat(4, 2fr)" }}
-      gap={3}
-    >
-      <BoxNumbers
-        loading={loadingCountUtilizadores}
-        info={countUtilizadores}
-        text={"Utilizadores Registados"}
-      />
+    <>
+      <Button onClick={() => socket.emit("nmrSockets")}>ping</Button>
+      <Box
+        display="grid"
+        gridTemplateColumns={{ sm: "repeat(2, 1fr)", md: "repeat(4, 2fr)" }}
+        gap={3}
+      >
+        <BoxNumbers
+          loading={loadingCountUtilizadores}
+          info={countUtilizadores}
+          text={"Utilizadores Registados"}
+        />
 
-      {info.map((row) => (
-        <BoxNumbers key={row.id} info={row.val} text={row.desc} />
-      ))}
+        {info.map((row) => (
+          <BoxNumbers key={row.id} info={row.val} text={row.desc} />
+        ))}
 
-      <BoxNumbers
-        loading={loadingCountSalas}
-        info={countSalas}
-        text={"Salas Totais"}
-      />
+        <BoxNumbers
+          loading={loadingCountSalas}
+          info={countSalas}
+          text={"Salas Totais"}
+        />
 
-      <Box gridColumn="span 2">
-        <Card>
-          <CardHeader title="Alocação diária" />
-          <CardContent>
-            <MyResponsiveBar />
-          </CardContent>
-        </Card>
-      </Box>
+        <Box gridColumn="span 2">
+          <Card>
+            <CardHeader title="Alocação diária" />
+            <CardContent>
+              <MyResponsiveBar />
+            </CardContent>
+          </Card>
+        </Box>
 
-      <Box gridColumn="span 2">
-        <Card>
-          <CardHeader title="Utilizadores" />
-          <CardContent>
-            <MyResponsivePie
-              data={dataTipoUtilizadores}
-              loading={loadingTipoUtilizadores}
+        <Box gridColumn="span 2">
+          <Card>
+            <CardHeader title="Utilizadores" />
+            <CardContent>
+              <MyResponsivePie
+                data={dataTipoUtilizadores}
+                loading={loadingTipoUtilizadores}
+              />
+            </CardContent>
+          </Card>
+        </Box>
+        <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
+          <Card>
+            <CardHeader
+              title="Reservas"
+              action={
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <Stack direction="row" spacing={1}>
+                    <MobileDatePicker
+                      label="Inicio"
+                      inputFormat="dd/MM/yyyy"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e)}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                    <MobileDatePicker
+                      label="Fim"
+                      inputFormat="dd/MM/yyyy"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e)}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </Stack>
+                </LocalizationProvider>
+              }
             />
-          </CardContent>
-        </Card>
+            <CardContent>
+              <MyResponsiveTimeRange startDate={startDate} endDate={endDate} />
+            </CardContent>
+          </Card>
+        </Box>
+        <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
+          <Card>
+            <CardHeader title="Teste" />
+            <CardContent>
+              <Tesatebar />
+            </CardContent>
+          </Card>
+        </Box>
       </Box>
-      <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
-        <Card>
-          <CardHeader
-            title="Reservas"
-            action={
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Stack direction="row" spacing={1}>
-                  <MobileDatePicker
-                    label="Inicio"
-                    inputFormat="dd/MM/yyyy"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e)}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                  <MobileDatePicker
-                    label="Fim"
-                    inputFormat="dd/MM/yyyy"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e)}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                </Stack>
-              </LocalizationProvider>
-            }
-          />
-          <CardContent>
-            <MyResponsiveTimeRange startDate={startDate} endDate={endDate} />
-          </CardContent>
-        </Card>
-        <Button onClick={() => socket.emit("nmrSockets")}>ping</Button>
-      </Box>
-      <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
-        <Card>
-          <CardHeader title="Teste" />
-          <CardContent>
-            <Tesatebar />
-          </CardContent>
-        </Card>
-      </Box>
-    </Box>
+    </>
   );
 }

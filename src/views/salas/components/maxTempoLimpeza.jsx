@@ -1,10 +1,36 @@
+import { CheckCircle } from "@mui/icons-material";
 import { LocalizationProvider, MobileTimePicker } from "@mui/lab";
-import { Paper, Stack, TextField, Typography } from "@mui/material";
+import { IconButton, Paper, Stack, TextField, Typography } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { useState } from "react";
+import axios from "api/_axios";
+import { useEffect, useState } from "react";
+import { useMutation } from "react-query";
+import { toast } from "react-toastify";
 
-function MaxTempoLimpeza() {
-  const [tempMax, setTempMax] = useState(new Date("December 24,00:10:00"));
+function MaxTempoLimpeza({ tempoLimpeza, loading }) {
+  const [tempMax, setTempMax] = useState(null);
+
+  useEffect(() => {
+    if (tempoLimpeza) setTempMax(new Date(`December 24,${tempoLimpeza}`));
+  }, [tempoLimpeza]);
+
+  //post pedido/updateTempoLimpeza -> edit max limpeza default (admin) body:{"tempo":"00:15:00"};
+
+  const updateMutation = useMutation(async () => {
+    await axios.post("pedido/updateTempoLimpeza", {
+      tempo: tempMax.toLocaleTimeString(),
+    });
+  });
+
+  const handleMutation = async () => {
+    try {
+      await updateMutation.mutateAsync();
+      toast.success("Tempo limpeza atualizado com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao atualizar tempo limpeza!");
+    }
+  };
+
   return (
     <Stack
       component={Paper}
@@ -36,6 +62,9 @@ function MaxTempoLimpeza() {
         />
       </LocalizationProvider>
       <Typography variant="body1">minutos</Typography>
+      <IconButton color="primary" onClick={handleMutation}>
+        <CheckCircle />
+      </IconButton>
     </Stack>
   );
 }

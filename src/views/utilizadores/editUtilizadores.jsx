@@ -21,10 +21,15 @@ export default function EditUtilizadoresView() {
     delete userObj.role;
     delete userObj.add;
 
-    if (limpeza) {
-      await axios.put("/empregadoLimpeza/" + id, userObj);
-    } else {
-      await axios.put("/utilizador/" + id, userObj);
+    let parsedvalues = { ...userObj };
+    delete parsedvalues.swap;
+
+    await axios.put("/utilizador/" + id, parsedvalues);
+
+    if (userObj.swap) {
+      delete userObj.swap;
+      if (limpeza) await axios.post(`/empregadoLimpeza/makeUtilizador/${id}`);
+      else await axios.post(`/empregadoLimpeza/makeUtilizador/${id}`);
     }
   });
 

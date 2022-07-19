@@ -30,14 +30,14 @@ function PedidoRow({ row }) {
       </TableCell>
       <TableCell align="left">
         <Typography>
-          {row.data && formatedDate.split("-")[2]}{" "}
-          {row.data && months[formatedDate.split("-")[1] - 1]}
+          {/* {row.data && formatedDate.split("-")[2]}{" "}
+          {row.data && months[formatedDate.split("-")[1] - 1]} */}
         </Typography>
       </TableCell>
       <TableCell align="left">
         <Typography>
-          {row.data && formatedHours(row.horainicio)} -{" "}
-          {row.data && formatedHours(row.horafinal)}
+          {/* {row.data && formatedHours(row.horainicio)} -{" "}
+          {row.data && formatedHours(row.horafinal)} */}
         </Typography>
       </TableCell>
     </TableRow>

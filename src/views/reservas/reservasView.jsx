@@ -9,13 +9,15 @@ function ReservasView() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
   const [autoCentros, setAutoCentros] = useState([]);
+  const [autoSalas, setAutoSalas] = useState([]);
   const [pesquisa, setPesquisa] = useState("");
   const [searchData, setSearchData] = useState(null);
   const [params, setParams] = useState({});
   const { user } = useContext(UserContext);
 
-  const { data: dataCentros } = useQuery(["getCentros"], async () => {
+  const { data: dataCentros } = useQuery(["getCentrosReservas"], async () => {
     const { data: response } = await axios.get("centro/list");
+
     const getUserCentro = response.data.find(
       (val) => val.idcentro === user.idcentro
     );
@@ -23,11 +25,26 @@ function ReservasView() {
     setParams({
       centros: [getUserCentro?.idcentro],
     });
+
     return response.data;
   });
 
+  const { data: dataSalas } = useQuery(
+    ["getSalasReservas", autoCentros],
+    async () => {
+      const { data: response } = await axios.get("sala/list", {
+        params: {
+          offset: 0,
+          limit: 999,
+          centros: autoCentros.map((val) => val.idcentro),
+        },
+      });
+      return response.data;
+    }
+  );
+
   const { isLoading, data } = useQuery(
-    ["getReservas", page, rowsPerPage, dataCentros, params],
+    ["getReservasView", page, rowsPerPage, dataCentros, params],
     async () => {
       const { data: response } = await axios.get("reserva/list", {
         params: {
@@ -51,7 +68,10 @@ function ReservasView() {
           centros: autoCentros.map((val) => val.idcentro),
         }),
         ...(pesquisa && { pesquisa }),
-        ...(data && { data: searchData.toLocaleDateString("en-CA") }),
+        ...(searchData && { data: searchData.toLocaleDateString("en-CA") }),
+        ...(autoSalas.length > 0 && {
+          salas: autoSalas.map((val) => val.idsala),
+        }),
       });
     } else {
       setAutoCentros([]);
@@ -75,6 +95,9 @@ function ReservasView() {
     setAutoCentros,
     handleFiltros: handleFiltros,
     dataCentros,
+    dataSalas,
+    setAutoSalas,
+    autoSalas,
     searchData,
     setSearchData,
   };

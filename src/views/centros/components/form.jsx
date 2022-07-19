@@ -7,6 +7,7 @@ import {
   Stack,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -17,6 +18,7 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 import axios from "api/_axios";
 import ImgUploader from "common/fileUploader/fileUploader";
+import { validationSchemaCentros } from "utils/validations";
 
 const loadSkeleton = () => {
   return (
@@ -41,24 +43,6 @@ const loadSkeleton = () => {
     </>
   );
 };
-const validationSchema = yup.object({
-  nome: yup
-    .string()
-    .min(3, "O nome deve ter pelo menos 5 caracteres.")
-    .max(50, "O nome deve ter no máximo 50 caracteres.")
-    .required("Este campo é obrigatório."),
-  endereco: yup
-    .string()
-    .min(3, "O endereço deve ter pelo menos 5 caracteres.")
-    .max(50, "O endereço deve ter no máximo 50 caracteres.")
-    .required("Este campo é obrigatório."),
-  descricao: yup
-    .string()
-    .min(5, "A descrição deve ter pelo menos 10 caracteres.")
-    .max(250, "A descrição só pode ter até 250 caracteres.")
-    .required("Este campo é obrigatório."),
-  cidade: yup.string().required("Este campo é obrigatório."),
-});
 
 export default function CentroForm({ handleRequest, id = undefined }) {
   const [cidades, setCidades] = useState([]);
@@ -101,7 +85,7 @@ export default function CentroForm({ handleRequest, id = undefined }) {
       cidade: dataCentro?.cidade || null,
     },
     enableReinitialize: true,
-    validationSchema: validationSchema,
+    validationSchema: validationSchemaCentros,
 
     onSubmit: async (values) => {
       handleRequest({ ...values, imagem: files[0] });
@@ -212,12 +196,16 @@ export default function CentroForm({ handleRequest, id = undefined }) {
           </Stack>
         </>
       )}
-      <Switch
-        id="estado"
+      <Tooltip
+        title="Ativar/Desativar centro"
         sx={{ position: "absolute", top: 0, mt: 1, right: 2 }}
-        checked={formik.values.estado}
-        onChange={formik.handleChange}
-      />
+      >
+        <Switch
+          id="estado"
+          checked={formik.values.estado}
+          onChange={formik.handleChange}
+        />
+      </Tooltip>
     </Paper>
   );
 }

@@ -30,10 +30,11 @@ export default function BasicMenu(props) {
       onSuccess: () => {
         toast.success("Utilizador atualizado!");
         handleCloseMenu();
-        queryClient.invalidateQueries("getUtilizadores");
+        queryClient.invalidateQueries("getUtilizadoresView");
       },
     }
   );
+
   const removePhoto = useMutation(
     async () => {
       const { data: response } = await axios.delete(
@@ -45,7 +46,7 @@ export default function BasicMenu(props) {
       onSuccess: () => {
         toast.success("Utilizador atualizado!");
         handleCloseMenu();
-        queryClient.invalidateQueries("getUtilizadores");
+        queryClient.invalidateQueries("getUtilizadoresView");
       },
       onError: () => {
         toast.error("Utilizador não tem foto!");

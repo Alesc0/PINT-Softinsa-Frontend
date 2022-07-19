@@ -53,6 +53,9 @@ export default function TableReservas(props) {
     setAutoCentros,
     handleFiltros,
     dataCentros,
+    dataSalas,
+    setAutoSalas,
+    autoSalas,
     setSearchData,
     searchData,
   } = props;
@@ -131,6 +134,9 @@ export default function TableReservas(props) {
     dataCentros,
     setSearchData,
     searchData,
+    dataSalas,
+    setAutoSalas,
+    autoSalas,
   };
 
   return (

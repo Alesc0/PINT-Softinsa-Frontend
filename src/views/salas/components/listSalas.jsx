@@ -15,11 +15,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import axios from "api/_axios";
-import { UserContext } from "App";
 import MultipleAutocomplete from "common/multipleAutocomplete/multipleAutocomplete";
-import { useContext, useRef, useState } from "react";
-import { useQuery } from "react-query";
+import { useRef, useState } from "react";
 
 export default function ListSalas(props) {
   const {
@@ -30,24 +27,18 @@ export default function ListSalas(props) {
     count,
     isLoading,
     handleChangePagination,
-    setCentro,
     centro,
+    setCentro,
     page,
     slider,
     setSlider,
     pesquisa,
     setPesquisa,
     refetch,
+    dataCentros,
   } = props;
 
   const [filtro, setFiltro] = useState(false);
-  const { user } = useContext(UserContext);
-
-  const { data: dataCentros } = useQuery("getCentrosSalas", async () => {
-    const { data: response } = await axios.get("centro/list");
-    setCentro([response.data.find((val) => val.idcentro === user.idcentro)]);
-    return response.data;
-  });
 
   const containerRef = useRef(null);
 

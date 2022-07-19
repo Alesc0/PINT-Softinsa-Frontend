@@ -20,7 +20,7 @@ import { useFormik } from "formik";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "react-query";
 import { toast } from "react-toastify";
-import * as yup from "yup";
+import { validationSchemaSalas } from "utils/validations";
 
 const loadSkeleton = () => {
   return (
@@ -52,33 +52,6 @@ const loadSkeleton = () => {
     </>
   );
 };
-
-const validationSchema = yup.object({
-  nome: yup
-    .string()
-    .min(3, "O nome deve ter pelo menos 3 caracteres.")
-    .max(50, "O nome deve ter no máximo 50 caracteres.")
-    .required("Este campo é obrigatório."),
-  descricao: yup
-    .string()
-    .min(10, "A descrição deve ter pelo menos 10 caracteres.")
-    .max(250, "A descrição só pode ter até 250 caracteres.")
-    .required("Este campo é obrigatório."),
-  lotacaomax: yup
-    .number()
-    .min(10, "10-100")
-    .max(100, "10-100.")
-    .required("Obrigatório"),
-  estado: yup.boolean(),
-  justificacao: yup
-    .string()
-    .min(10, "A justificação deve ter pelo menos 10 caracteres.")
-    .max(250, "A justificação só pode ter até 250 caracteres.")
-    .when("estado", {
-      is: (value) => !value,
-      then: yup.string().required("Campo obrigatório"),
-    }),
-});
 
 function SalasForm({
   data,
@@ -115,7 +88,7 @@ function SalasForm({
       justificacao: data?.justificacao || "",
     },
     enableReinitialize: true,
-    validationSchema: validationSchema,
+    validationSchema: validationSchemaSalas,
 
     onSubmit: async (values) => {
       try {

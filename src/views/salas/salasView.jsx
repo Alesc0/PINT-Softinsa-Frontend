@@ -1,10 +1,11 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { toast } from "react-toastify";
 import axios from "api/_axios";
-import ListSalas from "./components/listSalas";
+import { UserContext } from "App";
+import { useContext, useState } from "react";
+import { useMutation, useQuery } from "react-query";
+import { toast } from "react-toastify";
 import SalasForm from "./components/form";
+import ListSalas from "./components/listSalas";
 import MaxTempoLimpeza from "./components/maxTempoLimpeza";
 
 const limit = 4;
@@ -16,7 +17,7 @@ function SalasView() {
   const [slider, setSlider] = useState([0, 70]);
   const [pesquisa, setPesquisa] = useState("");
 
-  const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
 
   const {
     isFetching: loadingCentros,
@@ -26,9 +27,18 @@ function SalasView() {
     ["getCentrosSalas"],
     async () => {
       const { data: response } = await axios.get("centro/list");
+      setCentro([response.data.find((val) => val.idcentro === user.idcentro)]);
       return response.data;
     },
     { keepPreviousData: true }
+  );
+
+  const { data: tempoLimpeza, isLoading: loadingTempoLimpeza } = useQuery(
+    "getTempoLimpeza",
+    async () => {
+      const { data: response } = await axios.get("pedido/tempoLimpeza");
+      return response.data;
+    }
   );
 
   const { refetch, isLoading, data, error } = useQuery(
@@ -126,7 +136,10 @@ function SalasView() {
           Criar nova sala
         </Button>
       </Stack>
-      <MaxTempoLimpeza />
+      <MaxTempoLimpeza
+        tempoLimpeza={tempoLimpeza}
+        loading={loadingTempoLimpeza}
+      />
       <Stack spacing={3} direction={{ xs: "column", sm: "row" }}>
         <ListSalas {...listSalasProps} />
         <SalasForm

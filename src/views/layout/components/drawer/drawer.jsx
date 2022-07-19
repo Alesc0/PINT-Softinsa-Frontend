@@ -81,18 +81,9 @@ const Copyright = () => {
 function MenuDrawer(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { handleColorMode } = useContext(ColorModeContext);
   const [active, setActive] = useState(0);
-  const [open, setOpen] = useState(false);
 
   let location = useLocation();
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleOpen = () => {
-    setOpen(true);
-  };
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -141,7 +132,6 @@ function MenuDrawer(props) {
   const appBarProps = {
     handleDrawerToggle,
     drawerWidth,
-    handleOpen,
   };
 
   const tempDrawerProps = {
@@ -150,12 +140,6 @@ function MenuDrawer(props) {
     handleDrawerToggle,
     drawerWidth,
     drawer,
-  };
-
-  const settingsDrawerProps = {
-    open,
-    handleClose,
-    handleColorMode,
   };
 
   return (
@@ -183,7 +167,6 @@ function MenuDrawer(props) {
           <ToastContainer />
         </Box>
       </Box>
-      <SettingsDrawer {...settingsDrawerProps} />
     </>
   );
 }

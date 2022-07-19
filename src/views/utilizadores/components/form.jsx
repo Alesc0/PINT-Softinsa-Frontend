@@ -83,7 +83,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
   const handleClose = () => setOpenModal(false);
 
   const { isLoading: loadingCentros, data: dataCentros } = useQuery(
-    ["getCentros"],
+    ["getCentrosUtilizadoresForm"],
     async () => {
       const { data: response } = await axios.get("/centro/list");
       return response.data;
@@ -119,11 +119,6 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
     if (id) refetch();
     else setExtraFields(null);
   }, [id, refetch, setExtraFields]);
-
-  useEffect(() => {
-    if (!dataUtilizador || !id) return;
-    setExtraFields(dataUtilizador);
-  }, [dataUtilizador, setExtraFields, id]);
 
   const handleToggle = (value) => () => {
     const newChecked = [...checked];
@@ -165,10 +160,12 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
           idcentro: values.idcentro.idcentro,
           ...opObj(),
           role: perms[permissionTab],
+          ...(dataUtilizador && { swap: checkDiferentRole() }),
         });
 
-        queryClient.invalidateQueries("getUtilizadores");
-        toast.success("Novo utilizador adicionado!");
+        queryClient.invalidateQueries("getUtilizadoresView");
+        if (id) toast.success("Utilizador atualizado!");
+        else toast.success("Utilizador criado!");
         navigate("/utilizadores");
       } catch (error) {
         console.log(error.response);
@@ -177,11 +174,35 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
             "email",
             "Já se encontra registado um utilizador com este email!"
           );
+        else if (id) toast.error("Erro a atualizar utilizador!");
+        else toast.error("Erro a criar utilizador!");
       }
     },
   });
 
+  const checkDiferentRole = () => {
+    if (dataUtilizador?.role === "U" && perms[permissionTab] === "Limpeza") {
+      return true;
+    } else if (
+      dataUtilizador?.role === "L" &&
+      perms[permissionTab] === "Regular"
+    )
+      return true;
+    else return false;
+  };
+
+  useEffect(() => {
+    if (!id && dataUtilizador) queryClient.clear("getUtilizadorByID");
+    setExtraFields(dataUtilizador);
+  }, [dataUtilizador, setExtraFields, id]);
+
   const handleChange = (event, newValue) => setPermissionTab(newValue);
+
+  const filterTabs = () => {
+    if (!dataUtilizador) return [];
+    if (dataUtilizador?.role === "L") return [0, 1];
+    else return [2];
+  };
 
   const modalProps = {
     options,
@@ -310,7 +331,12 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
             <Box sx={{ m: "0 auto" }}>
               <Tabs value={permissionTab} onChange={handleChange}>
                 {perms.map((row, i) => (
-                  <Tab key={i} label={row} value={i} />
+                  <Tab
+                    key={i}
+                    disabled={filterTabs().includes(i)}
+                    label={row}
+                    value={i}
+                  />
                 ))}
               </Tabs>
             </Box>

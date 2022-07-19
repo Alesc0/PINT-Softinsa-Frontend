@@ -1,7 +1,16 @@
-import { Box, Typography } from "@mui/material";
+import { Avatar, Box, Button, Stack, styled, Typography } from "@mui/material";
 import React from "react";
 import LandingAppBar from "./components/appbar";
 import landingBanner from "imgs/landingBanner1.png";
+import Alex from "imgs/Alex.jpg";
+import Rodrigo from "imgs/Rodrigo.jpg";
+import Joel from "imgs/Joel.png";
+import Lucas from "imgs/Lucas.jpg";
+
+const CustomAvatar = styled(Avatar)`
+  width: 250px;
+  height: 250px;
+`;
 
 function LandingPage() {
   return (
@@ -43,8 +52,8 @@ function LandingPage() {
             }}
           >
             <Box>
-              <Typography variant="h4" color="primary.main">
-                Aplicação de Reservas
+              <Typography variant="h2" color="warning.main">
+                Controla as tuas reservas
               </Typography>
               <Typography variant="h6" fontWeight="bold" color="white">
                 Faz a gestão e reserva de salas em espaços privados face à sua
@@ -54,18 +63,65 @@ function LandingPage() {
               <Box
                 display="flex"
                 sx={{
+                  flexDirection: "row",
+                  gap: 2,
                   width: "100%",
                   mt: 3,
                   justifyContent: "center",
                   alignItems: "center",
                 }}
               >
-                "hHehexd is a movie website that allows you to search for
-                movies"
+                <Button
+                  color="warning"
+                  sx={{ fontSize: 30 }}
+                  variant="contained"
+                >
+                  Mobile
+                </Button>
+
+                <Button
+                  color="warning"
+                  sx={{ fontSize: 30 }}
+                  variant="contained"
+                >
+                  Tablet
+                </Button>
               </Box>
             </Box>
           </Box>
         </Box>
+      </Box>
+      <Box sx={{ backgroundColor: "primary.light", py: 4 }}>
+        <Typography variant="h2" textAlign="center" color="white">
+          Meet the Team!
+        </Typography>
+        <Stack direction="row" spacing={8} sx={{ my: 4 }} className="center">
+          <Stack className="center">
+            <CustomAvatar alt="C" src={Alex} />
+            <Typography variant="h4">Tiago Monteiro</Typography>
+            <Typography variant="h5">Design</Typography>
+          </Stack>
+          <Stack className="center">
+            <CustomAvatar alt="C" src={Lucas} />
+            <Typography variant="h4">Lucas Silva</Typography>
+            <Typography variant="h5">Backend</Typography>
+          </Stack>
+          <Stack className="center">
+            <CustomAvatar alt="C" src={Alex} />
+            <Typography variant="h4">Pedro Alexandre</Typography>
+            <Typography variant="h5">FullStack</Typography>
+          </Stack>
+          <Stack className="center">
+            <CustomAvatar alt="C" src={Rodrigo} />
+            <Typography variant="h4">Rodrigo Rodrigues</Typography>
+            <Typography variant="h5">Mobile</Typography>
+          </Stack>
+          <Stack className="center">
+            <CustomAvatar alt="C" src={Joel} />
+            <Typography variant="h4">Joel Fernandes</Typography>
+            <Typography variant="h5">DataBase</Typography>
+          </Stack>
+        </Stack>
       </Box>
     </>
   );

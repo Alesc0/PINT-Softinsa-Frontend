@@ -23,7 +23,7 @@ function NotificacoesView() {
   const [page, setPage] = useState(1);
 
   const { isLoading, error, data } = useQuery(
-    ["getNotificationsFull", page],
+    ["getNotificationsView", page],
     async () => {
       const { data: response } = await axios.get(
         "notificacao/utilizador/" + user.idutilizador,
@@ -87,8 +87,8 @@ function NotificacoesView() {
                   <Avatar
                     alt={row.utilizador?.nome || "S"}
                     src={
-                      row.utilizador && row.fotoConv
-                        ? "data:image/jpeg;base64, " + row.utilizador.fotoConv
+                      row.utilizadores && row.utilizadores.fotoConv
+                        ? "data:image/jpeg;base64, " + row.utilizadores.fotoConv
                         : icon
                     }
                     style={{ height: 60, width: 60 }}

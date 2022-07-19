@@ -95,7 +95,8 @@ export default function CentroForm({ handleRequest, id = undefined }) {
         });
 
         queryClient.invalidateQueries("getCentrosView");
-        toast.success(`Utilizador ${id ? "atualizado" : "adicionado"}!`);
+        toast.success(`Centro ${id ? "atualizado" : "adicionado"}!`);
+        navigate("/centros");
       } catch (error) {
         toast.error(`Erro ao ${id ? "atualizar" : "adicionar"} centro.`);
       }

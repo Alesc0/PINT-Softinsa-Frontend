@@ -198,6 +198,11 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
 
   const handleChange = (event, newValue) => setPermissionTab(newValue);
 
+  const filterTabs = () => {
+    if (dataUtilizador?.role === "L") return [0, 1];
+    else return [2];
+  };
+
   const modalProps = {
     options,
     openModal,
@@ -325,7 +330,12 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
             <Box sx={{ m: "0 auto" }}>
               <Tabs value={permissionTab} onChange={handleChange}>
                 {perms.map((row, i) => (
-                  <Tab key={i} label={row} value={i} />
+                  <Tab
+                    key={i}
+                    disabled={filterTabs().includes(i)}
+                    label={row}
+                    value={i}
+                  />
                 ))}
               </Tabs>
             </Box>

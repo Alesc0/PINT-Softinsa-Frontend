@@ -164,8 +164,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
         });
 
         queryClient.invalidateQueries("getUtilizadoresView");
-        if (id) toast.success("Utilizador atualizado!");
-        else toast.success("Utilizador criado!");
+        toast.success(`Utilizador ${id ? "atualizado" : "adicionado"}!`);
         navigate("/utilizadores");
       } catch (error) {
         console.log(error.response);

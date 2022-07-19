@@ -12,10 +12,9 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import * as yup from "yup";
 import axios from "api/_axios";
 import ImgUploader from "common/fileUploader/fileUploader";
 import { validationSchemaCentros } from "utils/validations";
@@ -48,6 +47,7 @@ export default function CentroForm({ handleRequest, id = undefined }) {
   const [cidades, setCidades] = useState([]);
   const [files, setFiles] = useState([]);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     isLoading: loadingMunicipios,
@@ -88,7 +88,17 @@ export default function CentroForm({ handleRequest, id = undefined }) {
     validationSchema: validationSchemaCentros,
 
     onSubmit: async (values) => {
-      handleRequest({ ...values, imagem: files[0] });
+      try {
+        await handleRequest({
+          ...values,
+          imagem: files[0],
+        });
+
+        queryClient.invalidateQueries("getCentrosView");
+        toast.success(`Utilizador ${id ? "atualizado" : "adicionado"}!`);
+      } catch (error) {
+        toast.error(`Erro ao ${id ? "atualizar" : "adicionar"} centro.`);
+      }
     },
   });
 

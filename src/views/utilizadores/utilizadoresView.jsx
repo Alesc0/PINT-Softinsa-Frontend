@@ -19,14 +19,14 @@ function UtilizadoresView() {
   });
 
   const { isFetching: fetchingCentros, data: dataCentros } = useQuery(
-    ["getCentros"],
+    ["getCentrosUtilizadores"],
     async () => {
       const { data: response } = await axios.get("centro/list");
       const getUserCentro = response.data.find(
         (val) => val.idcentro === user.idcentro
       );
       setAutoCentros([getUserCentro]);
-      setParams({ centro: [getUserCentro.idcentro] });
+      setParams({ centros: [getUserCentro.idcentro] });
       return response.data;
     }
   );

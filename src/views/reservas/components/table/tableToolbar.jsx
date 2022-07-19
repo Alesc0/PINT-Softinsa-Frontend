@@ -2,6 +2,7 @@ import { Clear, Search } from "@mui/icons-material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 import {
+  Autocomplete,
   Box,
   Button,
   IconButton,
@@ -24,16 +25,13 @@ const EnhancedTableToolbar = ({
   handleFiltros,
   setSearchData,
   searchData,
+  dataSalas,
+  autoSalas,
+  setAutoSalas,
 }) => {
   const [filtro, setFiltro] = useState(false);
 
   const containerRef = useRef(null);
-  const maCentrosProps = {
-    getter: autoCentros,
-    setter: setAutoCentros,
-    text: "Filtrar Centros",
-    data: dataCentros,
-  };
 
   return (
     <>
@@ -76,9 +74,61 @@ const EnhancedTableToolbar = ({
                 onChange={(e) => setPesquisa(e.target.value)}
                 label="Ncolab, Nome, Sala"
               />
-              <MultipleAutocomplete
+              <Autocomplete
                 sx={{ minWidth: 150 }}
-                {...maCentrosProps}
+                multiple
+                options={dataCentros || []}
+                value={autoCentros}
+                ChipProps={{ color: "primary", size: "small" }}
+                getOptionLabel={(option) => option.nome}
+                isOptionEqualToValue={(op, val) => op.idcentro === val.idcentro}
+                onChange={(event, value, reason) => {
+                  if (reason === "clear") {
+                    setAutoCentros(null);
+                    setAutoSalas([]);
+                  } else {
+                    setAutoCentros(value);
+                    setAutoSalas([]);
+                  }
+                }}
+                onInputChange={(event, value, reason) => {
+                  if (reason === "clear") {
+                    setAutoCentros([]);
+                    setAutoSalas([]);
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    label={"Filtrar Centros"}
+                  />
+                )}
+              />
+              <Autocomplete
+                sx={{ minWidth: 150 }}
+                multiple
+                options={dataSalas || []}
+                value={autoSalas}
+                ChipProps={{ color: "primary", size: "small" }}
+                getOptionLabel={(option) => option.nome}
+                isOptionEqualToValue={(op, val) => op.idsala === val.idsala}
+                onChange={(event, value, reason) => {
+                  if (reason === "clear") return;
+                  else setAutoSalas(value);
+                }}
+                onInputChange={(event, value, reason) => {
+                  if (reason === "clear") {
+                    setAutoSalas([]);
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    label={"Filtrar Salas"}
+                  />
+                )}
               />
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DesktopDatePicker

@@ -165,7 +165,7 @@ export default function EnhancedTable(props) {
       } catch (error) {
         toast.error(`Erro a eliminar utilizador${selected > 1 && "es"}`);
       }
-      queryClient.invalidateQueries("getUtilizadores");
+      queryClient.invalidateQueries("getUtilizadoresView");
       setSelected([]);
     }
   }, [selected, deleteMutation, setSelected, queryClient]);

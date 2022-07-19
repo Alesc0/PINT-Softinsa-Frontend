@@ -163,7 +163,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
           ...(dataUtilizador && { swap: checkDiferentRole() }),
         });
 
-        queryClient.invalidateQueries("getUtilizadores");
+        queryClient.invalidateQueries("getUtilizadoresView");
         if (id) toast.success("Utilizador atualizado!");
         else toast.success("Utilizador criado!");
         navigate("/utilizadores");

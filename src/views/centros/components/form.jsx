@@ -7,6 +7,7 @@ import {
   Stack,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -195,12 +196,16 @@ export default function CentroForm({ handleRequest, id = undefined }) {
           </Stack>
         </>
       )}
-      <Switch
-        id="estado"
+      <Tooltip
+        title="Ativar/Desativar centro"
         sx={{ position: "absolute", top: 0, mt: 1, right: 2 }}
-        checked={formik.values.estado}
-        onChange={formik.handleChange}
-      />
+      >
+        <Switch
+          id="estado"
+          checked={formik.values.estado}
+          onChange={formik.handleChange}
+        />
+      </Tooltip>
     </Paper>
   );
 }

@@ -18,13 +18,9 @@ function AddCentros() {
       formData.append("descricao", data.descricao);
       formData.append("estado", data.estado);
       formData.append("cidade", data.cidade);
-      formData.append("imagem", data.files[0]);
+      formData.append("imagem", data.imagem);
 
-      await axios.put("/centro/" + id, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.put("centro/" + id, formData);
     },
     {
       onSuccess: () => {

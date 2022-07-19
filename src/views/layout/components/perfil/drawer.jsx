@@ -24,7 +24,7 @@ export default function PerfilDrawer({ open, handleClose }) {
 
   const queryClient = useQueryClient();
 
-  const { data: dataCentros } = useQuery(["getCentros"], async () => {
+  const { data: dataCentros } = useQuery(["getCentrosPerfil"], async () => {
     const { data: response } = await axios.get("/centro/list");
     return response.data;
   });

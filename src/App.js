@@ -39,29 +39,49 @@ function App() {
     socket.on("connect", () => console.log("connected"));
     socket.on("disconnect", () => console.log("disconnected"));
 
-    socket.on("updateUser", () => {
-      queryClient.invalidateQueries("getUtilizadoresDashboard");
-      queryClient.invalidateQueries("getUtilizadores");
-      queryClient.invalidateQueries("getUtilizadoresTipoCount");
-    });
-
-    socket.on("updateFeedback", () => {
-      queryClient.invalidateQueries("getFeedbacks");
-    });
-
     socket.on("nmrSockets", (array) => {
       console.log(array);
     });
 
     socket.on("updateNotificacao", () => {
-      console.log("Notificacao socket");
       queryClient.invalidateQueries("getNotifications");
-      queryClient.invalidateQueries("getNotificationsFull");
+      queryClient.invalidateQueries("getNotificationsView");
+    });
+
+    socket.on("updateFeedback", () => {
+      queryClient.invalidateQueries("getFeedbacks");
+      queryClient.invalidateQueries("getFeedbacksView");
+    });
+
+    socket.on("updateUser", () => {
+      queryClient.invalidateQueries("getUtilizadoresDashboard");
+      queryClient.invalidateQueries("getUtilizadores");
+      queryClient.invalidateQueries("getUtilizadoresTipoCount");
+      queryClient.invalidateQueries("getUtilizadoresCount");
+      queryClient.invalidateQueries("getUtilizadoresView");
+    });
+    socket.on("updateReserva", () => {
+      queryClient.invalidateQueries("getReservasDashboard");
+      queryClient.invalidateQueries("getReservasByRange");
+      queryClient.invalidateQueries("getReservasView");
+      queryClient.invalidateQueries("getReservasAtuaisDashboard");
+    });
+
+    socket.on("updateCentro", () => {
+      queryClient.invalidateQueries("getCentrosView");
+      queryClient.invalidateQueries("getCentrosDashboard");
+      queryClient.invalidateQueries("getCentrosPerfil");
+      queryClient.invalidateQueries("getCentrosSalas");
+      queryClient.invalidateQueries("getCentrosUtilizadores");
+      queryClient.invalidateQueries("getCentrosUtilizadoresForm");
     });
 
     socket.on("updateSala", () => {
       queryClient.invalidateQueries("getSalas");
       queryClient.invalidateQueries("getSalasView");
+      queryClient.invalidateQueries("getSalasCount");
+      queryClient.invalidateQueries("getSalasDashboard");
+      queryClient.invalidateQueries("getSalasReservas");
     });
 
     socket.on("requestRefresh", async () => {
@@ -77,27 +97,25 @@ function App() {
         console.log("error refreshing token");
       }
     });
+
     socket.on("connect_error", () => {
       console.log("socket error connection");
-      if (auth) {
-        socket.disconnect();
-        socket.io.opts.query.token = getTokens().jwt;
-        socket.connect();
-      }
     });
 
     return () => {
       socket.off("connect");
       socket.off("disconnect");
 
-      socket.off("requestRefresh");
-      socket.off("connect_error");
+      socket.off("updateNotificacao");
+      socket.off("updateFeedback");
 
       socket.off("updateUser");
-      socket.off("updateFeedback");
-      socket.off("updateNotificacao");
-
       socket.off("updateSala");
+      socket.off("updateCentro");
+      socket.off("updateReserva");
+
+      socket.off("requestRefresh");
+      socket.off("connect_error");
     };
   }, [queryClient]);
   return (

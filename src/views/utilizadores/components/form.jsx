@@ -83,7 +83,7 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
   const handleClose = () => setOpenModal(false);
 
   const { isLoading: loadingCentros, data: dataCentros } = useQuery(
-    ["getCentros"],
+    ["getCentrosUtilizadoresForm"],
     async () => {
       const { data: response } = await axios.get("/centro/list");
       return response.data;

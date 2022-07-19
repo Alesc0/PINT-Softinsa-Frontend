@@ -44,7 +44,7 @@ function ReservasView() {
   );
 
   const { isLoading, data } = useQuery(
-    ["getReservas", page, rowsPerPage, dataCentros, params],
+    ["getReservasView", page, rowsPerPage, dataCentros, params],
     async () => {
       const { data: response } = await axios.get("reserva/list", {
         params: {

@@ -23,7 +23,14 @@ function ListFeedbacks({ feedbacks, isLoading }) {
           return (
             <ListItem key={row.idfeedback} alignItems="flex-start" dense>
               <ListItemAvatar>
-                <Avatar alt="Remy Sharp" src={ava} />
+                <Avatar
+                  alt="U"
+                  src={
+                    row.utilizador && row.fotoConv
+                      ? "data:image/jpeg;base64, " + row.utilizador.fotoConv
+                      : ava
+                  }
+                />
               </ListItemAvatar>
               <ListItemText
                 primary={
@@ -33,7 +40,7 @@ function ListFeedbacks({ feedbacks, isLoading }) {
                     sx={{ alignItems: "center" }}
                   >
                     <Typography component="legend">
-                      {!row.utilizadore ? "Guest" : row.utilizadore.nome}
+                      {row.utilizadores?.nome || "Guest"}
                     </Typography>
                     <Rating
                       sx={{
@@ -55,7 +62,7 @@ function ListFeedbacks({ feedbacks, isLoading }) {
                       variant="body2"
                       color="secondary.main"
                     >
-                      {!row.sala.nome ? "Geral" : row.sala.nome + " - "}
+                      {(row.sala?.nome || "Geral") + " - "}
                     </Typography>
                     {row.comentario}
                     <span

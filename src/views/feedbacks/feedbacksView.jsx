@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "api/_axios";
-import icon from "imgs/icon.png";
+import ava from "imgs/avatar.jpg";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
@@ -24,7 +24,7 @@ function NotificacoesView() {
   const [page, setPage] = useState(1);
 
   const { isLoading, error, data } = useQuery(
-    ["getFeedbacksFull", page],
+    ["getFeedbacksView", page],
     async () => {
       const { data: response } = await axios.get("feedback/list", {
         params: {
@@ -87,7 +87,7 @@ function NotificacoesView() {
                     src={
                       row.utilizador && row.fotoConv
                         ? "data:image/jpeg;base64, " + row.utilizador.fotoConv
-                        : icon
+                        : ava
                     }
                     style={{ height: 60, width: 60 }}
                   />
@@ -100,7 +100,7 @@ function NotificacoesView() {
                         sx={{ alignItems: "center" }}
                       >
                         <Typography component="legend">
-                          {!row.utilizadore ? "Guest" : row.utilizadore.nome}
+                          {row.utilizadore || "Guest"}
                         </Typography>
                         <Rating
                           sx={{
@@ -122,7 +122,7 @@ function NotificacoesView() {
                           variant="body2"
                           color="secondary.main"
                         >
-                          {!row.sala.nome ? "Geral" : row.sala.nome + " - "}
+                          {(row.sala?.nome || "Geral") + " - "}
                         </Typography>
                         {row.comentario}
                         <span

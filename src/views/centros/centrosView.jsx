@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 
 function Centros() {
-  const { data } = useQuery(["getCentros"], async () => {
+  const { data } = useQuery(["getCentrosView"], async () => {
     const { data: response } = await axios.get("/centro/list");
     return response.data;
   });

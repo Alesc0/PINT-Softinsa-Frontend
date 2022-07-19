@@ -36,7 +36,7 @@ function UtilizadoresView() {
     error,
     data,
   } = useQuery(
-    ["getUtilizadores", page, rowsPerPage, params],
+    ["getUtilizadoresView", page, rowsPerPage, params],
     async () => {
       let { data: response } = await axios.get("utilizador/list", {
         params: {

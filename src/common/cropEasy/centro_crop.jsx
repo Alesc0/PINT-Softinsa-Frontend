@@ -1,8 +1,7 @@
-import { Avatar, Box } from "@mui/material";
-import { UserContext } from "App";
-import { useContext, useRef, useState } from "react";
+import { useTheme } from "@emotion/react";
+import { Box } from "@mui/material";
+import { useCallback, useRef, useState } from "react";
 import CropEasy from "./components/cropEasy";
-import UpdateBadge from "./components/updateBadge";
 
 function CentroCrop({ file, setFile, foto }) {
   const inputRef = useRef(null);
@@ -23,6 +22,20 @@ function CentroCrop({ file, setFile, foto }) {
     inputRef.current.click();
   };
 
+  const theme = useTheme();
+
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      setFile(acceptedFiles);
+    },
+    [setFile]
+  );
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    maxFiles: 1,
+  });
+
   return !openCrop ? (
     <>
       <input
@@ -33,19 +46,21 @@ function CentroCrop({ file, setFile, foto }) {
         ref={inputRef}
         onChange={handleChange}
       />
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <UpdateBadge onClick={handleClick}>
-          <Avatar
-            src={photoURL}
-            sx={{
-              width: 200,
-              height: 200,
-              mb: 1,
-              cursor: "pointer",
-            }}
-            onClick={() => setOpenCrop(true)}
-          />
-        </UpdateBadge>
+      <Box
+        {...getRootProps({
+          ...(theme.palette.mode === "light"
+            ? { className: "dropzone borderLight" }
+            : { className: "dropzone borderDark" }),
+        })}
+      >
+        <input {...getInputProps()} />
+        {files && files.length > 0 ? (
+          <Typography fontWeight="bold">{files[0].name}</Typography>
+        ) : (
+          <Typography color="text.secondary">
+            Arrasta e larga um ficheiro aqui, ou clica para selecionar
+          </Typography>
+        )}
       </Box>
     </>
   ) : (

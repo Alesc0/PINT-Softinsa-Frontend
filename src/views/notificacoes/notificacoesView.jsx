@@ -23,7 +23,7 @@ function NotificacoesView() {
   const [page, setPage] = useState(1);
 
   const { isLoading, error, data } = useQuery(
-    ["getNotificationsFull", page],
+    ["getNotificationsView", page],
     async () => {
       const { data: response } = await axios.get(
         "notificacao/utilizador/" + user.idutilizador,

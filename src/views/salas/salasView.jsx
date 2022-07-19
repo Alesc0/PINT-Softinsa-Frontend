@@ -1,6 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import axios from "api/_axios";
-import { useState } from "react";
+import { UserContext } from "App";
+import { useContext, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { toast } from "react-toastify";
 import SalasForm from "./components/form";
@@ -16,6 +17,8 @@ function SalasView() {
   const [slider, setSlider] = useState([0, 70]);
   const [pesquisa, setPesquisa] = useState("");
 
+  const { user } = useContext(UserContext);
+
   const {
     isFetching: loadingCentros,
     data: dataCentros,
@@ -24,6 +27,7 @@ function SalasView() {
     ["getCentrosSalas"],
     async () => {
       const { data: response } = await axios.get("centro/list");
+      setCentro([response.data.find((val) => val.idcentro === user.idcentro)]);
       return response.data;
     },
     { keepPreviousData: true }

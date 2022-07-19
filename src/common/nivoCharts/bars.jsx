@@ -1,8 +1,10 @@
 // install (please make sure versions match peerDependencies)
 // yarn add @nivo/core @nivo/bar
+import { useTheme } from "@emotion/react";
+import { useMediaQuery } from "@mui/material";
 import { Box } from "@mui/system";
 import { ResponsiveBar } from "@nivo/bar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 const data = [
   {
     country: "AD",
@@ -112,10 +114,21 @@ const data = [
 ];
 
 const MyResponsiveBar = () => {
+  const [layout, setLayout] = useState(false);
+
+  const theme = useTheme();
+
+  const matches = useMediaQuery(theme.breakpoints.between("xs", "md"));
+
+  useEffect(() => {
+    setLayout(matches ? "horizontal" : "vertical");
+  }, [matches]);
+
   return (
     <Box sx={{ height: "15em" }}>
       <ResponsiveBar
         data={data}
+        layout={layout}
         keys={["hot dog", "burger", "sandwich", "kebab", "fries", "donut"]}
         indexBy="country"
         margin={{ top: 50, bottom: 60 }}

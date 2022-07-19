@@ -192,13 +192,14 @@ export default function UtilizadorForm({ handleRequest, id = undefined }) {
   };
 
   useEffect(() => {
-    if (!id) queryClient.clear("getUtilizadorByID");
+    if (!id && dataUtilizador) queryClient.clear("getUtilizadorByID");
     setExtraFields(dataUtilizador);
   }, [dataUtilizador, setExtraFields, id]);
 
   const handleChange = (event, newValue) => setPermissionTab(newValue);
 
   const filterTabs = () => {
+    if (!dataUtilizador) return [];
     if (dataUtilizador?.role === "L") return [0, 1];
     else return [2];
   };

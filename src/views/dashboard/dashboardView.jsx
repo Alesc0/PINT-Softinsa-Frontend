@@ -1,11 +1,12 @@
 import { MobileDatePicker } from "@mui/lab";
 import {
   Autocomplete,
-  Box, Card,
+  Box,
+  Card,
   CardContent,
   CardHeader,
   Stack,
-  TextField
+  TextField,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -41,6 +42,7 @@ export default function Dashboard() {
   const [autoCentrosReservasAtuais, setAutoCentrosReservasAtuais] = useState(
     []
   );
+  const [autoCentrosPercent, setAutoCentrosPercent] = useState([]);
   const [autoSalasReservas, setAutoSalasReservas] = useState([]);
 
   const { user } = useContext(UserContext);
@@ -72,6 +74,7 @@ export default function Dashboard() {
     );
     setAutoCentrosReservas([getUserCentro]);
     setAutoCentrosReservasAtuais([getUserCentro]);
+    setAutoCentrosPercent([getUserCentro]);
     return response.data;
   });
 
@@ -125,6 +128,26 @@ export default function Dashboard() {
       }
     );
 
+  const { isLoading: loadingPercentagem, data: dataPercentagem } = useQuery(
+    ["getSalasPercentagem", autoCentrosPercent],
+    async () => {
+      const { data: response } = await axios.get(
+        "reserva/percentSalasUtilizadas",
+        {
+          params: {
+            centro: autoCentrosPercent[0].idcentro,
+          },
+        }
+      );
+      console.log(response);
+      return response;
+    },
+    {
+      enabled: !!dataCentros,
+      keepPreviousData: true,
+    }
+  );
+
   const tableReservasProps = {
     reservas: dataReservas?.data,
     isLoading: loadingReservas,
@@ -155,9 +178,9 @@ export default function Dashboard() {
         ))}
 
         <BoxNumbers
-          loading={loadingCountSalas}
-          info={countSalas}
-          text={"Salas Totais"}
+          loading={loadingCountSalas || loadingReservasAtuais}
+          info={countSalas - (dataReservasAtuais?.length || 0)}
+          text={"Salas Livres"}
         />
 
         <Box gridColumn="span 2">
@@ -330,9 +353,43 @@ export default function Dashboard() {
         </Box>
         <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
           <Card>
-            <CardHeader title="Uso relativo à lotação" />
+            <CardHeader
+              title="Uso relativo à lotação"
+              action={
+                <Autocomplete
+                  sx={{ minWidth: 150 }}
+                  multiple
+                  options={dataCentros || []}
+                  value={autoCentrosPercent}
+                  ChipProps={{ color: "primary", size: "small" }}
+                  getOptionLabel={(option) => option.nome}
+                  isOptionEqualToValue={(op, val) =>
+                    op.idcentro === val.idcentro
+                  }
+                  onChange={(event, value, reason) => {
+                    if (reason === "clear") {
+                      setAutoCentrosPercent(null);
+                    } else {
+                      setAutoCentrosPercent(value);
+                    }
+                  }}
+                  onInputChange={(event, value, reason) => {
+                    if (reason === "clear") {
+                      setAutoCentrosPercent([]);
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      label={"Filtrar Centros"}
+                    />
+                  )}
+                />
+              }
+            />
             <CardContent>
-              <PercentSalas />
+              <PercentSalas data={dataPercentagem} />
             </CardContent>
           </Card>
         </Box>

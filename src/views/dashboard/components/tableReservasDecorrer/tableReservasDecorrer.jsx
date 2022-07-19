@@ -46,7 +46,7 @@ export default function TableReservasDecorrer(props) {
 
   return (
     <>
-      <Paper sx={{ mb: 2 }}>
+      <Paper sx={{ mb: 2, display: "flex", height: "100%" }}>
         <TableContainer>
           <Table size="medium">
             <EnhancedTableHead

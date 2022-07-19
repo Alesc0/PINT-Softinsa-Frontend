@@ -31,7 +31,7 @@ const PercentSalas = ({ data }) => {
   }, [matches]); */
 
   return (
-    <Box sx={{ height: "30em" }}>
+    <Box sx={{ height: "25em" }}>
       <ResponsiveBar
         data={convertData(data) || []}
         keys={data?.map((val) => val.nome)}

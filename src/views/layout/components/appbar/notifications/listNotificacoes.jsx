@@ -26,8 +26,8 @@ function ListNotificacoes({ isLoading, read, unRead }) {
           <Avatar
             alt={row.utilizador?.nome || "S"}
             src={
-              row.utilizador && row.fotoConv
-                ? "data:image/jpeg;base64, " + row.utilizador.fotoConv
+              row.utilizadores && row.utilizadores.fotoConv
+                ? "data:image/jpeg;base64, " + row.utilizadores.fotoConv
                 : icon
             }
             style={{ height: 50, width: 50 }}

@@ -65,6 +65,7 @@ function App() {
       queryClient.invalidateQueries("getReservasByRange");
       queryClient.invalidateQueries("getReservasView");
       queryClient.invalidateQueries("getReservasAtuaisDashboard");
+      queryClient.invalidateQueries("getOcupacaoSalas");
     });
 
     socket.on("updateCentro", () => {
@@ -82,6 +83,8 @@ function App() {
       queryClient.invalidateQueries("getSalasCount");
       queryClient.invalidateQueries("getSalasDashboard");
       queryClient.invalidateQueries("getSalasReservas");
+      queryClient.invalidateQueries("getSalasPercentagem");
+      queryClient.invalidateQueries("getOcupacaoSalas");
     });
 
     socket.on("requestRefresh", async () => {

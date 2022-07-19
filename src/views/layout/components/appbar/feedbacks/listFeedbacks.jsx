@@ -26,8 +26,8 @@ function ListFeedbacks({ feedbacks, isLoading }) {
                 <Avatar
                   alt="U"
                   src={
-                    row.utilizador && row.fotoConv
-                      ? "data:image/jpeg;base64, " + row.utilizador.fotoConv
+                    row.utilizadores && row.utilizadores.fotoConv
+                      ? "data:image/jpeg;base64, " + row.utilizadores.fotoConv
                       : ava
                   }
                 />

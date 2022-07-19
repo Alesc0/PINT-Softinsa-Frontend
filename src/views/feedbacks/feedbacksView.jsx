@@ -85,8 +85,8 @@ function NotificacoesView() {
                   <Avatar
                     alt={row.utilizador?.nome || "S"}
                     src={
-                      row.utilizador && row.fotoConv
-                        ? "data:image/jpeg;base64, " + row.utilizador.fotoConv
+                      row.utilizadores && row.utilizadores.fotoConv
+                        ? "data:image/jpeg;base64, " + row.utilizadores.fotoConv
                         : ava
                     }
                     style={{ height: 60, width: 60 }}

@@ -127,7 +127,6 @@ export default function Dashboard() {
         keepPreviousData: true,
       }
     );
-
   const { isLoading: loadingPercentagem, data: dataPercentagem } = useQuery(
     ["getSalasPercentagem", autoCentrosPercent],
     async () => {
@@ -135,12 +134,27 @@ export default function Dashboard() {
         "reserva/percentSalasUtilizadas",
         {
           params: {
-            centro: autoCentrosPercent[0].idcentro,
+            centro: autoCentrosPercent[0]?.idcentro || user?.centro.idcentro,
           },
         }
       );
-      console.log(response);
       return response;
+    },
+    {
+      enabled: !!dataCentros,
+      keepPreviousData: true,
+    }
+  );
+
+  const { data: dataOcupacao } = useQuery(
+    ["getOcupacaoSalas", autoCentrosPercent],
+    async () => {
+      const { data: response } = await axios.get("/reserva/alocacaoMensal", {
+        params: {
+          centro: autoCentrosPercent[0]?.idcentro || user?.centro.idcentro,
+        },
+      });
+      return response.data;
     },
     {
       enabled: !!dataCentros,
@@ -183,26 +197,6 @@ export default function Dashboard() {
           text={"Salas Livres"}
         />
 
-        <Box gridColumn="span 2">
-          <Card>
-            <CardHeader title="Alocação diária" />
-            <CardContent>
-              <MyResponsiveBar />
-            </CardContent>
-          </Card>
-        </Box>
-
-        <Box gridColumn="span 2">
-          <Card>
-            <CardHeader title="Utilizadores" />
-            <CardContent>
-              <MyResponsivePie
-                data={dataTipoUtilizadores}
-                loading={loadingTipoUtilizadores}
-              />
-            </CardContent>
-          </Card>
-        </Box>
         <Box gridColumn="span 2">
           <Card>
             <CardHeader
@@ -321,37 +315,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </Box>
-        <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
-          <Card>
-            <CardHeader
-              title="Reservas"
-              action={
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <Stack direction={{ sm: "column", md: "row" }} spacing={1}>
-                    <MobileDatePicker
-                      label="Inicio"
-                      inputFormat="dd/MM/yyyy"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e)}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                    <MobileDatePicker
-                      label="Fim"
-                      inputFormat="dd/MM/yyyy"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e)}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </Stack>
-                </LocalizationProvider>
-              }
-            />
-            <CardContent>
-              <MyResponsiveTimeRange startDate={startDate} endDate={endDate} />
-            </CardContent>
-          </Card>
-        </Box>
-        <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
+        <Box gridColumn="span 2">
           <Card>
             <CardHeader
               title="Uso relativo à lotação"
@@ -390,6 +354,90 @@ export default function Dashboard() {
             />
             <CardContent>
               <PercentSalas data={dataPercentagem} />
+            </CardContent>
+          </Card>
+        </Box>
+
+        <Box gridColumn="span 2">
+          <Card>
+            <CardHeader title="Utilizadores" />
+            <CardContent>
+              <MyResponsivePie
+                data={dataTipoUtilizadores}
+                loading={loadingTipoUtilizadores}
+              />
+            </CardContent>
+          </Card>
+        </Box>
+        <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
+          <Card>
+            <CardHeader
+              title="Reservas"
+              action={
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <Stack direction={{ sm: "column", md: "row" }} spacing={1}>
+                    <MobileDatePicker
+                      label="Inicio"
+                      inputFormat="dd/MM/yyyy"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e)}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                    <MobileDatePicker
+                      label="Fim"
+                      inputFormat="dd/MM/yyyy"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e)}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </Stack>
+                </LocalizationProvider>
+              }
+            />
+            <CardContent>
+              <MyResponsiveTimeRange startDate={startDate} endDate={endDate} />
+            </CardContent>
+          </Card>
+        </Box>
+        <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
+          <Card>
+            <CardHeader
+              title="Alocação diária"
+              action={
+                <Autocomplete
+                  sx={{ minWidth: 150 }}
+                  multiple
+                  options={dataCentros || []}
+                  value={autoCentrosPercent}
+                  ChipProps={{ color: "primary", size: "small" }}
+                  getOptionLabel={(option) => option.nome}
+                  isOptionEqualToValue={(op, val) =>
+                    op.idcentro === val.idcentro
+                  }
+                  onChange={(event, value, reason) => {
+                    if (reason === "clear") {
+                      setAutoCentrosPercent(null);
+                    } else {
+                      setAutoCentrosPercent(value);
+                    }
+                  }}
+                  onInputChange={(event, value, reason) => {
+                    if (reason === "clear") {
+                      setAutoCentrosPercent([]);
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      label={"Filtrar Centros"}
+                    />
+                  )}
+                />
+              }
+            />
+            <CardContent>
+              <MyResponsiveBar data={dataOcupacao} />
             </CardContent>
           </Card>
         </Box>

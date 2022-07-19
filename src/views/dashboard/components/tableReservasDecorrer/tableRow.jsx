@@ -37,7 +37,7 @@ function ReservaRow({ row }) {
       </TableCell>
       <TableCell align="left">
         <Typography>
-          {formatedDate.split("-")[2]} {months[formatedDate.split("-")[1]]}
+          {formatedDate.split("-")[2]} {months[formatedDate.split("-")[1] - 1]}
         </Typography>
       </TableCell>
       <TableCell align="left">

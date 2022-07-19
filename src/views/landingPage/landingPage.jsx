@@ -63,6 +63,8 @@ function LandingPage() {
               <Box
                 display="flex"
                 sx={{
+                  flexDirection: "row",
+                  gap: 2,
                   width: "100%",
                   mt: 3,
                   justifyContent: "center",
@@ -74,7 +76,15 @@ function LandingPage() {
                   sx={{ fontSize: 30 }}
                   variant="contained"
                 >
-                  Download
+                  Mobile
+                </Button>
+
+                <Button
+                  color="warning"
+                  sx={{ fontSize: 30 }}
+                  variant="contained"
+                >
+                  Tablet
                 </Button>
               </Box>
             </Box>

@@ -21,7 +21,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import { validationSchemaSalas } from "utils/validations";
-import * as yup from "yup";
 
 const loadSkeleton = () => {
   return (
@@ -102,7 +101,7 @@ function SalasForm({
           idcentro: values.centro.idcentro,
           ...(!values.estado && { justificacao: values.justificacao }),
         });
-        
+
         !data
           ? toast.success("Sala adicionada!")
           : toast.success("Sala atualizada!");

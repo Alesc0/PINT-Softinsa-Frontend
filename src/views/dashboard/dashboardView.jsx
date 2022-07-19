@@ -19,6 +19,7 @@ import MyResponsiveTimeRange from "common/nivoCharts/timeRange";
 import { useContext, useState } from "react";
 import { useQuery } from "react-query";
 import BoxNumbers from "./components/boxNumbers";
+import TablePedidosLimpeza from "./components/tablePedidosLimpeza/tablePedidosLimpeza";
 import TableReservasDecorrer from "./components/tableReservasDecorrer/tableReservasDecorrer";
 import TableReservasNext from "./components/tableReservasNext/tableReservasNext";
 
@@ -162,6 +163,22 @@ export default function Dashboard() {
     }
   );
 
+  const { isLoading: loadingPedidos, data: dataPedidos } = useQuery(
+    ["getPedidosDashboard", autoCentrosPercent],
+    async () => {
+      const { data: response } = await axios.get("/pedido/getPedidosEstado", {
+        params: {
+          centro: autoCentrosPercent[0]?.idcentro || user?.centro.idcentro,
+        },
+      });
+      return response;
+    },
+    {
+      enabled: !!dataCentros,
+      keepPreviousData: true,
+    }
+  );
+
   const tableReservasProps = {
     reservas: dataReservas?.data,
     isLoading: loadingReservas,
@@ -169,6 +186,10 @@ export default function Dashboard() {
   const tableReservasDecorrerProps = {
     reservas: dataReservasAtuais,
     isLoading: loadingReservasAtuais,
+  };
+  const tablePedidosLimpezaProps = {
+    pedidos: dataPedidos?.data,
+    isLoading: loadingPedidos,
   };
   return (
     <>
@@ -196,7 +217,91 @@ export default function Dashboard() {
           info={countSalas - (dataReservasAtuais?.length || 0)}
           text={"Salas Livres"}
         />
+        <Box gridColumn="span 2" gridRow="span 2">
+          <Card>
+            <CardHeader
+              title="Pedidos de Limpeza"
+              action={
+                <Autocomplete
+                  sx={{ minWidth: 150 }}
+                  multiple
+                  options={dataCentros || []}
+                  value={autoCentrosReservasAtuais}
+                  ChipProps={{ color: "primary", size: "small" }}
+                  getOptionLabel={(option) => option.nome}
+                  isOptionEqualToValue={(op, val) =>
+                    op.idcentro === val.idcentro
+                  }
+                  onChange={(event, value, reason) => {
+                    if (reason === "clear") {
+                      setAutoCentrosReservasAtuais(null);
+                    } else {
+                      setAutoCentrosReservasAtuais(value);
+                    }
+                  }}
+                  onInputChange={(event, value, reason) => {
+                    if (reason === "clear") {
+                      setAutoCentrosReservasAtuais([]);
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      label={"Filtrar Centros"}
+                    />
+                  )}
+                />
+              }
+            />
+            <CardContent sx={{ py: 1 }}>
+              <TablePedidosLimpeza {...tablePedidosLimpezaProps} />
+            </CardContent>
+          </Card>
+        </Box>
 
+        <Box gridColumn="span 2">
+          <Card>
+            <CardHeader
+              title="Reservas a Decorrer"
+              action={
+                <Autocomplete
+                  sx={{ minWidth: 150 }}
+                  multiple
+                  options={dataCentros || []}
+                  value={autoCentrosReservasAtuais}
+                  ChipProps={{ color: "primary", size: "small" }}
+                  getOptionLabel={(option) => option.nome}
+                  isOptionEqualToValue={(op, val) =>
+                    op.idcentro === val.idcentro
+                  }
+                  onChange={(event, value, reason) => {
+                    if (reason === "clear") {
+                      setAutoCentrosReservasAtuais(null);
+                    } else {
+                      setAutoCentrosReservasAtuais(value);
+                    }
+                  }}
+                  onInputChange={(event, value, reason) => {
+                    if (reason === "clear") {
+                      setAutoCentrosReservasAtuais([]);
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      label={"Filtrar Centros"}
+                    />
+                  )}
+                />
+              }
+            />
+            <CardContent sx={{ py: 1 }}>
+              <TableReservasDecorrer {...tableReservasDecorrerProps} />
+            </CardContent>
+          </Card>
+        </Box>
         <Box gridColumn="span 2">
           <Card>
             <CardHeader
@@ -270,48 +375,6 @@ export default function Dashboard() {
             />
             <CardContent sx={{ py: 1 }}>
               <TableReservasNext {...tableReservasProps} />
-            </CardContent>
-          </Card>
-        </Box>
-        <Box gridColumn="span 2">
-          <Card>
-            <CardHeader
-              title="Reservas a Decorrer"
-              action={
-                <Autocomplete
-                  sx={{ minWidth: 150 }}
-                  multiple
-                  options={dataCentros || []}
-                  value={autoCentrosReservasAtuais}
-                  ChipProps={{ color: "primary", size: "small" }}
-                  getOptionLabel={(option) => option.nome}
-                  isOptionEqualToValue={(op, val) =>
-                    op.idcentro === val.idcentro
-                  }
-                  onChange={(event, value, reason) => {
-                    if (reason === "clear") {
-                      setAutoCentrosReservasAtuais(null);
-                    } else {
-                      setAutoCentrosReservasAtuais(value);
-                    }
-                  }}
-                  onInputChange={(event, value, reason) => {
-                    if (reason === "clear") {
-                      setAutoCentrosReservasAtuais([]);
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      label={"Filtrar Centros"}
-                    />
-                  )}
-                />
-              }
-            />
-            <CardContent sx={{ py: 1 }}>
-              <TableReservasDecorrer {...tableReservasDecorrerProps} />
             </CardContent>
           </Card>
         </Box>

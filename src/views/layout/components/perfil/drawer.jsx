@@ -20,7 +20,7 @@ import { validationSchemaPerfil } from "utils/validations";
 
 export default function PerfilDrawer({ open, handleClose }) {
   const [file, setFile] = useState(null);
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const queryClient = useQueryClient();
 
@@ -74,7 +74,6 @@ export default function PerfilDrawer({ open, handleClose }) {
           toast.error("Não foi possível atualizar a password!", {
             toastId: "update_password",
           });
-          return;
         }
       }
 
@@ -95,6 +94,8 @@ export default function PerfilDrawer({ open, handleClose }) {
           toastId: "update_perfil",
         });
       }
+
+      setUser(null);
     },
   });
 

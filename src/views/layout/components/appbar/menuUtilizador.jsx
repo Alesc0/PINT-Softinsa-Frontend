@@ -1,8 +1,18 @@
 import {
+  Brightness4,
+  Brightness7,
+  Home,
+  Logout,
+  PersonOutline,
+  Settings,
+} from "@mui/icons-material";
+import {
   Avatar,
   Box,
   ButtonBase,
   Divider,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   Stack,
@@ -11,9 +21,10 @@ import {
 import axios from "api/_axios";
 import socket from "api/_socket";
 import { UserContext } from "App";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
+import { ColorModeContext } from "theme";
 import { clearStorages, getTokens } from "utils/sessionManager";
 import PerfilDrawer from "../perfil/drawer";
 
@@ -38,8 +49,10 @@ const paperProps = {
   },
 };
 
-export default function UtilizadorMenu({ handleOpen }) {
+export default function UtilizadorMenu() {
   const { user, setAuth } = useContext(UserContext);
+  const { handleColorMode, mode } = useContext(ColorModeContext);
+
   const [perfilOpen, setPerfilOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -51,6 +64,7 @@ export default function UtilizadorMenu({ handleOpen }) {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -101,7 +115,10 @@ export default function UtilizadorMenu({ handleOpen }) {
         <Divider />
         <Stack sx={{ p: 1 }}>
           <MenuItem component={Link} to={"/"} onClick={() => handleClose()}>
-            Home
+            <ListItemIcon>
+              <Home />
+            </ListItemIcon>
+            <ListItemText>Home</ListItemText>
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -109,18 +126,27 @@ export default function UtilizadorMenu({ handleOpen }) {
               handleOpenPerfil();
             }}
           >
-            Perfil
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              handleOpen();
-            }}
-          >
-            Opções
+            <ListItemIcon>
+              <PersonOutline />
+            </ListItemIcon>
+            <ListItemText>Perfil</ListItemText>
           </MenuItem>
           <Divider />
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          <MenuItem onClick={handleColorMode}>
+            <ListItemIcon>
+              {mode === "light" ? <Brightness4 /> : <Brightness7 />}
+            </ListItemIcon>
+            <ListItemText>
+              Modo {mode === "light" ? "Escuro" : "Claro"}
+            </ListItemText>
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleLogout}>
+            <ListItemIcon>
+              <Logout />
+            </ListItemIcon>
+            <ListItemText>Logout</ListItemText>
+          </MenuItem>
         </Stack>
       </Menu>
       <PerfilDrawer

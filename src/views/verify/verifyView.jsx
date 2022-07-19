@@ -3,10 +3,18 @@ import img from "imgs/banner-login.jpg";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import axios from "api/_axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useCallback, useContext, useEffect } from "react";
+import { UserContext } from "App";
+import { useLocation } from "react-router-dom";
 
 function VerifyView() {
   const { token } = useParams();
+  const { auth } = useContext(UserContext);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const { data, error } = useQuery("verifyToken", async () => {
     const { data: response } = await axios.post(
       `/utilizador/confirmar/${token}`
@@ -14,6 +22,15 @@ function VerifyView() {
     return response.status;
   });
 
+  const goBack = useCallback(() => {
+    if (location.state?.from) {
+      navigate(location.state.from);
+    } else navigate("/");
+  }, [location.state?.from, navigate]);
+
+  useEffect(() => {
+    if (auth) goBack();
+  }, [auth, goBack]);
   return (
     <Box
       style={{

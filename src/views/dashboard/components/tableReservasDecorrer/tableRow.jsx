@@ -1,12 +1,4 @@
-import { Delete } from "@mui/icons-material";
-import {
-  Avatar,
-  IconButton,
-  Stack,
-  TableCell,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { Avatar, Stack, TableCell, TableRow, Typography } from "@mui/material";
 import sampleAvaImg from "imgs/avatar.jpg";
 
 const months = [
@@ -29,7 +21,7 @@ const formatedHours = (hours) => {
   return split.slice(0, split.length - 1).join(":");
 };
 
-function ReservaRow({ row, handleOpen }) {
+function ReservaRow({ row }) {
   const formatedDate = row.data.replace(/(^|-)0+/g, "$1");
 
   return (
@@ -52,21 +44,6 @@ function ReservaRow({ row, handleOpen }) {
         <Typography>
           {formatedHours(row.horainicio)} - {formatedHours(row.horafinal)}
         </Typography>
-      </TableCell>
-      <TableCell align="left">
-        <Typography>
-          {row.utilizadore.telemovel.length === 13
-            ? row.utilizadore.telemovel.slice(4)
-            : row.utilizadore.telemovel}
-        </Typography>
-      </TableCell>
-      <TableCell align="left">
-        <Typography>{row.observacoes}</Typography>
-      </TableCell>
-      <TableCell align="left" sx={{ flexShrink: 0 }}>
-        <IconButton onClick={() => handleOpen(row.idreserva)}>
-          <Delete color="error" />
-        </IconButton>
       </TableCell>
     </TableRow>
   );

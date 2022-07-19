@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 
 const validationSchema = yup.object({
@@ -58,11 +59,9 @@ function LoginForm({ handleRequest, isLoading }) {
         console.log(error.response);
         if (error.response.data.data === "Confirm email first.") {
           formik.setFieldError("password", "Verifique o seu email!");
-        } else
-          formik.setFieldError(
-            "password",
-            "Combinação errada de email e password!"
-          );
+        } else if (error.response.data.data === "Invalid Credentials!") {
+          formik.setFieldError("password", "Email ou password inválidos!");
+        } else toast.error("Erro! Contacte o seu Admin!");
       }
     },
   });

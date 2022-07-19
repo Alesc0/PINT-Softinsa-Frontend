@@ -1,47 +1,42 @@
-// install (please make sure versions match peerDependencies)
-// yarn add @nivo/core @nivo/bar
-import { useTheme } from "@emotion/react";
-import { useMediaQuery } from "@mui/material";
-import { Box } from "@mui/system";
+import { Box } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
-import React, { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import axios from "api/_axios";
 
-const MyResponsiveBar = ({ data }) => {
-  
+const PercentSalas = ({ data }) => {
+  const convertData = (data) => {
+    const newData = [];
+    if (data) {
+      data.forEach((val) => {
+        let a = newData.findIndex((v) => v.lotacaoMax === val.lotacaoMax);
+        if (a !== -1) {
+          newData[a][val.nome] = Math.round(val.p);
+        } else {
+          newData.push({
+            lotacaoMax: val.lotacaoMax,
+            [val.nome]: Math.round(val.p),
+          });
+        }
+      });
+    }
+    return newData;
+  };
 
-  const [layout, setLayout] = useState(false);
+  /* const [layout, setLayout] = useState(false);
 
   const theme = useTheme();
 
-  const matches = useMediaQuery(theme.breakpoints.between("xs", "md"));
+  const matches = useMediaQuery(theme.breakpoints.between("xs", "lg"));
 
   useEffect(() => {
     setLayout(matches ? "horizontal" : "vertical");
-  }, [matches]);
-
-  const getKeys = (data) => {
-    if (!data) return [];
-    let keys = [];
-    data.forEach((item) => {
-      for (let key of Object.keys(item)) {
-        if (key !== "dia" && !keys.includes(key)) {
-          keys.push(key);
-        }
-      }
-    });
-    return keys;
-  };
+  }, [matches]); */
 
   return (
-    <Box sx={{ height: "30em" }}>
+    <Box sx={{ height: "25em" }}>
       <ResponsiveBar
-        data={data || []}
-        layout={layout}
-        keys={getKeys(data)}
-        indexBy="dia"
-        margin={{ top: 50, bottom: 60 }}
+        data={convertData(data) || []}
+        keys={data?.map((val) => val.nome)}
+        indexBy="lotacaoMax"
+        margin={{ top: 50, bottom: 50, left: 50 }}
         padding={0.3}
         valueScale={{ type: "linear" }}
         indexScale={{ type: "band", round: true }}
@@ -56,7 +51,7 @@ const MyResponsiveBar = ({ data }) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "Dia",
+          legend: "Lotação",
           legendPosition: "middle",
           legendOffset: 32,
         }}
@@ -64,7 +59,7 @@ const MyResponsiveBar = ({ data }) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "Ocupação diária",
+          legend: "Percentagem",
           legendPosition: "middle",
           legendOffset: -40,
         }}
@@ -103,4 +98,5 @@ const MyResponsiveBar = ({ data }) => {
     </Box>
   );
 };
-export default MyResponsiveBar;
+
+export default PercentSalas;

@@ -1,11 +1,11 @@
 import { Avatar, Box, Button, Stack, styled, Typography } from "@mui/material";
-import React from "react";
-import LandingAppBar from "./components/appbar";
-import landingBanner from "imgs/landingBanner1.png";
+import axios, { baseURL } from "api/_axios";
 import Alex from "imgs/Alex.jpg";
-import Rodrigo from "imgs/Rodrigo.jpg";
 import Joel from "imgs/Joel.png";
+import landingBanner from "imgs/landingBanner1.png";
 import Lucas from "imgs/Lucas.jpg";
+import Rodrigo from "imgs/Rodrigo.jpg";
+import LandingAppBar from "./components/appbar";
 
 const CustomAvatar = styled(Avatar)`
   width: 250px;
@@ -13,6 +13,9 @@ const CustomAvatar = styled(Avatar)`
 `;
 
 function LandingPage() {
+  const Download = (type) => {
+    window.location.replace(`${baseURL}${type}`);
+  };
   return (
     <>
       <LandingAppBar />
@@ -75,6 +78,7 @@ function LandingPage() {
                   color="warning"
                   sx={{ fontSize: 30 }}
                   variant="contained"
+                  onClick={() => Download("mobile")}
                 >
                   Mobile
                 </Button>
@@ -83,6 +87,7 @@ function LandingPage() {
                   color="warning"
                   sx={{ fontSize: 30 }}
                   variant="contained"
+                  onClick={() => Download("tablet")}
                 >
                   Tablet
                 </Button>

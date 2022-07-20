@@ -21,7 +21,6 @@ const formatedHours = (hours) => {
 };
 
 function PedidoRow({ row }) {
-  console.log(row);
   const formatedDate = row.data?.replace(/(^|-)0+/g, "$1");
   return (
     <TableRow hover role="checkbox" tabIndex={-1} key={row.idreserva}>

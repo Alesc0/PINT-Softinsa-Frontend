@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Stack, styled, Typography } from "@mui/material";
-import axios, { baseURL } from "api/_axios";
+import { baseURL } from "api/_axios";
 import Alex from "imgs/Alex.jpg";
 import Joel from "imgs/Joel.png";
 import landingBanner from "imgs/landingBanner1.png";

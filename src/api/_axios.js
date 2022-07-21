@@ -3,7 +3,7 @@ import {
   clearStorages,
   getTokens,
   setLocalStorage,
-  setSessionStorage,
+  setSessionStorage
 } from "../utils/sessionManager";
 
 export const baseURL = "https://pint-backend-dev.herokuapp.com/";

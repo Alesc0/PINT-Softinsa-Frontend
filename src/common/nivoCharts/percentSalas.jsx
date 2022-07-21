@@ -20,16 +20,6 @@ const PercentSalas = ({ data }) => {
     return newData;
   };
 
-  /* const [layout, setLayout] = useState(false);
-
-  const theme = useTheme();
-
-  const matches = useMediaQuery(theme.breakpoints.between("xs", "lg"));
-
-  useEffect(() => {
-    setLayout(matches ? "horizontal" : "vertical");
-  }, [matches]); */
-
   return (
     <Box sx={{ height: "25em" }}>
       <ResponsiveBar

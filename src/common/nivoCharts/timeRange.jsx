@@ -3,7 +3,7 @@ import { ResponsiveTimeRange } from "@nivo/calendar";
 import axios from "api/_axios";
 import { useQuery } from "react-query";
 
-const MyResponsiveTimeRange = ({ startDate, endDate }) => {
+const MyResponsiveTimeRange = ({ startDate, endDate, centro }) => {
   var date = new Date();
   date.setDate(date.getDate() - 240);
 
@@ -14,6 +14,7 @@ const MyResponsiveTimeRange = ({ startDate, endDate }) => {
         params: {
           start: startDate.toLocaleDateString("en-CA"),
           end: endDate.toLocaleDateString("en-CA"),
+          ...(centro && { centro: centro }),
         },
       });
       return response.data.map((val) => ({ day: val.data, value: val.count }));

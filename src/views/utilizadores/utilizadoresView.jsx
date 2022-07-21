@@ -11,11 +11,11 @@ function UtilizadoresView() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
   const { user } = useContext(UserContext);
-  const [autoCentros, setAutoCentros] = useState([]);
+  const [autoCentros, setAutoCentros] = useState(null);
   const [pesquisa, setPesquisa] = useState("");
   const [params, setParams] = useState({
-    centros: autoCentros.map((val) => val.idcentro),
-    pesquisa: pesquisa,
+    centros: [autoCentros?.idcentro],
+    pesquisa,
   });
 
   const { isFetching: fetchingCentros, data: dataCentros } = useQuery(
@@ -25,7 +25,7 @@ function UtilizadoresView() {
       const getUserCentro = response.data.find(
         (val) => val.idcentro === user.idcentro
       );
-      setAutoCentros([getUserCentro]);
+      setAutoCentros(getUserCentro);
       setParams({ centros: [getUserCentro.idcentro] });
       return response.data;
     }
@@ -59,8 +59,8 @@ function UtilizadoresView() {
   const handleFiltros = (check) => {
     if (check) {
       setParams({
-        centros: autoCentros.map((val) => val.idcentro),
-        pesquisa: pesquisa,
+        ...(autoCentros && { centros: autoCentros.idcentro }),
+        pesquisa,
       });
     } else {
       setPesquisa("");

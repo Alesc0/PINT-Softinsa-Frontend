@@ -5,7 +5,6 @@ function MultipleAutocomplete(props) {
   const { data, getter, setter, text, sx } = props;
   return (
     <Autocomplete
-      multiple
       options={data || []}
       sx={{ ...sx }}
       value={getter}
@@ -13,12 +12,12 @@ function MultipleAutocomplete(props) {
       getOptionLabel={(option) => option.cidade}
       isOptionEqualToValue={(op, val) => op.idcentro === val.idcentro}
       onChange={(event, value, reason) => {
-        if (reason === "clear") return;
+        if (reason === "clear") setter(null);
         else setter(value);
       }}
       onInputChange={(event, value, reason) => {
         if (reason === "clear") {
-          setter([]);
+          setter(null);
         }
       }}
       renderInput={(params) => (

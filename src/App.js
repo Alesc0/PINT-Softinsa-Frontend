@@ -65,7 +65,7 @@ function App() {
       queryClient.invalidateQueries("getReservasByRange");
       queryClient.invalidateQueries("getReservasView");
       queryClient.invalidateQueries("getReservasAtuaisDashboard");
-      queryClient.invalidateQueries("getOcupacaoSalas");
+      queryClient.invalidateQueries("getAlocacaoSalas");
     });
 
     socket.on("updateCentro", () => {

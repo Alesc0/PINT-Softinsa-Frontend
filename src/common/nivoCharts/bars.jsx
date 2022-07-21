@@ -4,13 +4,9 @@ import { useTheme } from "@emotion/react";
 import { useMediaQuery } from "@mui/material";
 import { Box } from "@mui/system";
 import { ResponsiveBar } from "@nivo/bar";
-import React, { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import axios from "api/_axios";
+import { useEffect, useState } from "react";
 
 const MyResponsiveBar = ({ data }) => {
-  
-
   const [layout, setLayout] = useState(false);
 
   const theme = useTheme();

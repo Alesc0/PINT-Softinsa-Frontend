@@ -5,6 +5,8 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
+  Paper,
   Stack,
   TextField,
 } from "@mui/material";
@@ -12,6 +14,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "api/_axios";
 import { UserContext } from "App";
+import MultipleAutocomplete from "common/multipleAutocomplete/multipleAutocomplete";
 import MyResponsiveBar from "common/nivoCharts/bars";
 import PercentSalas from "common/nivoCharts/percentSalas";
 import MyResponsivePie from "common/nivoCharts/pie";
@@ -23,14 +26,6 @@ import TablePedidosLimpeza from "./components/tablePedidosLimpeza/tablePedidosLi
 import TableReservasDecorrer from "./components/tableReservasDecorrer/tableReservasDecorrer";
 import TableReservasNext from "./components/tableReservasNext/tableReservasNext";
 
-const info = [
-  {
-    id: 3,
-    val: 231,
-    desc: "Reservas realizadas",
-  },
-];
-
 export default function Dashboard() {
   var date = new Date();
   date.setDate(date.getDate() - 120);
@@ -39,54 +34,53 @@ export default function Dashboard() {
 
   const [startDate, setStartDate] = useState(date);
   const [endDate, setEndDate] = useState(date2);
-  const [autoCentrosReservas, setAutoCentrosReservas] = useState([]);
-  const [autoCentrosReservasAtuais, setAutoCentrosReservasAtuais] = useState(
-    []
-  );
-  const [autoCentrosPercent, setAutoCentrosPercent] = useState([]);
-  const [autoSalasReservas, setAutoSalasReservas] = useState([]);
+  const [autoCentros, setAutoCentros] = useState(null);
+  const [autoSalas, setAutoSalas] = useState(null);
 
   const { user } = useContext(UserContext);
 
   const { isLoading: loadingCountUtilizadores, data: countUtilizadores } =
     useQuery("getUtilizadoresCount", async () => {
-      const { data: response } = await axios.get("utilizador/list");
+      const { data: response } = await axios.get("utilizador/list", {
+        params: {
+          offset: 0,
+          limit: 0,
+          centros: [autoCentros?.idcentro || user?.centro.idcentro],
+        },
+      });
       return response.count;
     });
 
-  const { isLoading: loadingTipoUtilizadores, data: dataTipoUtilizadores } =
-    useQuery("getUtilizadoresTipoCount", async () => {
-      const { data: response } = await axios.get("utilizador/tipoCount");
-      return response.data;
-    });
-
-  const { isLoading: loadingCountSalas, data: countSalas } = useQuery(
-    "getSalasCount",
+  const { isLoading: loadingCentros, data: dataCentros } = useQuery(
+    ["getCentrosDashboard"],
     async () => {
-      const { data: response } = await axios.get("sala/list");
-      return response.data.length;
+      const { data: response } = await axios.get("centro/list");
+      const getUserCentro = response.data.find(
+        (val) => val.idcentro === user.idcentro
+      );
+      setAutoCentros(getUserCentro);
+      return response.data;
     }
   );
 
-  const { data: dataCentros } = useQuery(["getCentrosDashboard"], async () => {
-    const { data: response } = await axios.get("centro/list");
-    const getUserCentro = response.data.find(
-      (val) => val.idcentro === user.idcentro
-    );
-    setAutoCentrosReservas([getUserCentro]);
-    setAutoCentrosReservasAtuais([getUserCentro]);
-    setAutoCentrosPercent([getUserCentro]);
-    return response.data;
-  });
+  const { isLoading: loadingTipoUtilizadores, data: dataTipoUtilizadores } =
+    useQuery("getUtilizadoresTipoCount", async () => {
+      const { data: response } = await axios.get("utilizador/tipoCount", {
+        params: {
+          centro: autoCentros?.idcentro || user?.centro.idcentro,
+        },
+      });
+      return response.data;
+    });
 
-  const { data: dataSalas } = useQuery(
-    ["getSalasDashboard", autoCentrosReservas],
+  const { isLoading: loadingSalas, data: dataSalas } = useQuery(
+    ["getSalasDashboard", autoCentros],
     async () => {
       const { data: response } = await axios.get("sala/list", {
         params: {
           offset: 0,
           limit: 999,
-          centros: autoCentrosReservas.map((val) => val.idcentro),
+          centros: [autoCentros?.idcentro || user?.centro.idcentro],
         },
       });
       return response.data;
@@ -94,14 +88,14 @@ export default function Dashboard() {
   );
 
   const { isLoading: loadingReservas, data: dataReservas } = useQuery(
-    ["getReservasDashboard", autoCentrosReservas, autoSalasReservas],
+    ["getReservasDashboard", autoCentros, autoSalas],
     async () => {
       const { data: response } = await axios.get("reserva/list", {
         params: {
           offset: 0 * 10,
           limit: 10,
-          centros: autoCentrosReservas.map((val) => val.idcentro),
-          salas: autoSalasReservas.map((val) => val.idsala),
+          centros: [autoCentros?.idcentro || user.centro.idcentro],
+          ...(autoSalas && { salas: [autoSalas.idsala] }),
         },
       });
       return response;
@@ -114,11 +108,11 @@ export default function Dashboard() {
 
   const { isLoading: loadingReservasAtuais, data: dataReservasAtuais } =
     useQuery(
-      ["getReservasAtuaisDashboard", autoCentrosReservasAtuais],
+      ["getReservasAtuaisDashboard", autoCentros],
       async () => {
         const { data: response } = await axios.get("reserva/reservasDecorrer", {
           params: {
-            centros: autoCentrosReservasAtuais.map((val) => val.idcentro),
+            centro: autoCentros?.idcentro || user?.centro.idcentro,
           },
         });
         return response.data;
@@ -128,14 +122,14 @@ export default function Dashboard() {
         keepPreviousData: true,
       }
     );
-  const { isLoading: loadingPercentagem, data: dataPercentagem } = useQuery(
-    ["getSalasPercentagem", autoCentrosPercent],
+  const { data: dataPercentagem } = useQuery(
+    ["getSalasPercentagem", autoCentros],
     async () => {
       const { data: response } = await axios.get(
         "reserva/percentSalasUtilizadas",
         {
           params: {
-            centro: autoCentrosPercent[0]?.idcentro || user?.centro.idcentro,
+            centro: autoCentros?.idcentro || user?.centro.idcentro,
           },
         }
       );
@@ -148,11 +142,11 @@ export default function Dashboard() {
   );
 
   const { data: dataOcupacao } = useQuery(
-    ["getOcupacaoSalas", autoCentrosPercent],
+    ["getAlocacaoSalas", autoCentros],
     async () => {
       const { data: response } = await axios.get("/reserva/alocacaoMensal", {
         params: {
-          centro: autoCentrosPercent[0]?.idcentro || user?.centro.idcentro,
+          centro: autoCentros?.idcentro || user?.centro.idcentro,
         },
       });
       return response.data;
@@ -164,11 +158,11 @@ export default function Dashboard() {
   );
 
   const { isLoading: loadingPedidos, data: dataPedidos } = useQuery(
-    ["getPedidosDashboard", autoCentrosPercent],
+    ["getPedidosDashboard", autoCentros],
     async () => {
       const { data: response } = await axios.get("/pedido/getPedidosEstado", {
         params: {
-          centro: autoCentrosPercent[0]?.idcentro || user?.centro.idcentro,
+          centro: autoCentros?.idcentro || user?.centro.idcentro,
         },
       });
       return response;
@@ -191,6 +185,15 @@ export default function Dashboard() {
     pedidos: dataPedidos?.data,
     isLoading: loadingPedidos,
   };
+
+  const maProps = {
+    data: dataCentros,
+    getter: autoCentros,
+    setter: setAutoCentros,
+    text: "Centro",
+    multiple: false,
+  };
+
   return (
     <>
       <Box
@@ -203,59 +206,32 @@ export default function Dashboard() {
           info={countUtilizadores}
           text={"Utilizadores Registados"}
         />
+
         <BoxNumbers
           loading={loadingReservas}
           info={dataReservas?.count}
           text={"Reservas Futuras"}
         />
 
-        {info.map((row) => (
-          <BoxNumbers key={row.id} info={row.val} text={row.desc} />
-        ))}
-
         <BoxNumbers
-          loading={loadingCountSalas || loadingReservasAtuais}
-          info={countSalas - (dataReservasAtuais?.length || 0)}
+          loading={loadingSalas || loadingReservasAtuais}
+          info={dataSalas?.length - (dataReservasAtuais?.length || 0)}
           text={"Salas Livres"}
         />
 
+        <Card component={Paper}>
+          <CardHeader title={"Filtrar por Centro"} />
+          <CardContent>
+            {loadingCentros ? (
+              <CircularProgress />
+            ) : (
+              <MultipleAutocomplete {...maProps} />
+            )}
+          </CardContent>
+        </Card>
         <Box gridColumn="span 2" gridRow="span 2">
           <Card>
-            <CardHeader
-              title="Pedidos de Limpeza"
-              action={
-                <Autocomplete
-                  sx={{ minWidth: 150 }}
-                  multiple
-                  options={dataCentros || []}
-                  value={autoCentrosPercent}
-                  ChipProps={{ color: "primary", size: "small" }}
-                  getOptionLabel={(option) => option.cidade}
-                  isOptionEqualToValue={(op, val) =>
-                    op.idcentro === val.idcentro
-                  }
-                  onChange={(event, value, reason) => {
-                    if (reason === "clear") {
-                      setAutoCentrosPercent(null);
-                    } else {
-                      setAutoCentrosPercent(value);
-                    }
-                  }}
-                  onInputChange={(event, value, reason) => {
-                    if (reason === "clear") {
-                      setAutoCentrosPercent([]);
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      label={"Filtrar Centros"}
-                    />
-                  )}
-                />
-              }
-            />
+            <CardHeader title="Pedidos de Limpeza" />
             <CardContent sx={{ py: 1 }}>
               <TablePedidosLimpeza {...tablePedidosLimpezaProps} />
             </CardContent>
@@ -264,41 +240,7 @@ export default function Dashboard() {
 
         <Box gridColumn="span 2">
           <Card>
-            <CardHeader
-              title="Reservas a Decorrer"
-              action={
-                <Autocomplete
-                  sx={{ minWidth: 150 }}
-                  multiple
-                  options={dataCentros || []}
-                  value={autoCentrosReservasAtuais}
-                  ChipProps={{ color: "primary", size: "small" }}
-                  getOptionLabel={(option) => option.cidade}
-                  isOptionEqualToValue={(op, val) =>
-                    op.idcentro === val.idcentro
-                  }
-                  onChange={(event, value, reason) => {
-                    if (reason === "clear") {
-                      setAutoCentrosReservasAtuais(null);
-                    } else {
-                      setAutoCentrosReservasAtuais(value);
-                    }
-                  }}
-                  onInputChange={(event, value, reason) => {
-                    if (reason === "clear") {
-                      setAutoCentrosReservasAtuais([]);
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      label={"Filtrar Centros"}
-                    />
-                  )}
-                />
-              }
-            />
+            <CardHeader title="Reservas a Decorrer" />
             <CardContent sx={{ py: 1 }}>
               <TableReservasDecorrer {...tableReservasDecorrerProps} />
             </CardContent>
@@ -313,54 +255,20 @@ export default function Dashboard() {
                   <Stack direction={{ sm: "column", md: "row" }} spacing={2}>
                     <Autocomplete
                       sx={{ minWidth: 150 }}
-                      multiple
-                      options={dataCentros || []}
-                      value={autoCentrosReservas}
-                      ChipProps={{ color: "primary", size: "small" }}
-                      getOptionLabel={(option) => option.cidade}
-                      isOptionEqualToValue={(op, val) =>
-                        op.idcentro === val.idcentro
-                      }
-                      onChange={(event, value, reason) => {
-                        if (reason === "clear") {
-                          setAutoCentrosReservas(null);
-                          setAutoSalasReservas([]);
-                        } else {
-                          setAutoCentrosReservas(value);
-                          setAutoSalasReservas([]);
-                        }
-                      }}
-                      onInputChange={(event, value, reason) => {
-                        if (reason === "clear") {
-                          setAutoCentrosReservas([]);
-                          setAutoSalasReservas([]);
-                        }
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          label={"Filtrar Centros"}
-                        />
-                      )}
-                    />
-                    <Autocomplete
-                      sx={{ minWidth: 150 }}
-                      multiple
                       options={dataSalas || []}
-                      value={autoSalasReservas}
+                      value={autoSalas}
                       ChipProps={{ color: "primary", size: "small" }}
-                      getOptionLabel={(option) => option.cidade}
+                      getOptionLabel={(option) => option.nome}
                       isOptionEqualToValue={(op, val) =>
                         op.idsala === val.idsala
                       }
                       onChange={(event, value, reason) => {
-                        if (reason === "clear") return;
-                        else setAutoSalasReservas(value);
+                        if (reason === "clear") setAutoSalas(null);
+                        else setAutoSalas(value);
                       }}
                       onInputChange={(event, value, reason) => {
                         if (reason === "clear") {
-                          setAutoSalasReservas([]);
+                          setAutoSalas(null);
                         }
                       }}
                       renderInput={(params) => (
@@ -382,41 +290,7 @@ export default function Dashboard() {
         </Box>
         <Box gridColumn="span 2">
           <Card>
-            <CardHeader
-              title="Uso relativo à lotação"
-              action={
-                <Autocomplete
-                  sx={{ minWidth: 150 }}
-                  multiple
-                  options={dataCentros || []}
-                  value={autoCentrosPercent}
-                  ChipProps={{ color: "primary", size: "small" }}
-                  getOptionLabel={(option) => option.cidade}
-                  isOptionEqualToValue={(op, val) =>
-                    op.idcentro === val.idcentro
-                  }
-                  onChange={(event, value, reason) => {
-                    if (reason === "clear") {
-                      setAutoCentrosPercent(null);
-                    } else {
-                      setAutoCentrosPercent(value);
-                    }
-                  }}
-                  onInputChange={(event, value, reason) => {
-                    if (reason === "clear") {
-                      setAutoCentrosPercent([]);
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      label={"Filtrar Centros"}
-                    />
-                  )}
-                />
-              }
-            />
+            <CardHeader title="Uso relativo à lotação" />
             <CardContent>
               <PercentSalas data={dataPercentagem} />
             </CardContent>
@@ -460,47 +334,17 @@ export default function Dashboard() {
               }
             />
             <CardContent>
-              <MyResponsiveTimeRange startDate={startDate} endDate={endDate} />
+              <MyResponsiveTimeRange
+                startDate={startDate}
+                endDate={endDate}
+                centro={autoCentros?.idcentro}
+              />
             </CardContent>
           </Card>
         </Box>
         <Box gridColumn={{ xs: "span 2", md: "span 4" }}>
           <Card>
-            <CardHeader
-              title="Alocação diária"
-              action={
-                <Autocomplete
-                  sx={{ minWidth: 150 }}
-                  multiple
-                  options={dataCentros || []}
-                  value={autoCentrosPercent}
-                  ChipProps={{ color: "primary", size: "small" }}
-                  getOptionLabel={(option) => option.cidade}
-                  isOptionEqualToValue={(op, val) =>
-                    op.idcentro === val.idcentro
-                  }
-                  onChange={(event, value, reason) => {
-                    if (reason === "clear") {
-                      setAutoCentrosPercent(null);
-                    } else {
-                      setAutoCentrosPercent(value);
-                    }
-                  }}
-                  onInputChange={(event, value, reason) => {
-                    if (reason === "clear") {
-                      setAutoCentrosPercent([]);
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      label={"Filtrar Centros"}
-                    />
-                  )}
-                />
-              }
-            />
+            <CardHeader title="Alocação diária" />
             <CardContent>
               <MyResponsiveBar data={dataOcupacao} />
             </CardContent>

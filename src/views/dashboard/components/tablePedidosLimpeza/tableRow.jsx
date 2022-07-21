@@ -19,9 +19,11 @@ const formatedHours = (hours) => {
   var split = hours.split(":");
   return split.slice(0, split.length - 1).join(":");
 };
+const formatedDate = (data) => {
+  return data.split("T")[0] || "";
+};
 
 function PedidoRow({ row }) {
-  const formatedDate = row.data?.replace(/(^|-)0+/g, "$1");
   return (
     <TableRow hover role="checkbox" tabIndex={-1} key={row.idreserva}>
       <TableCell component="th" scope="row" sx={{ paddingBlock: 1 }}>
@@ -29,15 +31,12 @@ function PedidoRow({ row }) {
       </TableCell>
       <TableCell align="left">
         <Typography>
-          {/* {row.data && formatedDate.split("-")[2]}{" "}
-          {row.data && months[formatedDate.split("-")[1] - 1]} */}
+          {formatedDate(row.data).split("-")[2]}{" "}
+          {months[formatedDate(row.data).split("-")[1] - 1]}
         </Typography>
       </TableCell>
       <TableCell align="left">
-        <Typography>
-          {/* {row.data && formatedHours(row.horainicio)} -{" "}
-          {row.data && formatedHours(row.horafinal)} */}
-        </Typography>
+        <Typography>{formatedHours(row.data.split("T")[1])}</Typography>
       </TableCell>
     </TableRow>
   );

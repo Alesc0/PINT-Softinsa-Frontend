@@ -208,6 +208,7 @@ export default function Dashboard() {
           info={dataReservas?.count}
           text={"Reservas Futuras"}
         />
+
         {info.map((row) => (
           <BoxNumbers key={row.id} info={row.val} text={row.desc} />
         ))}
@@ -217,6 +218,7 @@ export default function Dashboard() {
           info={countSalas - (dataReservasAtuais?.length || 0)}
           text={"Salas Livres"}
         />
+
         <Box gridColumn="span 2" gridRow="span 2">
           <Card>
             <CardHeader
@@ -226,7 +228,7 @@ export default function Dashboard() {
                   sx={{ minWidth: 150 }}
                   multiple
                   options={dataCentros || []}
-                  value={autoCentrosReservasAtuais}
+                  value={autoCentrosPercent}
                   ChipProps={{ color: "primary", size: "small" }}
                   getOptionLabel={(option) => option.cidade}
                   isOptionEqualToValue={(op, val) =>
@@ -234,14 +236,14 @@ export default function Dashboard() {
                   }
                   onChange={(event, value, reason) => {
                     if (reason === "clear") {
-                      setAutoCentrosReservasAtuais(null);
+                      setAutoCentrosPercent(null);
                     } else {
-                      setAutoCentrosReservasAtuais(value);
+                      setAutoCentrosPercent(value);
                     }
                   }}
                   onInputChange={(event, value, reason) => {
                     if (reason === "clear") {
-                      setAutoCentrosReservasAtuais([]);
+                      setAutoCentrosPercent([]);
                     }
                   }}
                   renderInput={(params) => (

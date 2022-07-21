@@ -228,7 +228,7 @@ export default function Dashboard() {
                   options={dataCentros || []}
                   value={autoCentrosReservasAtuais}
                   ChipProps={{ color: "primary", size: "small" }}
-                  getOptionLabel={(option) => option.nome}
+                  getOptionLabel={(option) => option.cidade}
                   isOptionEqualToValue={(op, val) =>
                     op.idcentro === val.idcentro
                   }
@@ -271,7 +271,7 @@ export default function Dashboard() {
                   options={dataCentros || []}
                   value={autoCentrosReservasAtuais}
                   ChipProps={{ color: "primary", size: "small" }}
-                  getOptionLabel={(option) => option.nome}
+                  getOptionLabel={(option) => option.cidade}
                   isOptionEqualToValue={(op, val) =>
                     op.idcentro === val.idcentro
                   }
@@ -315,7 +315,7 @@ export default function Dashboard() {
                       options={dataCentros || []}
                       value={autoCentrosReservas}
                       ChipProps={{ color: "primary", size: "small" }}
-                      getOptionLabel={(option) => option.nome}
+                      getOptionLabel={(option) => option.cidade}
                       isOptionEqualToValue={(op, val) =>
                         op.idcentro === val.idcentro
                       }
@@ -348,7 +348,7 @@ export default function Dashboard() {
                       options={dataSalas || []}
                       value={autoSalasReservas}
                       ChipProps={{ color: "primary", size: "small" }}
-                      getOptionLabel={(option) => option.nome}
+                      getOptionLabel={(option) => option.cidade}
                       isOptionEqualToValue={(op, val) =>
                         op.idsala === val.idsala
                       }
@@ -389,7 +389,7 @@ export default function Dashboard() {
                   options={dataCentros || []}
                   value={autoCentrosPercent}
                   ChipProps={{ color: "primary", size: "small" }}
-                  getOptionLabel={(option) => option.nome}
+                  getOptionLabel={(option) => option.cidade}
                   isOptionEqualToValue={(op, val) =>
                     op.idcentro === val.idcentro
                   }
@@ -473,7 +473,7 @@ export default function Dashboard() {
                   options={dataCentros || []}
                   value={autoCentrosPercent}
                   ChipProps={{ color: "primary", size: "small" }}
-                  getOptionLabel={(option) => option.nome}
+                  getOptionLabel={(option) => option.cidade}
                   isOptionEqualToValue={(op, val) =>
                     op.idcentro === val.idcentro
                   }

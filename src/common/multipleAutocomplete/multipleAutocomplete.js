@@ -10,7 +10,7 @@ function MultipleAutocomplete(props) {
       sx={{ ...sx }}
       value={getter}
       ChipProps={{ color: "primary", size: "small" }}
-      getOptionLabel={(option) => option.nome}
+      getOptionLabel={(option) => option.cidade}
       isOptionEqualToValue={(op, val) => op.idcentro === val.idcentro}
       onChange={(event, value, reason) => {
         if (reason === "clear") return;

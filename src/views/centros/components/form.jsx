@@ -91,7 +91,7 @@ export default function CentroForm({ handleRequest, id = undefined }) {
       try {
         await handleRequest({
           ...values,
-          imagem: files[0],
+          ...(files.length > 0 && { imagem: files[0] }),
         });
 
         queryClient.invalidateQueries("getCentrosView");

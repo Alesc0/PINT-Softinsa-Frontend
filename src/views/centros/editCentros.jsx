@@ -13,7 +13,7 @@ function AddCentros() {
     formData.append("descricao", data.descricao);
     formData.append("estado", data.estado);
     formData.append("cidade", data.cidade);
-    formData.append("imagem", data.imagem);
+    if (data.imagem) formData.append("imagem", data.imagem);
 
     await axios.put("centro/" + id, formData);
   });

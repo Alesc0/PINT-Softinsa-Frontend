@@ -77,7 +77,6 @@ function SalasForm({
       toast.error("Erro ao eliminar sala!");
     }
   };
-
   const formik = useFormik({
     initialValues: {
       nome: data?.nome || "",
@@ -238,12 +237,12 @@ function SalasForm({
                 `${option.nome} - ${option.cidade}` || ""
               }
               onChange={(event, value, reason) => {
-                if (reason === "clear") return;
+                if (reason === "clear") formik.setFieldValue(null);
                 else formik.setFieldValue("centro", value);
               }}
               onInputChange={(event, value, reason) => {
                 if (reason === "clear") {
-                  formik.setFieldValue("centro", value);
+                  formik.setFieldValue("centro", null);
                 }
               }}
               renderInput={(params) => <TextField {...params} label="Centro" />}

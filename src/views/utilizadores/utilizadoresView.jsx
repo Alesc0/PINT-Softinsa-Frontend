@@ -59,12 +59,12 @@ function UtilizadoresView() {
   const handleFiltros = (check) => {
     if (check) {
       setParams({
-        ...(autoCentros && { centros: autoCentros.idcentro }),
+        ...(autoCentros && { centros: [autoCentros.idcentro] }),
         pesquisa,
       });
     } else {
       setPesquisa("");
-      setAutoCentros([]);
+      setAutoCentros(null);
       setParams({});
     }
     setPage(0);

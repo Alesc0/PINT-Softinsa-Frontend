@@ -39,18 +39,6 @@ export default function Dashboard() {
 
   const { user } = useContext(UserContext);
 
-  const { isLoading: loadingCountUtilizadores, data: countUtilizadores } =
-    useQuery("getUtilizadoresCount", async () => {
-      const { data: response } = await axios.get("utilizador/list", {
-        params: {
-          offset: 0,
-          limit: 0,
-          centros: [autoCentros?.idcentro || user?.centro.idcentro],
-        },
-      });
-      return response.count;
-    });
-
   const { isLoading: loadingCentros, data: dataCentros } = useQuery(
     ["getCentrosDashboard"],
     async () => {
@@ -63,15 +51,41 @@ export default function Dashboard() {
     }
   );
 
+  const { isLoading: loadingCountUtilizadores, data: countUtilizadores } =
+    useQuery(
+      ["getUtilizadoresCount", autoCentros],
+      async () => {
+        const { data: response } = await axios.get("utilizador/list", {
+          params: {
+            offset: 0,
+            limit: 0,
+            centros: [autoCentros?.idcentro || user?.centro.idcentro],
+          },
+        });
+        return response.count;
+      },
+      {
+        enabled: !!dataCentros,
+        keepPreviousData: true,
+      }
+    );
+
   const { isLoading: loadingTipoUtilizadores, data: dataTipoUtilizadores } =
-    useQuery("getUtilizadoresTipoCount", async () => {
-      const { data: response } = await axios.get("utilizador/tipoCount", {
-        params: {
-          centro: autoCentros?.idcentro || user?.centro.idcentro,
-        },
-      });
-      return response.data;
-    });
+    useQuery(
+      ["getUtilizadoresTipoCount", autoCentros],
+      async () => {
+        const { data: response } = await axios.get("utilizador/tipoCount", {
+          params: {
+            centro: autoCentros?.idcentro || user?.centro.idcentro,
+          },
+        });
+        return response.data;
+      },
+      {
+        enabled: !!dataCentros,
+        keepPreviousData: true,
+      }
+    );
 
   const { isLoading: loadingSalas, data: dataSalas } = useQuery(
     ["getSalasDashboard", autoCentros],
@@ -84,6 +98,10 @@ export default function Dashboard() {
         },
       });
       return response.data;
+    },
+    {
+      enabled: !!dataCentros,
+      keepPreviousData: true,
     }
   );
 
@@ -202,20 +220,20 @@ export default function Dashboard() {
         gap={3}
       >
         <BoxNumbers
-          loading={loadingCountUtilizadores}
+          loading={loadingCentros || loadingCountUtilizadores}
           info={countUtilizadores}
           text={"Utilizadores Registados"}
         />
 
         <BoxNumbers
-          loading={loadingReservas}
+          loading={loadingReservas || loadingCentros}
           info={dataReservas?.count}
           text={"Reservas Futuras"}
         />
 
         <BoxNumbers
-          loading={loadingSalas || loadingReservasAtuais}
-          info={dataSalas?.length - (dataReservasAtuais?.length || 0)}
+          loading={loadingSalas || loadingCentros || loadingReservasAtuais}
+          info={dataSalas?.length - dataReservasAtuais?.length || 0}
           text={"Salas Livres"}
         />
 

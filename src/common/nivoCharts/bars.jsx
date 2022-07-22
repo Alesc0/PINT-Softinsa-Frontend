@@ -36,6 +36,7 @@ const MyResponsiveBar = ({ data }) => {
         data={data || []}
         layout={layout}
         keys={getKeys(data)}
+        label={(data) => `${Math.round(data.value)}%`}
         indexBy="dia"
         margin={{ top: 50, bottom: 60 }}
         padding={0.3}

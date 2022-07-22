@@ -35,6 +35,7 @@ const PercentSalas = ({ data }) => {
           from: "color",
           modifiers: [["darker", 1.6]],
         }}
+        label={(data) => `${data.value}%`}
         axisTop={null}
         axisRight={null}
         axisBottom={{

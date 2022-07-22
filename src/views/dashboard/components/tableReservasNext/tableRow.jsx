@@ -28,7 +28,13 @@ function ReservaRow({ row }) {
     <TableRow hover role="checkbox" tabIndex={-1} key={row.idreserva}>
       <TableCell component="th" scope="row" sx={{ paddingBlock: 1 }}>
         <Stack direction="row" spacing={1} alignItems="center">
-          <Avatar alt="Remy Sharp" src={sampleAvaImg} />
+          <Avatar
+            alt="Remy Sharp"
+            src={
+              (row.fotoConv && "data:image/jpeg;base64, " + row.fotoConv) ||
+              sampleAvaImg
+            }
+          />
           <Typography>{row.utilizadore.nome}</Typography>
         </Stack>
       </TableCell>

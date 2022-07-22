@@ -11,13 +11,14 @@ import MaxTempoLimpeza from "./components/maxTempoLimpeza";
 const limit = 4;
 
 function SalasView() {
+  const { user } = useContext(UserContext);
+  
   const [selected, setSelected] = useState(-1);
   const [page, setPage] = useState(1);
   const [centro, setCentro] = useState(null);
   const [slider, setSlider] = useState([0, 70]);
   const [pesquisa, setPesquisa] = useState("");
 
-  const { user } = useContext(UserContext);
 
   const {
     isFetching: loadingCentros,

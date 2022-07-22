@@ -14,7 +14,7 @@ function UtilizadoresView() {
   const [autoCentros, setAutoCentros] = useState(null);
   const [pesquisa, setPesquisa] = useState("");
   const [params, setParams] = useState({
-    centros: [autoCentros?.idcentro],
+    ...(autoCentros && { centros: [autoCentros.idcentro] }),
     pesquisa,
   });
 

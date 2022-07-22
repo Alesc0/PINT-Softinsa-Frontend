@@ -13,7 +13,7 @@ const limit = 4;
 function SalasView() {
   const [selected, setSelected] = useState(-1);
   const [page, setPage] = useState(1);
-  const [centro, setCentro] = useState([]);
+  const [centro, setCentro] = useState(null);
   const [slider, setSlider] = useState([0, 70]);
   const [pesquisa, setPesquisa] = useState("");
 
@@ -27,7 +27,7 @@ function SalasView() {
     ["getCentrosSalas"],
     async () => {
       const { data: response } = await axios.get("centro/list");
-      setCentro([response.data.find((val) => val.idcentro === user.idcentro)]);
+      setCentro(response.data.find((val) => val.idcentro === user.idcentro));
       return response.data;
     },
     { keepPreviousData: true }
@@ -48,7 +48,7 @@ function SalasView() {
         params: {
           offset: (page - 1) * limit,
           limit: limit,
-          centros: centro.map((val) => val.idcentro),
+          ...(centro && { centros: [centro.idcentro] }),
           pesquisa: pesquisa,
           lotacao: [...slider],
         },

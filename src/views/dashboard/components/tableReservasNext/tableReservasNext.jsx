@@ -75,7 +75,7 @@ export default function TableReservasNext(props) {
                 <TableRow>
                   <TableCell align="center" colSpan={99} sx={{ py: 3 }}>
                     <Typography variant="h6">
-                      {"Não foi encontrado nenhuma reserva!"}
+                      {"Não foi encontrada nenhuma reserva!"}
                     </Typography>
                   </TableCell>
                 </TableRow>

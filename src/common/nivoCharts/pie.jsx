@@ -4,7 +4,6 @@ import { ResponsivePie } from "@nivo/pie";
 
 function MyResponsivePie(props) {
   const { data } = props;
-
   const formatData = () => {
     let formatedData = [];
     if (data) {

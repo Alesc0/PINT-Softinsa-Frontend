@@ -16,7 +16,7 @@ import navBar_logo from "imgs/logo-softinsa.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const pages = ["Preview", "Equipa", "Download"];
+const pages = ["Home", "Equipa"];
 
 const LandingAppBar = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -75,7 +75,11 @@ const LandingAppBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  key={page}
+                  onClick={handleCloseNavMenu}
+                  href={"#" + page}
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -104,6 +108,7 @@ const LandingAppBar = () => {
             {pages.map((page) => (
               <Button
                 key={page}
+                href={"#" + page}
                 onClick={handleCloseNavMenu}
                 sx={{
                   my: 2,
@@ -122,7 +127,7 @@ const LandingAppBar = () => {
             variant="contained"
             sx={{ bgcolor: "primary.dark", ml: 5 }}
           >
-            Login
+            Entrar
             <LoginIcon sx={{ ml: 1 }} />
           </Button>
         </Toolbar>

@@ -56,12 +56,7 @@ function LoginForm({ handleRequest, isLoading }) {
       try {
         await handleRequest(values);
       } catch (error) {
-        console.log(error.response);
-        if (error.response.data.data === "Confirm email first.") {
-          formik.setFieldError("password", "Verifique o seu email!");
-        } else if (error.response.data.data === "Invalid Credentials!") {
-          formik.setFieldError("password", "Email ou password inválidos!");
-        } else toast.error("Erro! Contacte o seu Admin!");
+        formik.setFieldError("password", "Email ou password inválidos!");
       }
     },
   });

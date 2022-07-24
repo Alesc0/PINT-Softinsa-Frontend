@@ -6,6 +6,7 @@ import landingBanner from "imgs/landingBanner1.png";
 import Lucas from "imgs/Lucas.jpg";
 import Rodrigo from "imgs/Rodrigo.jpg";
 import LandingAppBar from "./components/appbar";
+import Culpix from "imgs/culpix.png";
 
 const CustomAvatar = styled(Avatar)`
   width: 250px;
@@ -53,6 +54,7 @@ function LandingPage() {
               maxWidth: "400px",
               m: "0 auto",
             }}
+            id="Home"
           >
             <Box>
               <Typography variant="h2" color="warning.main">
@@ -96,13 +98,13 @@ function LandingPage() {
           </Box>
         </Box>
       </Box>
-      <Box sx={{ backgroundColor: "primary.light", py: 4 }}>
+      <Box sx={{ backgroundColor: "primary.light", py: 4 }} id="Equipa">
         <Typography variant="h2" textAlign="center" color="white">
           Meet the Team!
         </Typography>
         <Stack direction="row" spacing={8} sx={{ my: 4 }} className="center">
           <Stack className="center">
-            <CustomAvatar alt="C" src={Alex} />
+            <CustomAvatar alt="C" src={Culpix} />
             <Typography variant="h4">Tiago Monteiro</Typography>
             <Typography variant="h5">Design</Typography>
           </Stack>

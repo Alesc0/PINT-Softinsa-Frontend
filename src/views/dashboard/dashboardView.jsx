@@ -178,7 +178,7 @@ export default function Dashboard() {
   const { isLoading: loadingPedidos, data: dataPedidos } = useQuery(
     ["getPedidosDashboard", autoCentros],
     async () => {
-      const { data: response } = await axios.get("/pedido/getPedidosEstado", {
+      const { data: response } = await axios.get("pedido/getPedidosEstado", {
         params: {
           centro: autoCentros?.idcentro || user?.centro.idcentro,
         },

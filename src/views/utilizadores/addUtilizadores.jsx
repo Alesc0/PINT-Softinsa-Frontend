@@ -1,6 +1,6 @@
 import LoadingButton from "@mui/lab/LoadingButton";
-import { Paper, Stack, Typography } from "@mui/material";
-import axios from "api/_axios";
+import { Button, Paper, Stack, Typography } from "@mui/material";
+import axios, { baseURL } from "api/_axios";
 import FileUploader from "common/fileUploader/fileUploader";
 import { useState } from "react";
 import { useMutation } from "react-query";
@@ -57,6 +57,10 @@ export default function AddUtilizadoresView() {
     handleRequest: addUserMutation.mutateAsync,
   };
 
+  const handleTemplate = async () => {
+    window.location.replace(`${baseURL}excel`);
+  };
+
   return (
     <>
       <UtilizadorForm {...formProps} />
@@ -67,10 +71,20 @@ export default function AddUtilizadoresView() {
         elevation={2}
         sx={{ p: 2, margin: "0 auto" }}
       >
-        <Typography variant="h4">
-          Upload de ficheiro para Bulk Insert
-        </Typography>
+        <Stack direction="row">
+          <Typography variant="h4">
+            Upload de ficheiro para Bulk Insert
+          </Typography>
+          <Button
+            variant="outlined"
+            sx={{ ml: "auto" }}
+            onClick={handleTemplate}
+          >
+            Template
+          </Button>
+        </Stack>
         <FileUploader {...fileUploadProps} />
+
         <LoadingButton
           loading={bulkInsertMutation.isLoading}
           onClick={handleBulkInsert}

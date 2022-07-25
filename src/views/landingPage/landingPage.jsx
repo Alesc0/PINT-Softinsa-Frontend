@@ -102,7 +102,7 @@ function LandingPage() {
         <Typography variant="h2" textAlign="center" color="white">
           Meet the Team!
         </Typography>
-        <Stack direction="row" spacing={8} sx={{ my: 4 }} className="center">
+        <Stack direction="row" spacing={4} sx={{ my: 4 }} className="center">
           <Stack className="center">
             <CustomAvatar alt="C" src={Culpix} />
             <Typography variant="h4">Tiago Monteiro</Typography>

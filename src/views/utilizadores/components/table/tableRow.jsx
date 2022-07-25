@@ -19,7 +19,7 @@ function UserTableRow(props) {
 
   const returnRoleName = (row) => {
     if (row.admin) {
-      return "(Admin)";
+      return "(Administrador)";
     }
     if (row.role === "L") {
       return "(Limpeza)";

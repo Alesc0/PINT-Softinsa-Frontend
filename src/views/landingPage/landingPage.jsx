@@ -1,12 +1,12 @@
 import { Avatar, Box, Button, Stack, styled, Typography } from "@mui/material";
 import { baseURL } from "api/_axios";
-import Alex from "imgs/Alex.jpg";
-import Joel from "imgs/Joel.png";
+import Alex from "imgs/alex.jpg";
 import landingBanner from "imgs/landingBanner1.png";
-import Lucas from "imgs/Lucas.jpg";
-import Rodrigo from "imgs/Rodrigo.jpg";
 import LandingAppBar from "./components/appbar";
-import Culpix from "imgs/culpix.png";
+import Culpix from "imgs/culpix.jpeg";
+import Joel from "imgs/joel.jpg";
+import Lucas from "imgs/lucas.jpeg";
+import Rodrigo from "imgs/rodrigo.png";
 
 const CustomAvatar = styled(Avatar)`
   width: 250px;
@@ -110,6 +110,7 @@ function LandingPage() {
           </Stack>
           <Stack className="center">
             <CustomAvatar alt="C" src={Lucas} />
+            {}
             <Typography variant="h4">Lucas Silva</Typography>
             <Typography variant="h5">Backend</Typography>
           </Stack>

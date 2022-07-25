@@ -155,12 +155,14 @@ export default function EnhancedTable(props) {
     for (let row of selected) {
       promises.push(deleteMutation.mutateAsync(row));
     }
-
+    console.log(selected);
     if (promises.length > 0) {
       try {
         await Promise.all(promises);
         toast.success(
-          `Utilizador${selected > 1 && "es"} eliminado${selected > 1 && "s"}!`
+          `Utilizador${selected.length > 1 && "es"} eliminado${
+            selected.length > 1 && "s"
+          }!`
         );
       } catch (error) {
         toast.error(`Erro a eliminar utilizador${selected > 1 && "es"}`);

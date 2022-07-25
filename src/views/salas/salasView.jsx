@@ -2,7 +2,12 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import axios from "api/_axios";
 import { UserContext } from "App";
 import { useContext, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "react-query";
 import { toast } from "react-toastify";
 import SalasForm from "./components/form";
 import ListSalas from "./components/listSalas";
@@ -18,7 +23,7 @@ function SalasView() {
   const [pesquisa, setPesquisa] = useState("");
 
   const { user } = useContext(UserContext);
-
+  const queryClient = useQueryClient();
   const {
     isFetching: loadingCentros,
     data: dataCentros,
@@ -96,6 +101,11 @@ function SalasView() {
     setPage(value);
   };
 
+  const handleRefetch = () => {
+    setPage(1);
+    refetch();
+  };
+
   const listSalasProps = {
     salas: data?.data,
     selected,
@@ -111,7 +121,7 @@ function SalasView() {
     setSlider,
     pesquisa,
     setPesquisa,
-    refetch,
+    refetch: handleRefetch,
     dataCentros,
   };
 

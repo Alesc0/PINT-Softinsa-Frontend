@@ -21,7 +21,6 @@ const MyResponsiveTimeRange = ({ startDate, endDate, centro }) => {
     },
     { keepPreviousData: true }
   );
-  console.log(centro);
 
   return (
     <Box sx={{ height: "15em" }}>

@@ -8,7 +8,7 @@ const MyResponsiveTimeRange = ({ startDate, endDate, centro }) => {
   date.setDate(date.getDate() - 240);
 
   const { data } = useQuery(
-    ["getReservasByRange", startDate, endDate],
+    ["getReservasByRange", startDate, endDate, centro],
     async () => {
       const { data: response } = await axios.get("reserva/range", {
         params: {
@@ -21,6 +21,7 @@ const MyResponsiveTimeRange = ({ startDate, endDate, centro }) => {
     },
     { keepPreviousData: true }
   );
+  console.log(centro);
 
   return (
     <Box sx={{ height: "15em" }}>

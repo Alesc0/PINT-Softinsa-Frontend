@@ -13,7 +13,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import MultipleAutocomplete from "common/multipleAutocomplete/multipleAutocomplete";
 import { useRef, useState } from "react";
 
 const EnhancedTableToolbar = ({
@@ -76,7 +75,6 @@ const EnhancedTableToolbar = ({
               />
               <Autocomplete
                 sx={{ minWidth: 150 }}
-                multiple
                 options={dataCentros || []}
                 value={autoCentros}
                 ChipProps={{ color: "primary", size: "small" }}
@@ -85,16 +83,16 @@ const EnhancedTableToolbar = ({
                 onChange={(event, value, reason) => {
                   if (reason === "clear") {
                     setAutoCentros(null);
-                    setAutoSalas([]);
+                    setAutoSalas(null);
                   } else {
                     setAutoCentros(value);
-                    setAutoSalas([]);
+                    setAutoSalas(null);
                   }
                 }}
                 onInputChange={(event, value, reason) => {
                   if (reason === "clear") {
-                    setAutoCentros([]);
-                    setAutoSalas([]);
+                    setAutoCentros(null);
+                    setAutoSalas(null);
                   }
                 }}
                 renderInput={(params) => (
@@ -107,19 +105,18 @@ const EnhancedTableToolbar = ({
               />
               <Autocomplete
                 sx={{ minWidth: 150 }}
-                multiple
                 options={dataSalas || []}
                 value={autoSalas}
                 ChipProps={{ color: "primary", size: "small" }}
                 getOptionLabel={(option) => option.nome}
                 isOptionEqualToValue={(op, val) => op.idsala === val.idsala}
                 onChange={(event, value, reason) => {
-                  if (reason === "clear") return;
+                  if (reason === "clear") setAutoSalas(null);
                   else setAutoSalas(value);
                 }}
                 onInputChange={(event, value, reason) => {
                   if (reason === "clear") {
-                    setAutoSalas([]);
+                    setAutoSalas(null);
                   }
                 }}
                 renderInput={(params) => (

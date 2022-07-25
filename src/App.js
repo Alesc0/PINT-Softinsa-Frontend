@@ -52,6 +52,10 @@ function App() {
       queryClient.invalidateQueries("getFeedbacks");
       queryClient.invalidateQueries("getFeedbacksView");
     });
+    
+    socket.on("reservaLive", () => {
+      queryClient.invalidateQueries("getReservasAtuaisDashboard");
+    });
 
     socket.on("updateUser", () => {
       queryClient.invalidateQueries("getUtilizadoresDashboard");

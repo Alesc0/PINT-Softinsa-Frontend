@@ -8,8 +8,8 @@ import { UserContext } from "App";
 function ReservasView() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  const [autoCentros, setAutoCentros] = useState([]);
-  const [autoSalas, setAutoSalas] = useState([]);
+  const [autoCentros, setAutoCentros] = useState(null);
+  const [autoSalas, setAutoSalas] = useState(null);
   const [pesquisa, setPesquisa] = useState("");
   const [searchData, setSearchData] = useState(null);
   const [params, setParams] = useState({});
@@ -21,7 +21,7 @@ function ReservasView() {
     const getUserCentro = response.data.find(
       (val) => val.idcentro === user.idcentro
     );
-    setAutoCentros([getUserCentro]);
+    setAutoCentros(getUserCentro);
     setParams({
       centros: [getUserCentro?.idcentro],
     });
@@ -36,11 +36,12 @@ function ReservasView() {
         params: {
           offset: 0,
           limit: 999,
-          centros: autoCentros.map((val) => val.idcentro),
+          ...(autoCentros && { centros: [autoCentros?.idcentro] }),
         },
       });
       return response.data;
-    }
+    },
+    { enabled: !!dataCentros }
   );
 
   const { isLoading, data } = useQuery(
@@ -60,21 +61,20 @@ function ReservasView() {
       keepPreviousData: true,
     }
   );
-
   const handleFiltros = (check) => {
     if (check) {
       setParams({
-        ...(autoCentros.length > 0 && {
-          centros: autoCentros.map((val) => val.idcentro),
+        ...(autoCentros > 0 && {
+          centros: [autoCentros?.idcentro],
         }),
         ...(pesquisa && { pesquisa }),
         ...(searchData && { data: searchData.toLocaleDateString("en-CA") }),
-        ...(autoSalas.length > 0 && {
-          salas: autoSalas.map((val) => val.idsala),
+        ...(autoSalas && {
+          salas: [autoSalas?.idsala],
         }),
       });
     } else {
-      setAutoCentros([]);
+      setAutoCentros(null);
       setPesquisa("");
       setSearchData(null);
       setParams({});

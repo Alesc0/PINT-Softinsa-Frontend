@@ -100,7 +100,7 @@ function NotificacoesView() {
                         sx={{ alignItems: "center" }}
                       >
                         <Typography component="legend">
-                          {row.utilizadore || "Guest"}
+                        {row.utilizadores?.nome || "Guest"}
                         </Typography>
                         <Rating
                           sx={{

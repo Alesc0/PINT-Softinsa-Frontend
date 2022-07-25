@@ -83,7 +83,7 @@ function ReservasView() {
 
   const tableProps = {
     reservas: data?.data,
-    loading: isLoading,
+    isLoading,
     page,
     setPage,
     rowsPerPage,

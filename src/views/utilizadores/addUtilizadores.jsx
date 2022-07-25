@@ -3,13 +3,13 @@ import { Button, Paper, Stack, Typography } from "@mui/material";
 import axios, { baseURL } from "api/_axios";
 import FileUploader from "common/fileUploader/fileUploader";
 import { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import UtilizadorForm from "./components/form";
 
 export default function AddUtilizadoresView() {
   const [files, setFiles] = useState(undefined);
-
+  const queryClient = useQueryClient();
   const fileUploadProps = {
     files,
     setFiles,
@@ -47,8 +47,8 @@ export default function AddUtilizadoresView() {
     try {
       await bulkInsertMutation.mutateAsync();
       toast.success("Utilizadores inseridos com sucesso!");
+      queryClient.invalidateQueries("getUtilizadoresView");
     } catch (err) {
-      console.log(err.response);
       toast.error("Erro ao inserir utilizadores!");
     }
   };

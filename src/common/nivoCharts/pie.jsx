@@ -23,7 +23,7 @@ function MyResponsivePie(props) {
     <Box sx={{ height: "25em" }}>
       <ResponsivePie
         data={formatData()}
-        margin={{ top: 30, bottom: 50 }}
+        margin={{ top: 100, bottom: 100 }}
         innerRadius={0.5}
         padAngle={0.7}
         cornerRadius={3}

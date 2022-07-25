@@ -31,7 +31,8 @@ function ReservaRow({ row }) {
           <Avatar
             alt="Remy Sharp"
             src={
-              (row.utilizadore?.fotoConv && "data:image/jpeg;base64, " + row.utilizadore?.fotoConv) ||
+              (row.utilizadore?.fotoConv &&
+                "data:image/jpeg;base64, " + row.utilizadore?.fotoConv) ||
               sampleAvaImg
             }
           />

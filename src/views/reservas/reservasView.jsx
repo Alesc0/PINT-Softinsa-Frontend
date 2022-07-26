@@ -64,7 +64,7 @@ function ReservasView() {
   const handleFiltros = (check) => {
     if (check) {
       setParams({
-        ...(autoCentros > 0 && {
+        ...(autoCentros && {
           centros: [autoCentros?.idcentro],
         }),
         ...(pesquisa && { pesquisa }),

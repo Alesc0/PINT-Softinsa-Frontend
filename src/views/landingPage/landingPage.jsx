@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Stack, styled, Typography } from "@mui/material";
 import { baseURL } from "api/_axios";
-import Alex from "imgs/alex.jpg";
+import Alex from "imgs/Alex.jpg";
 import landingBanner from "imgs/landingBanner1.png";
 import LandingAppBar from "./components/appbar";
 import Culpix from "imgs/culpix.jpeg";
@@ -109,23 +109,23 @@ function LandingPage() {
             <Typography variant="h5">Design</Typography>
           </Stack>
           <Stack className="center">
-            <CustomAvatar alt="C" src={Lucas} />
+            <CustomAvatar alt="L" src={Lucas} />
             {}
             <Typography variant="h4">Lucas Silva</Typography>
             <Typography variant="h5">Backend</Typography>
           </Stack>
           <Stack className="center">
-            <CustomAvatar alt="C" src={Alex} />
+            <CustomAvatar alt="A" src={Alex} />
             <Typography variant="h4">Pedro Alexandre</Typography>
             <Typography variant="h5">FullStack</Typography>
           </Stack>
           <Stack className="center">
-            <CustomAvatar alt="C" src={Rodrigo} />
+            <CustomAvatar alt="R" src={Rodrigo} />
             <Typography variant="h4">Rodrigo Rodrigues</Typography>
             <Typography variant="h5">Mobile</Typography>
           </Stack>
           <Stack className="center">
-            <CustomAvatar alt="C" src={Joel} />
+            <CustomAvatar alt="J" src={Joel} />
             <Typography variant="h4">Joel Fernandes</Typography>
             <Typography variant="h5">DataBase</Typography>
           </Stack>
